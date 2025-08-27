@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SystemSD - Iniciar Sesión</title>
+  <style>
+    /* --- Reset básico --- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Círculo decorativo en el fondo */
+    .circle-bg {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(76, 201, 240, 0.1) 0%, rgba(76, 201, 240, 0) 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 0;
+    }
+
+    .brand {
+      text-align: center;
+      margin-bottom: 20px;
+      z-index: 1;
+      position: relative;
+    }
+
+    .brand h1 {
+      font-size: 36px;
+      font-weight: bold;
+      color: #4cc9f0;
+    }
+
+    .brand p {
+      font-size: 16px;
+      color: #bbb;
+      margin-top: 5px;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 40px;
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+      width: 350px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+      text-align: center;
+      z-index: 1;
+      position: relative;
+    }
+
+    /* Logo SD */
+    .logo {
+      font-size: 48px;
+      font-weight: bold;
+      color: #4cc9f0;
+      margin-bottom: 10px;
+    }
+
+    .title {
+      font-size: 20px;
+      margin-bottom: 25px;
+      font-weight: 500;
+      color: #e0e0e0;
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 5px;
+      color: #bbb;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      outline: none;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-size: 15px;
+    }
+
+    .input-group input::placeholder {
+      color: #aaa;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background: #4cc9f0;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #0f2027;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background: #3bb3d6;
+    }
+
+    .links {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .links a {
+      color: #4cc9f0;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    .links a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="circle-bg"></div>
+
+  <div class="brand">
+    <h1>SystemSD</h1>
+    <p>System Storage Device</p>
+  </div>
+
+  <div class="container">
+    <div class="logo">SD</div>
+    <div class="title">Bienvenido a SystemSD</div>
+
+    <form>
+      <div class="input-group">
+        <label for="email">Correo electrónico</label>
+        <input type="email" id="email" placeholder="ejemplo@correo.com" required>
+      </div>
+
+      <div class="input-group">
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" placeholder="••••••••" required>
+      </div>
+
+      <button type="submit" class="btn">Iniciar Sesión</button>
+    </form>
+
+    <div class="links">
+      <a href="#">¿Olvidaste tu contraseña?</a>
+    </div>
+  </div>
+</body>
+</html>

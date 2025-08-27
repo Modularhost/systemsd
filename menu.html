@@ -20,7 +20,7 @@
       font-size: 14px;
     }
     .header h1 { font-size: 18px; color: #4cc9f0; }
-    .header .user { font-size: 14px; color: #555; }
+    .header .info { font-size: 14px; color: #555; display: flex; gap: 15px; align-items: center; }
 
     /* Layout principal */
     .layout { display: flex; flex: 1; }
@@ -33,8 +33,18 @@
       display: flex;
       flex-direction: column;
       padding: 15px 10px;
+      align-items: flex-start; /* Mantener enlaces a la izquierda */
     }
-    .sidebar h2 { margin-bottom: 10px; color: #4cc9f0; font-weight: bold; font-size: 16px; }
+    .sidebar h2 { 
+      margin: 0 auto 5px auto; /* Centrar solo SystemSD horizontalmente */
+      color: #4cc9f0; 
+      font-weight: bold; 
+      font-size: 16px; 
+      border-bottom: 1px solid #ddd; 
+      padding-bottom: 5px;
+      text-align: center;
+      width: 100%;
+    }
     .sidebar a {
       color: #333;
       text-decoration: none;
@@ -44,6 +54,8 @@
       border-radius: 6px;
       font-size: 13px;
       transition: 0.3s;
+      width: 100%;
+      text-align: left; /* Mantener los enlaces alineados a la izquierda */
     }
     .sidebar a:hover { background: #ddd; color: #333; }
 
@@ -76,7 +88,10 @@
 <body>
   <div class="header">
     <h1>Dashboard</h1>
-    <div class="user">Bienvenido, Usuario</div>
+    <div class="info">
+      <div class="user">Bienvenido, Usuario</div>
+      <div class="date" id="currentDate"></div>
+    </div>
   </div>
 
   <div class="layout">
@@ -106,5 +121,12 @@
       </div>
     </div>
   </div>
+
+  <script>
+    const dateElement = document.getElementById('currentDate');
+    const today = new Date();
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    dateElement.textContent = today.toLocaleDateString('es-ES', options);
+  </script>
 </body>
 </html>

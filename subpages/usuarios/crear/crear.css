@@ -1,13 +1,13 @@
-/* subpages/usuarios/crear/crear.css */
+
 .user-create-form {
-  max-width: 800px; /* Aumentado para más espacio en árbol */
+  max-width: 800px;
   margin: 20px auto;
   padding: 20px;
   background: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  overflow-y: auto; /* Para árboles grandes */
-  max-height: 80vh; /* Limita altura para scroll */
+  overflow-y: auto;
+  max-height: 80vh;
 }
 
 .form-group {
@@ -32,7 +32,7 @@
 
 .permissions-tree {
   margin-top: 10px;
-  font-size: 14px; /* Más pequeño para fitting */
+  font-size: 14px;
 }
 
 .permission-group, .submenu-group, .container-group {

@@ -1,136 +1,92 @@
-// subpages/usuarios/crear/crear.js
 
-// Permisos por defecto según rol (expandido con niveles granulares)
-const defaultPermissions = {
-  administrador: {
-    menus: { /* Todos true */
-      implantes: true,
-      laboratorio: true,
-      // Agrega todos los menús...
-    },
-    submenus: { /* Todos true */
-      'implantes-ingresos': true,
-      'implantes-cargar': true,
-      'implantes-pacientes': true,
-      'implantes-referencias': true,
-      'laboratorio-analisis': true,
-      'laboratorio-resultados': true,
-      // ...
-    },
-    containers: { /* Todos true */
-      'implantes-ingresos-formulario': true,
-      'implantes-ingresos-tabla': true,
-      'implantes-cargar-formulario': true,
-      'implantes-cargar-tabla': true,
-      // ...
-    },
-    elements: { /* Todos true */
-      'implantes-cargar-formulario-campo-archivo': true,
-      'implantes-cargar-formulario-campo-descripcion': true,
-      'implantes-cargar-formulario-boton-subir': true,
-      'implantes-cargar-formulario-boton-limpiar': true,
-      'implantes-cargar-tabla-columna-id': true,
-      'implantes-cargar-tabla-columna-archivo': true,
-      'implantes-cargar-tabla-columna-fecha': true,
-      'implantes-cargar-tabla-paginacion': true,
-      'implantes-cargar-tabla-boton-descargar': true,
-      'implantes-cargar-tabla-boton-importar': true,
-      'implantes-cargar-tabla-boton-editar': true,
-      // Agrega todos los elementos para admin
-    }
-  },
-  operador: {
-    menus: {
-      implantes: true,
-      laboratorio: true,
-    },
-    submenus: {
-      'implantes-ingresos': false,
-      'implantes-cargar': true,
-      'implantes-pacientes': false,
-      'implantes-referencias': false,
-      'laboratorio-analisis': true,
-      'laboratorio-resultados': false,
-    },
-    containers: {
-      'implantes-cargar-formulario': true,
-      'implantes-cargar-tabla': true,
-      'laboratorio-analisis-formulario': true,
-      'laboratorio-analisis-tabla': true,
-    },
-    elements: {
-      'implantes-cargar-formulario-campo-archivo': true,
-      'implantes-cargar-formulario-campo-descripcion': true,
-      'implantes-cargar-formulario-boton-subir': true,
-      'implantes-cargar-formulario-boton-limpiar': true,
-      'implantes-cargar-tabla-columna-id': true,
-      'implantes-cargar-tabla-columna-archivo': true,
-      'implantes-cargar-tabla-columna-fecha': true,
-      'implantes-cargar-tabla-paginacion': true,
-      'implantes-cargar-tabla-boton-descargar': false, // Oculto como ejemplo
-      'implantes-cargar-tabla-boton-importar': true,
-      'implantes-cargar-tabla-boton-editar': true,
-      // Para laboratorio-analisis, similar, algunos false si quieres restringir
-    }
-  },
-  gestor: {
-    // Personaliza similar a operador, ajusta según necesidades específicas
-    menus: {
-      implantes: true,
-      laboratorio: true,
-    },
-    submenus: {
-      'implantes-ingresos': true, // Ejemplo: gestor ve más que operador
-      'implantes-cargar': true,
-      'implantes-pacientes': true,
-      'implantes-referencias': false,
-      'laboratorio-analisis': true,
-      'laboratorio-resultados': true,
-    },
-    containers: {
-      // Similar, con más true
-    },
-    elements: {
-      // Similar, ajusta restricciones
-      'implantes-cargar-tabla-boton-descargar': true, // Ejemplo: gestor sí ve descargar
-    }
-  }
+// Lista de menús para cargar sus permisos
+const menus = [
+  'implantes', 'consignacion', 'historico', 'laboratorio', 'visualizador',
+  'prestacion', 'herramientas', 'importacion', 'apuntes', 'migracion',
+  'dashboard', 'archivos', 'usuarios', 'configuracion', 'cerrar-sesion'
+];
+
+// Estructura para almacenar permisos por defecto
+let defaultPermissions = {
+  administrador: { menus: {}, submenus: {}, containers: {}, elements: {} },
+  operador: { menus: {}, submenus: {}, containers: {}, elements: {} },
+  gestor: { menus: {}, submenus: {}, containers: {}, elements: {} }
 };
 
-// Función para cargar permisos por defecto según rol
-function loadDefaultPermissions() {
-  const role = document.getElementById('role').value;
-  const perms = defaultPermissions[role] || { menus: {}, submenus: {}, containers: {}, elements: {} };
+// Cargar permisos dinámicamente
+async function loadPermissions() {
+  for (const menu of menus) {
+    try {
+      const response = await fetch(`permisos/${menu}.js`);
+      const permissionModule = await response.text();
+      // Evaluar el módulo (en producción, usa import dinámico o backend)
+      const permissions = eval(`(${permissionModule})`);
+      
+      // Combinar permisos para cada rol
+      ['administrador', 'operador', 'gestor'].forEach(role => {
+        defaultPermissions[role].menus[menu] = permissions[role].menu;
+        Object.assign(defaultPermissions[role].submenus, permissions[role].submenus);
+        Object.assign(defaultPermissions[role].containers, permissions[role].containers);
+        Object.assign(defaultPermissions[role].elements, permissions[role].elements);
+      });
 
-  // Marcar menús
-  document.querySelectorAll('.menu-checkbox').forEach(checkbox => {
-    const menu = checkbox.getAttribute('data-menu');
-    checkbox.checked = perms.menus[menu] || false;
-    toggleSubmenus(checkbox);
-  });
-
-  // Marcar submenús
-  document.querySelectorAll('.submenu-checkbox').forEach(checkbox => {
-    const submenu = checkbox.getAttribute('data-submenu');
-    checkbox.checked = perms.submenus[submenu] || false;
-    toggleContainers(checkbox);
-  });
-
-  // Marcar contenedores
-  document.querySelectorAll('.container-checkbox').forEach(checkbox => {
-    const container = checkbox.getAttribute('data-container');
-    checkbox.checked = perms.containers[container] || false;
-    toggleElements(checkbox);
-  });
-
-  // Marcar elementos
-  document.querySelectorAll('[data-element]').forEach(checkbox => {
-    const element = checkbox.getAttribute('data-element');
-    checkbox.checked = perms.elements[element] || false;
-  });
+      // Generar HTML para el árbol de permisos
+      const tree = document.getElementById('permissionsTree');
+      tree.innerHTML += generatePermissionTree(menu, permissions.structure);
+    } catch (error) {
+      console.error(`Error al cargar permisos de ${menu}:`, error);
+    }
+  }
 }
 
-// Función para toggle submenús bajo menú
+// Generar HTML para el árbol de permisos
+function generatePermissionTree(menu, structure) {
+  let html = `
+    <div class="permission-group">
+      <label>
+        <input type="checkbox" class="menu-checkbox" data-menu="${menu}" onchange="toggleSubmenus(this)">
+        ${menu.charAt(0).toUpperCase() + menu.slice(1).replace('-', ' ')} (Menú Principal)
+      </label>
+      <div class="subpermissions" style="display: none; margin-left: 20px;">
+  `;
+
+  structure.submenus.forEach(sub => {
+    html += `
+      <div class="submenu-group">
+        <label>
+          <input type="checkbox" class="submenu-checkbox" data-submenu="${menu}-${sub.id}" onchange="toggleContainers(this)">
+          ${sub.text}
+        </label>
+        <div class="containers" style="display: none; margin-left: 40px;">
+    `;
+    
+    sub.containers.forEach(container => {
+      html += `
+        <div class="container-group">
+          <label>
+            <input type="checkbox" class="container-checkbox" data-container="${menu}-${sub.id}-${container.id}" onchange="toggleElements(this)">
+            ${container.text}
+          </label>
+          <div class="elements" style="display: none; margin-left: 60px;">
+      `;
+      
+      container.elements.forEach(element => {
+        html += `
+          <label><input type="checkbox" data-element="${menu}-${sub.id}-${container.id}-${element.id}"> ${element.text}</label><br>
+        `;
+      });
+      
+      html += `</div></div>`;
+    });
+    
+    html += `</div></div>`;
+  });
+  
+  html += `</div></div>`;
+  return html;
+}
+
+// Funciones de toggle
 function toggleSubmenus(checkbox) {
   const subperms = checkbox.parentElement.nextElementSibling;
   if (subperms && subperms.classList.contains('subpermissions')) {
@@ -142,7 +98,6 @@ function toggleSubmenus(checkbox) {
   }
 }
 
-// Función para toggle contenedores bajo submenú
 function toggleContainers(checkbox) {
   const containers = checkbox.parentElement.nextElementSibling;
   if (containers && containers.classList.contains('containers')) {
@@ -154,7 +109,6 @@ function toggleContainers(checkbox) {
   }
 }
 
-// Función para toggle elementos bajo contenedor
 function toggleElements(checkbox) {
   const elements = checkbox.parentElement.nextElementSibling;
   if (elements && elements.classList.contains('elements')) {
@@ -165,11 +119,39 @@ function toggleElements(checkbox) {
   }
 }
 
+// Cargar permisos por defecto según rol
+function loadDefaultPermissions() {
+  const role = document.getElementById('role').value;
+  const perms = defaultPermissions[role] || { menus: {}, submenus: {}, containers: {}, elements: {} };
+
+  document.querySelectorAll('.menu-checkbox').forEach(checkbox => {
+    const menu = checkbox.getAttribute('data-menu');
+    checkbox.checked = perms.menus[menu] || false;
+    toggleSubmenus(checkbox);
+  });
+
+  document.querySelectorAll('.submenu-checkbox').forEach(checkbox => {
+    const submenu = checkbox.getAttribute('data-submenu');
+    checkbox.checked = perms.submenus[submenu] || false;
+    toggleContainers(checkbox);
+  });
+
+  document.querySelectorAll('.container-checkbox').forEach(checkbox => {
+    const container = checkbox.getAttribute('data-container');
+    checkbox.checked = perms.containers[container] || false;
+    toggleElements(checkbox);
+  });
+
+  document.querySelectorAll('[data-element]').forEach(checkbox => {
+    const element = checkbox.getAttribute('data-element');
+    checkbox.checked = perms.elements[element] || false;
+  });
+}
+
 // Manejar envío del formulario
 document.getElementById('userForm').addEventListener('submit', (e) => {
   e.preventDefault();
 
-  // Recopilar datos básicos
   const userData = {
     fullName: document.getElementById('fullName').value,
     username: document.getElementById('username').value,
@@ -186,7 +168,6 @@ document.getElementById('userForm').addEventListener('submit', (e) => {
     }
   };
 
-  // Recopilar permisos
   document.querySelectorAll('.menu-checkbox').forEach(checkbox => {
     userData.permissions.menus[checkbox.getAttribute('data-menu')] = checkbox.checked;
   });
@@ -200,7 +181,6 @@ document.getElementById('userForm').addEventListener('submit', (e) => {
     userData.permissions.elements[checkbox.getAttribute('data-element')] = checkbox.checked;
   });
 
-  // Guardar en localStorage (maqueta)
   let users = JSON.parse(localStorage.getItem('users')) || [];
   users.push(userData);
   localStorage.setItem('users', JSON.stringify(users));
@@ -211,4 +191,7 @@ document.getElementById('userForm').addEventListener('submit', (e) => {
 });
 
 // Inicializar
-loadDefaultPermissions();
+(async () => {
+  await loadPermissions();
+  loadDefaultPermissions();
+})();

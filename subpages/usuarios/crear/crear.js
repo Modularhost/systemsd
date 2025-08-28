@@ -1,8 +1,3 @@
-// Importar módulos de Firebase
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
-import { getAuth, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
-import { getFirestore, collection, addDoc, getDocs } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
-
 // Configuración de Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyB_LByv2DPTs2298UEHSD7cFKZN6L8gtls",
@@ -15,9 +10,9 @@ const firebaseConfig = {
 };
 
 // Inicializar Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+const app = firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
 
 // Lista de menús desde menu.js
 const menus = [
@@ -162,7 +157,6 @@ function loadDefaultPermissions() {
   togglePermissionsModal(role);
 
   if (role === 'administrador') {
-    // Administradores tienen acceso completo
     document.querySelectorAll('.menu-checkbox').forEach(checkbox => {
       checkbox.checked = true;
       checkbox.disabled = true;
@@ -214,7 +208,7 @@ async function loadUsersTable(page = 1) {
   const nextButton = document.getElementById('nextPage');
 
   // Obtener usuarios desde Firestore
-  const usersSnapshot = await getDocs(collection(db, 'users'));
+  const usersSnapshot = await db.collection('users').get();
   const users = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
   // Calcular índices de paginación
@@ -250,10 +244,9 @@ async function loadUsersTable(page = 1) {
 async function applyPermissions() {
   const user = auth.currentUser;
   if (user) {
-    const usersSnapshot = await getDocs(collection(db, 'users'));
-    const currentUser = usersSnapshot.docs.find(doc => doc.id === user.uid);
-    if (currentUser) {
-      const perms = currentUser.data().permissions;
+    const userDoc = await db.collection('users').doc(user.uid).get();
+    if (userDoc.exists) {
+      const perms = userDoc.data().permissions;
 
       // Ocultar/mostrar elementos del formulario
       document.querySelectorAll('[data-permission]').forEach(element => {
@@ -307,7 +300,7 @@ document.getElementById('userForm').addEventListener('submit', async (e) => {
 
   try {
     // Crear usuario en Firebase Authentication
-    const userCredential = await createUserWithEmailAndPassword(auth, userData.email, userData.password);
+    const userCredential = await auth.createUserWithEmailAndPassword(userData.email, userData.password);
     const user = userCredential.user;
 
     // Asignar permisos según el rol
@@ -338,7 +331,7 @@ document.getElementById('userForm').addEventListener('submit', async (e) => {
     }
 
     // Guardar datos del usuario en Firestore
-    await addDoc(collection(db, 'users'), {
+    await db.collection('users').doc(user.uid).set({
       uid: user.uid,
       fullName: userData.fullName,
       username: userData.username,
@@ -369,7 +362,7 @@ document.getElementById('prevPage').addEventListener('click', async () => {
 });
 
 document.getElementById('nextPage').addEventListener('click', async () => {
-  const usersSnapshot = await getDocs(collection(db, 'users'));
+  const usersSnapshot = await db.collection('users').get();
   const totalPages = Math.ceil(usersSnapshot.docs.length / itemsPerPage);
   if (currentPage < totalPages) {
     await loadUsersTable(currentPage + 1);

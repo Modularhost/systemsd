@@ -279,8 +279,8 @@ button[type="submit"]:active {
 
 .pagination-controls button {
   padding: 6px 16px;
-  background: #4cc9f0;
-  color: #ffffff;
+  background: #cecfcf;
+  color: #302d2d;
   border: none;
   cursor: pointer;
   font-size: 12px;

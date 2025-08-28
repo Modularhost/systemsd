@@ -30,7 +30,6 @@
   margin-bottom: 20px;
 }
 
-/* Four-column grid layout for form inputs */
 form#userForm {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -62,7 +61,6 @@ form#userForm {
   box-shadow: 0 0 6px rgba(0, 123, 255, 0.3);
 }
 
-/* Full-width permissions section */
 .permissions-section {
   grid-column: 1 / -1;
   margin-top: 30px;
@@ -95,20 +93,12 @@ form#userForm {
   border-left: 3px solid #6c757d;
 }
 
-.container-group {
-  margin-left: 60px;
-  margin-bottom: 8px;
-  padding: 8px;
-}
-
-.elements {
-  margin-left: 90px;
-}
-
 label {
   cursor: pointer;
   font-size: 0.95rem;
   color: #333;
+  display: block;
+  margin-bottom: 8px;
 }
 
 label input[type="checkbox"] {
@@ -137,7 +127,6 @@ button[type="submit"]:hover {
   transform: translateY(-2px);
 }
 
-/* Responsive design */
 @media (max-width: 1024px) {
   form#userForm {
     grid-template-columns: repeat(2, 1fr);
@@ -159,9 +148,7 @@ button[type="submit"]:hover {
   }
 
   .permission-group,
-  .submenu-group,
-  .container-group,
-  .elements {
+  .submenu-group {
     margin-left: 10px;
   }
 }

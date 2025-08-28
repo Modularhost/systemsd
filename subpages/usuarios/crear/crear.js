@@ -12,6 +12,10 @@ let defaultPermissions = {
   gestor: { menus: {}, submenus: {} }
 };
 
+// Configuración de paginación
+const itemsPerPage = 5;
+let currentPage = 1;
+
 // Cargar permisos dinámicamente
 function loadPermissions() {
   const tree = document.getElementById('permissionsTree');
@@ -76,7 +80,6 @@ function loadDefaultPermissions() {
   togglePermissionsModal(role);
 
   if (role === 'administrador') {
-    // Administradores tienen acceso completo
     document.querySelectorAll('.menu-checkbox').forEach(checkbox => {
       checkbox.checked = true;
       checkbox.disabled = true;
@@ -101,13 +104,24 @@ function loadDefaultPermissions() {
   }
 }
 
-// Cargar datos de usuarios en la tabla
-function loadUsersTable() {
+// Cargar datos de usuarios en la tabla con paginación
+function loadUsersTable(page = 1) {
   const users = JSON.parse(localStorage.getItem('users')) || [];
   const tableBody = document.getElementById('usersTableBody');
-  tableBody.innerHTML = '';
+  const pageInfo = document.getElementById('pageInfo');
+  const prevButton = document.getElementById('prevPage');
+  const nextButton = document.getElementById('nextPage');
 
-  users.forEach(user => {
+  // Calcular índices de paginación
+  const totalPages = Math.ceil(users.length / itemsPerPage);
+  currentPage = Math.max(1, Math.min(page, totalPages));
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedUsers = users.slice(startIndex, endIndex);
+
+  // Llenar la tabla
+  tableBody.innerHTML = '';
+  paginatedUsers.forEach(user => {
     const row = document.createElement('tr');
     row.innerHTML = `
       <td>${user.fullName}</td>
@@ -120,6 +134,11 @@ function loadUsersTable() {
     `;
     tableBody.appendChild(row);
   });
+
+  // Actualizar información de paginación
+  pageInfo.textContent = `Página ${currentPage} de ${totalPages || 1}`;
+  prevButton.disabled = currentPage === 1;
+  nextButton.disabled = currentPage === totalPages || totalPages === 0;
 }
 
 // Cerrar el modal
@@ -151,7 +170,6 @@ document.getElementById('userForm').addEventListener('submit', (e) => {
   };
 
   if (userData.role === 'administrador') {
-    // Asignar todos los permisos para administradores
     menus.forEach(menu => {
       userData.permissions.menus[menu] = true;
       if (submenus[menu]) {
@@ -161,7 +179,6 @@ document.getElementById('userForm').addEventListener('submit', (e) => {
       }
     });
   } else {
-    // Asignar permisos seleccionados para operadores y gestores
     document.querySelectorAll('.menu-checkbox').forEach(checkbox => {
       userData.permissions.menus[checkbox.getAttribute('data-menu')] = checkbox.checked;
     });
@@ -178,10 +195,25 @@ document.getElementById('userForm').addEventListener('submit', (e) => {
   document.getElementById('userForm').reset();
   document.getElementById('permissionsModal').style.display = 'none';
   loadDefaultPermissions();
-  loadUsersTable(); // Actualizar la tabla después de crear un usuario
+  loadUsersTable(currentPage); // Actualizar la tabla manteniendo la página actual
+});
+
+// Manejar botones de paginación
+document.getElementById('prevPage').addEventListener('click', () => {
+  if (currentPage > 1) {
+    loadUsersTable(currentPage - 1);
+  }
+});
+
+document.getElementById('nextPage').addEventListener('click', () => {
+  const users = JSON.parse(localStorage.getItem('users')) || [];
+  const totalPages = Math.ceil(users.length / itemsPerPage);
+  if (currentPage < totalPages) {
+    loadUsersTable(currentPage + 1);
+  }
 });
 
 // Inicializar
 loadPermissions();
 loadDefaultPermissions();
-loadUsersTable(); // Cargar la tabla al iniciar
+loadUsersTable();

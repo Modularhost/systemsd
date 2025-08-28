@@ -1,6 +1,6 @@
 .user-create-form {
   width: 100%;
-  height: 100%;
+  height: 100vh; /* Ocupa toda la altura de la ventana */
   margin: 0;
   padding: 16px;
   background: #ffffff;
@@ -230,8 +230,10 @@ button[type="submit"]:active {
   background: #f0f2f5;
   border: 1px solid #ddd;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  max-height: 300px;
-  overflow-y: auto;
+  flex: 1; /* Ocupa el espacio restante */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 #usersTable {
@@ -239,6 +241,8 @@ button[type="submit"]:active {
   border-collapse: collapse;
   font-size: 13px;
   color: #333;
+  flex: 1; /* La tabla ocupa el espacio disponible */
+  overflow-y: auto;
 }
 
 #usersTable th,
@@ -252,6 +256,9 @@ button[type="submit"]:active {
   background: #4cc9f0;
   color: #ffffff;
   font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 #usersTable tr:nth-child(even) {
@@ -260,6 +267,46 @@ button[type="submit"]:active {
 
 #usersTable tr:hover {
   background: #e5e7eb;
+}
+
+.pagination-controls {
+  margin-top: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+.pagination-controls button {
+  padding: 6px 16px;
+  background: #4cc9f0;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.pagination-controls button:disabled {
+  background: #a0aec0;
+  cursor: not-allowed;
+}
+
+.pagination-controls button:hover:not(:disabled) {
+  background: #3ba8d0;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(76, 201, 240, 0.3);
+}
+
+.pagination-controls button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(76, 201, 240, 0.2);
+}
+
+.pagination-controls span {
+  font-size: 13px;
+  color: #333;
 }
 
 @media (max-width: 1024px) {
@@ -297,5 +344,10 @@ button[type="submit"]:active {
   #usersTable th,
   #usersTable td {
     padding: 6px;
+  }
+
+  .pagination-controls button {
+    padding: 4px 12px;
+    font-size: 11px;
   }
 }

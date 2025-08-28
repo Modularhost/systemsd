@@ -1,4 +1,3 @@
-
 // Mostrar la fecha actual
 const dateElement = document.getElementById('currentDate');
 const today = new Date();
@@ -8,66 +7,66 @@ dateElement.textContent = today.toLocaleDateString('es-ES', options);
 // Datos de los submenús
 const submenus = {
   implantes: [
-    { text: 'Ingresos', page: 'ingresos' },
-    { text: 'Cargar', page: 'cargar' },
-    { text: 'Pacientes', page: 'pacientes' },
-    { text: 'Referencias', page: 'referencias' }
+    { text: 'Ingresos', page: 'ingresos', folder: 'implantes' },
+    { text: 'Cargar', page: 'cargar', folder: 'implantes' },
+    { text: 'Pacientes', page: 'pacientes', folder: 'implantes' },
+    { text: 'Referencias', page: 'referencias', folder: 'implantes' }
   ],
   consignacion: [
-    { text: 'Registro', page: 'registro' },
-    { text: 'Seguimiento', page: 'seguimiento' },
-    { text: 'Reportes', page: 'reportes' }
+    { text: 'Registro', page: 'registro', folder: 'consignacion' },
+    { text: 'Seguimiento', page: 'seguimiento', folder: 'consignacion' },
+    { text: 'Reportes', page: 'reportes', folder: 'consignacion' }
   ],
   historico: [
-    { text: 'Consultas', page: 'consultas' },
-    { text: 'Archivos', page: 'archivos' }
+    { text: 'Consultas', page: 'consultas', folder: 'historico' },
+    { text: 'Archivos', page: 'archivos', folder: 'historico' }
   ],
   laboratorio: [
-    { text: 'Análisis', page: 'analisis' },
-    { text: 'Resultados', page: 'resultados' }
+    { text: 'Análisis', page: 'analisis', folder: 'laboratorio' },
+    { text: 'Resultados', page: 'resultados', folder: 'laboratorio' }
   ],
   visualizador: [
-    { text: 'Gráficos', page: 'graficos' },
-    { text: 'Imágenes', page: 'imagenes' }
+    { text: 'Gráficos', page: 'graficos', folder: 'visualizador' },
+    { text: 'Imágenes', page: 'imagenes', folder: 'visualizador' }
   ],
   prestacion: [
-    { text: 'Servicios', page: 'servicios' },
-    { text: 'Facturación', page: 'facturacion' }
+    { text: 'Servicios', page: 'servicios', folder: 'prestacion' },
+    { text: 'Facturación', page: 'facturacion', folder: 'prestacion' }
   ],
   herramientas: [
-    { text: 'Utilidades', page: 'utilidades' },
-    { text: 'Configuración', page: 'configuracion-herramientas' }
+    { text: 'Utilidades', page: 'utilidades', folder: 'herramientas' },
+    { text: 'Configuración', page: 'configuracion-herramientas', folder: 'herramientas' }
   ],
   importacion: [
-    { text: 'Carga Masiva', page: 'carga-masiva' },
-    { text: 'Validación', page: 'validacion' }
+    { text: 'Carga Masiva', page: 'carga-masiva', folder: 'importacion' },
+    { text: 'Validación', page: 'validacion', folder: 'importacion' }
   ],
   apuntes: [
-    { text: 'Notas', page: 'notas' },
-    { text: 'Recordatorios', page: 'recordatorios' }
+    { text: 'Notas', page: 'notas', folder: 'apuntes' },
+    { text: 'Recordatorios', page: 'recordatorios', folder: 'apuntes' }
   ],
   migracion: [
-    { text: 'Transferencia', page: 'transferencia' },
-    { text: 'Sincronización', page: 'sincronizacion' }
+    { text: 'Transferencia', page: 'transferencia', folder: 'migracion' },
+    { text: 'Sincronización', page: 'sincronizacion', folder: 'migracion' }
   ],
   dashboard: [
-    { text: 'Resumen', page: 'resumen' },
-    { text: 'Estadísticas', page: 'estadisticas' }
+    { text: 'Resumen', page: 'resumen', folder: 'dashboard' },
+    { text: 'Estadísticas', page: 'estadisticas', folder: 'dashboard' }
   ],
   archivos: [
-    { text: 'Subir', page: 'subir' },
-    { text: 'Gestionar', page: 'gestionar' }
+    { text: 'Subir', page: 'subir', folder: 'archivos' },
+    { text: 'Gestionar', page: 'gestionar', folder: 'archivos' }
   ],
   usuarios: [
-    { text: 'Crear', page: 'crear-usuario' },
-    { text: 'Editar', page: 'editar-usuario' }
+    { text: 'Crear', page: 'crear-usuario', folder: 'usuarios' },
+    { text: 'Editar', page: 'editar-usuario', folder: 'usuarios' }
   ],
   configuracion: [
-    { text: 'Sistema', page: 'sistema' },
-    { text: 'Preferencias', page: 'preferencias' }
+    { text: 'Sistema', page: 'sistema', folder: 'configuracion' },
+    { text: 'Preferencias', page: 'preferencias', folder: 'configuracion' }
   ],
   'cerrar-sesion': [
-    { text: 'Confirmar', page: 'confirmar-cerrar-sesion' }
+    { text: 'Confirmar', page: 'confirmar-cerrar-sesion', folder: 'cerrar-sesion' }
   ]
 };
 
@@ -79,7 +78,7 @@ const backLink = document.querySelector('.back-link');
 const content = document.querySelector('.content');
 
 // Función para cargar contenido dinámico
-function loadSubpage(page) {
+function loadSubpage(folder, page) {
   // Limpiar el contenido anterior
   content.innerHTML = '';
   
@@ -87,7 +86,7 @@ function loadSubpage(page) {
   document.querySelectorAll('link[data-subpage], script[data-subpage]').forEach(el => el.remove());
 
   // Cargar HTML
-  fetch(`../subpages/${page}.html`)
+  fetch(`../subpages/${folder}/${page}/${page}.html`)
     .then(response => response.text())
     .then(data => {
       content.innerHTML = data;
@@ -95,13 +94,13 @@ function loadSubpage(page) {
       // Cargar CSS
       const link = document.createElement('link');
       link.rel = 'stylesheet';
-      link.href = `../subpages/${page}.css`;
+      link.href = `../subpages/${folder}/${page}/${page}.css`;
       link.dataset.subpage = page;
       document.head.appendChild(link);
 
       // Cargar JS
       const script = document.createElement('script');
-      script.src = `../subpages/${page}.js`;
+      script.src = `../subpages/${folder}/${page}/${page}.js`;
       script.dataset.subpage = page;
       document.body.appendChild(script);
     })
@@ -120,7 +119,7 @@ document.querySelectorAll('.main-menu a').forEach(link => {
 
     // Poblar el contenido del submenú
     submenuContent.innerHTML = submenuItems.map(item => 
-      `<a href="#" data-page="${item.page}">${item.text}</a>`
+      `<a href="#" data-folder="${item.folder}" data-page="${item.page}">${item.text}</a>`
     ).join('');
 
     // Ocultar menú principal y mostrar submenú
@@ -140,9 +139,10 @@ backLink.addEventListener('click', (e) => {
 submenuContent.addEventListener('click', (e) => {
   e.preventDefault();
   if (e.target.tagName === 'A') {
+    const folder = e.target.getAttribute('data-folder');
     const page = e.target.getAttribute('data-page');
-    if (page) {
-      loadSubpage(page);
+    if (folder && page) {
+      loadSubpage(folder, page);
     }
   }
 });

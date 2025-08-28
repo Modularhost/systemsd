@@ -1,0 +1,66 @@
+<div class="card">
+  <h3>Crear Usuario</h3>
+  <form id="crearUsuarioForm">
+    <div class="input-group">
+      <label for="nombreCompleto">Nombre Completo</label>
+      <input type="text" id="nombreCompleto" required>
+    </div>
+    <div class="input-group">
+      <label for="nombreUsuario">Nombre de Usuario</label>
+      <input type="text" id="nombreUsuario" required>
+    </div>
+    <div class="input-group">
+      <label for="rut">RUT</label>
+      <input type="text" id="rut" required>
+    </div>
+    <div class="input-group">
+      <label for="fechaNacimiento">Fecha de Nacimiento</label>
+      <input type="date" id="fechaNacimiento" required>
+    </div>
+    <div class="input-group">
+      <label for="correo">Correo</label>
+      <input type="email" id="correo" required>
+    </div>
+    <div class="input-group">
+      <label for="sexo">Sexo</label>
+      <select id="sexo" required>
+        <option value="masculino">Masculino</option>
+        <option value="femenino">Femenino</option>
+        <option value="otro">Otro</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <label for="rol">Rol</label>
+      <select id="rol" required onchange="togglePermisos()">
+        <option value="administrador">Administrador</option>
+        <option value="operador">Operador</option>
+        <option value="gestor">Gestor</option>
+      </select>
+    </div>
+    <div id="permisosSection" style="display: none;">
+      <h4>Permisos</h4>
+      <div class="permisos-group">
+        <label>Implantes:</label>
+        <input type="checkbox" id="implantes-ingresos" value="implantes-ingresos"> Ingresos<br>
+        <input type="checkbox" id="implantes-cargar" value="implantes-cargar"> Cargar<br>
+        <input type="checkbox" id="implantes-pacientes" value="implantes-pacientes"> Pacientes<br>
+        <input type="checkbox" id="implantes-referencias" value="implantes-referencias"> Referencias<br>
+        <!-- Permisos finos para Cargar -->
+        <label>En Cargar:</label>
+        <input type="checkbox" id="cargar-formulario" value="cargar-formulario"> Formulario<br>
+        <input type="checkbox" id="cargar-tabla" value="cargar-tabla"> Tabla<br>
+        <input type="checkbox" id="cargar-registrar" value="cargar-registrar"> Botón Registrar<br>
+        <input type="checkbox" id="cargar-limpiar" value="cargar-limpiar"> Botón Limpiar<br>
+        <input type="checkbox" id="cargar-descargar" value="cargar-descargar"> Botón Descargar<br>
+        <input type="checkbox" id="cargar-importar" value="cargar-importar"> Botón Importar<br>
+      </div>
+      <div class="permisos-group">
+        <label>Laboratorio:</label>
+        <input type="checkbox" id="laboratorio-analisis" value="laboratorio-analisis"> Análisis<br>
+        <input type="checkbox" id="laboratorio-resultados" value="laboratorio-resultados"> Resultados<br>
+      </div>
+      <!-- Añadir más secciones para otros menús si es necesario -->
+    </div>
+    <button type="submit" class="btn">Crear Usuario</button>
+  </form>
+</div>

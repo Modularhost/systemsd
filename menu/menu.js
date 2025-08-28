@@ -58,8 +58,8 @@ const submenus = {
     { text: 'Gestionar', page: 'gestionar', folder: 'archivos', jsFiles: ['gestionar'] }
   ],
   usuarios: [
-    { text: 'Crear', page: 'crear-usuario', folder: 'usuarios', jsFiles: ['crear-usuario'] },
-    { text: 'Editar', page: 'editar-usuario', folder: 'usuarios', jsFiles: ['editar-usuario'] }
+    { text: 'Crear', page: 'crear', folder: 'usuarios', jsFiles: ['crear'] },
+    { text: 'Editar', page: 'editar', folder: 'usuarios', jsFiles: ['editar'] }
   ],
   configuracion: [
     { text: 'Sistema', page: 'sistema', folder: 'configuracion', jsFiles: ['sistema'] },

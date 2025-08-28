@@ -15,20 +15,20 @@
   font-size: 18px;
   color: #4cc9f0;
   margin-bottom: 16px;
-  text-align: left; /* Alineado a la izquierda */
+  text-align: left;
   font-weight: 700;
 }
 
 .user-create-form h3 {
   font-size: 14px;
   color: #4cc9f0;
-  margin-top: 8px; /* Reducido para menos espacio sobre la tabla */
+  margin-top: 8px;
   margin-bottom: 8px;
   font-weight: 600;
 }
 
 .form-group {
-  margin-bottom: 10px; /* Reducido para un formulario más compacto */
+  margin-bottom: 10px;
 }
 
 form#userForm {
@@ -41,16 +41,16 @@ form#userForm {
   display: block;
   font-weight: 500;
   color: #333;
-  margin-bottom: 4px; /* Reducido para menos espacio */
-  font-size: 12px; /* Reducido para consistencia */
+  margin-bottom: 4px;
+  font-size: 12px;
 }
 
 .form-group input,
 .form-group select {
   width: 100%;
-  padding: 4px; /* Reducido para menor altura */
+  padding: 4px;
   border: 1px solid #ddd;
-  font-size: 12px; /* Reducido para menor altura */
+  font-size: 12px;
   background: #ffffff;
   transition: all 0.2s ease;
 }
@@ -131,17 +131,17 @@ label input[type="checkbox"]:hover {
 
 button[type="submit"] {
   width: fit-content;
-  margin-left: 12px; /* Alineado a la izquierda con un pequeño margen */
-  margin-right: 0; /* Eliminado centrado */
-  padding: 4px 8px; /* Reducido para un botón más pequeño */
+  margin-left: 12px;
+  margin-right: 0;
+  padding: 3px 10px; /* Reducido para un botón más pequeño */
   background: #4cc9f0;
   color: #ffffff;
   border: none;
   cursor: pointer;
-  font-size: 11px; /* Reducido para un botón más pequeño */
+  font-size: 10px; /* Reducido para un botón más pequeño */
   font-weight: 600;
   transition: all 0.2s ease;
-  margin-top: 12px; /* Reducido para menos espacio */
+  margin-top: 12px;
 }
 
 button[type="submit"]:hover {
@@ -253,7 +253,7 @@ button[type="submit"]:active {
 }
 
 #usersTable th {
-  background: #4cc9f0;
+  background: #6b7280; /* Gris moderno para el encabezado */
   color: #ffffff;
   font-weight: 600;
   position: sticky;
@@ -279,8 +279,8 @@ button[type="submit"]:active {
 
 .pagination-controls button {
   padding: 6px 16px;
-  background: #cecfcf;
-  color: #302d2d;
+  background: #4cc9f0;
+  color: #ffffff;
   border: none;
   cursor: pointer;
   font-size: 12px;

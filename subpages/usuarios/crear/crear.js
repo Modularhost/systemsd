@@ -1,8 +1,18 @@
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
-import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
+console.log('crear.js se ha cargado correctamente');
 
-console.log('crear.js has been loaded successfully');
+// Función para cargar un script dinámicamente
+function loadScript(url) {
+    return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = url;
+        script.async = true;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+    });
+}
 
+// Configuración de Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyB_LByv2DPTs2298UEHSD7cFKZN6L8gtls",
     authDomain: "systemsd-b4678.firebaseapp.com",
@@ -13,10 +23,22 @@ const firebaseConfig = {
     measurementId: "G-C8V7X0RGH5"
 };
 
-try {
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    console.log('Firebase has been initialized successfully');
-} catch (error) {
-    console.error('Error initializing Firebase:', error);
-}
+// Cargar scripts de Firebase y luego inicializar
+Promise.all([
+    loadScript('https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js'),
+    loadScript('https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js')
+])
+.then(() => {
+    try {
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        // Inicializar Firestore
+        const db = firebase.firestore();
+        console.log('Firebase se ha inicializado correctamente');
+    } catch (error) {
+        console.error('Error al inicializar Firebase:', error);
+    }
+})
+.catch(error => {
+    console.error('Error al cargar los scripts de Firebase:', error);
+});

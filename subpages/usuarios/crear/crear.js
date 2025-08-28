@@ -1,3 +1,189 @@
+// Lista de menús
+const menus = [
+  'implantes', 'consignacion', 'historico', 'laboratorio', 'visualizador',
+  'prestacion', 'herramientas', 'importacion', 'apuntes', 'migracion',
+  'dashboard', 'archivos', 'usuarios', 'configuracion', 'cerrar-sesion'
+];
+
+// Elementos específicos de la página "Crear" en el módulo "Usuarios"
+const createElements = {
+  form: { id: 'form', text: 'Formulario' },
+  'field-fullName': { id: 'field-fullName', text: 'Campo: Nombre Completo' },
+  'field-username': { id: 'field-username', text: 'Campo: Nombre de Usuario' },
+  'field-rut': { id: 'field-rut', text: 'Campo: RUT' },
+  'field-dob': { id: 'field-dob', text: 'Campo: Fecha de Nacimiento' },
+  'field-email': { id: 'field-email', text: 'Campo: Correo Electrónico' },
+  'field-password': { id: 'field-password', text: 'Campo: Contraseña' },
+  'field-sex': { id: 'field-sex', text: 'Campo: Sexo' },
+  'field-role': { id: 'field-role', text: 'Campo: Rol' },
+  'submit-button': { id: 'submit-button', text: 'Botón: Crear Usuario' },
+  table: { id: 'table', text: 'Tabla de Usuarios' },
+  'column-fullName': { id: 'column-fullName', text: 'Columna: Nombre Completo' },
+  'column-username': { id: 'column-username', text: 'Columna: Nombre de Usuario' },
+  'column-rut': { id: 'column-rut', text: 'Columna: RUT' },
+  'column-dob': { id: 'column-dob', text: 'Columna: Fecha de Nacimiento' },
+  'column-email': { id: 'column-email', text: 'Columna: Correo Electrónico' },
+  'column-sex': { id: 'column-sex', text: 'Columna: Sexo' },
+  'column-role': { id: 'column-role', text: 'Columna: Rol' }
+};
+
+// Estructura para permisos por defecto
+let defaultPermissions = {
+  administrador: { menus: {}, submenus: {}, elements: {} },
+  operador: { menus: {}, submenus: {}, elements: {} },
+  gestor: { menus: {}, submenus: {}, elements: {} }
+};
+
+// Configuración de paginación
+const itemsPerPage = 5;
+let currentPage = 1;
+
+// Cargar permisos dinámicamente
+function loadPermissions() {
+  const tree = document.getElementById('permissionsTree');
+  tree.innerHTML = '';
+
+  menus.forEach(menu => {
+    const menuText = menu.charAt(0).toUpperCase() + menu.slice(1).replace('-', ' ');
+    let html = `
+      <div class="permission-group">
+        <label>
+          <input type="checkbox" class="menu-checkbox" data-menu="${menu}" onchange="toggleSubmenus(this)">
+          ${menuText} (Menú Principal)
+        </label>
+        <div class="subpermissions" style="display: none;">
+    `;
+
+    // Agregar submenús (si existen)
+    if (window.submenus && window.submenus[menu]) {
+      window.submenus[menu].forEach(sub => {
+        html += `
+          <div class="submenu-group">
+            <label>
+              <input type="checkbox" class="submenu-checkbox" data-submenu="${menu}-${sub.page}" onchange="toggleElements(this)">
+              ${sub.text}
+            </label>
+        `;
+
+        // Agregar elementos específicos para el submenú "Crear" en "Usuarios"
+        if (menu === 'usuarios' && sub.page === 'crear') {
+          html += `
+            <div class="elements" style="display: none;">
+          `;
+          Object.values(createElements).forEach(element => {
+            html += `
+              <div class="element-group">
+                <label>
+                  <input type="checkbox" class="element-checkbox" data-element="usuarios-crear-${element.id}">
+                  ${element.text}
+                </label>
+              </div>
+            `;
+          });
+          html += `</div>`;
+        }
+
+        html += `</div>`;
+      });
+    }
+
+    html += `</div></div>`;
+    tree.innerHTML += html;
+  });
+}
+
+// Funciones de toggle
+function toggleSubmenus(checkbox) {
+  const subperms = checkbox.parentElement.nextElementSibling;
+  if (subperms && subperms.classList.contains('subpermissions')) {
+    subperms.style.display = checkbox.checked ? 'block' : 'none';
+    if (!checkbox.checked) {
+      subperms.querySelectorAll('input[type="checkbox"]').forEach(sub => {
+        sub.checked = false;
+        if (sub.classList.contains('submenu-checkbox')) {
+          const elements = sub.parentElement.nextElementSibling;
+          if (elements && elements.classList.contains('elements')) {
+            elements.style.display = 'none';
+            elements.querySelectorAll('input[type="checkbox"]').forEach(el => el.checked = false);
+          }
+        }
+      });
+    }
+  }
+}
+
+function toggleElements(checkbox) {
+  const elements = checkbox.parentElement.nextElementSibling;
+  if (elements && elements.classList.contains('elements')) {
+    elements.style.display = checkbox.checked ? 'block' : 'none';
+    if (!checkbox.checked) {
+      elements.querySelectorAll('input[type="checkbox"]').forEach(el => el.checked = false);
+    }
+  }
+}
+
+// Mostrar u ocultar el modal según el rol
+function togglePermissionsModal(role) {
+  const modal = document.getElementById('permissionsModal');
+  if (role === 'operador' || role === 'gestor') {
+    modal.style.display = 'flex';
+  } else {
+    modal.style.display = 'none';
+  }
+}
+
+// Cargar permisos por defecto según rol
+function loadDefaultPermissions() {
+  const role = document.getElementById('role').value;
+  const perms = defaultPermissions[role] || { menus: {}, submenus: {}, elements: {} };
+  const permissionsTree = document.getElementById('permissionsTree');
+
+  togglePermissionsModal(role);
+
+  if (role === 'administrador') {
+    document.querySelectorAll('.menu-checkbox').forEach(checkbox => {
+      checkbox.checked = true;
+      checkbox.disabled = true;
+      toggleSubmenus(checkbox);
+      const subperms = checkbox.parentElement.nextElementSibling;
+      subperms.querySelectorAll('.submenu-checkbox').forEach(sub => {
+        sub.checked = true;
+        sub.disabled = true;
+        toggleElements(sub);
+        const elements = sub.parentElement.nextElementSibling;
+        if (elements && elements.classList.contains('elements')) {
+          elements.querySelectorAll('.element-checkbox').forEach(el => {
+            el.checked = true;
+            el.disabled = true;
+          });
+        }
+      });
+    });
+  } else {
+    document.querySelectorAll('.menu-checkbox').forEach(checkbox => {
+      checkbox.disabled = false;
+      const menu = checkbox.getAttribute('data-menu');
+      checkbox.checked = perms.menus[menu] || false;
+      toggleSubmenus(checkbox);
+      const subperms = checkbox.parentElement.nextElementSibling;
+      subperms.querySelectorAll('.submenu-checkbox').forEach(sub => {
+        sub.disabled = false;
+        const submenu = sub.getAttribute('data-submenu');
+        sub.checked = perms.submenus[submenu] || false;
+        toggleElements(sub);
+        const elements = sub.parentElement.nextElementSibling;
+        if (elements && elements.classList.contains('elements')) {
+          elements.querySelectorAll('.element-checkbox').forEach(el => {
+            el.disabled = false;
+            const element = el.getAttribute('data-element');
+            el.checked = perms.elements[element] || false;
+          });
+        }
+      });
+    });
+  }
+}
+
 // Función para cargar scripts dinámicamente
 function loadScript(src) {
   return new Promise((resolve, reject) => {
@@ -43,192 +229,6 @@ function initializeApp() {
   const app = firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
   const db = firebase.firestore();
-
-  // Lista de menús desde menu.js
-  const menus = [
-    'implantes', 'consignacion', 'historico', 'laboratorio', 'visualizador',
-    'prestacion', 'herramientas', 'importacion', 'apuntes', 'migracion',
-    'dashboard', 'archivos', 'usuarios', 'configuracion', 'cerrar-sesion'
-  ];
-
-  // Elementos específicos de la página "Crear" en el módulo "Usuarios"
-  const createElements = {
-    form: { id: 'form', text: 'Formulario' },
-    'field-fullName': { id: 'field-fullName', text: 'Campo: Nombre Completo' },
-    'field-username': { id: 'field-username', text: 'Campo: Nombre de Usuario' },
-    'field-rut': { id: 'field-rut', text: 'Campo: RUT' },
-    'field-dob': { id: 'field-dob', text: 'Campo: Fecha de Nacimiento' },
-    'field-email': { id: 'field-email', text: 'Campo: Correo Electrónico' },
-    'field-password': { id: 'field-password', text: 'Campo: Contraseña' },
-    'field-sex': { id: 'field-sex', text: 'Campo: Sexo' },
-    'field-role': { id: 'field-role', text: 'Campo: Rol' },
-    'submit-button': { id: 'submit-button', text: 'Botón: Crear Usuario' },
-    table: { id: 'table', text: 'Tabla de Usuarios' },
-    'column-fullName': { id: 'column-fullName', text: 'Columna: Nombre Completo' },
-    'column-username': { id: 'column-username', text: 'Columna: Nombre de Usuario' },
-    'column-rut': { id: 'column-rut', text: 'Columna: RUT' },
-    'column-dob': { id: 'column-dob', text: 'Columna: Fecha de Nacimiento' },
-    'column-email': { id: 'column-email', text: 'Columna: Correo Electrónico' },
-    'column-sex': { id: 'column-sex', text: 'Columna: Sexo' },
-    'column-role': { id: 'column-role', text: 'Columna: Rol' }
-  };
-
-  // Estructura para almacenar permisos por defecto
-  let defaultPermissions = {
-    administrador: { menus: {}, submenus: {}, elements: {} },
-    operador: { menus: {}, submenus: {}, elements: {} },
-    gestor: { menus: {}, submenus: {}, elements: {} }
-  };
-
-  // Configuración de paginación
-  const itemsPerPage = 5;
-  let currentPage = 1;
-
-  // Cargar permisos dinámicamente
-  function loadPermissions() {
-    const tree = document.getElementById('permissionsTree');
-    tree.innerHTML = '';
-
-    menus.forEach(menu => {
-      const menuText = menu.charAt(0).toUpperCase() + menu.slice(1).replace('-', ' ');
-      let html = `
-        <div class="permission-group">
-          <label>
-            <input type="checkbox" class="menu-checkbox" data-menu="${menu}" onchange="toggleSubmenus(this)">
-            ${menuText} (Menú Principal)
-          </label>
-          <div class="subpermissions" style="display: none;">
-      `;
-
-      // Agregar submenús (si existen)
-      if (window.submenus && window.submenus[menu]) {
-        window.submenus[menu].forEach(sub => {
-          html += `
-            <div class="submenu-group">
-              <label>
-                <input type="checkbox" class="submenu-checkbox" data-submenu="${menu}-${sub.page}" onchange="toggleElements(this)">
-                ${sub.text}
-              </label>
-          `;
-
-          // Agregar elementos específicos para el submenú "Crear" en "Usuarios"
-          if (menu === 'usuarios' && sub.page === 'crear') {
-            html += `
-              <div class="elements" style="display: none;">
-            `;
-            Object.values(createElements).forEach(element => {
-              html += `
-                <div class="element-group">
-                  <label>
-                    <input type="checkbox" class="element-checkbox" data-element="usuarios-crear-${element.id}">
-                    ${element.text}
-                  </label>
-                </div>
-              `;
-            });
-            html += `</div>`;
-          }
-
-          html += `</div>`;
-        });
-      }
-
-      html += `</div></div>`;
-      tree.innerHTML += html;
-    });
-  }
-
-  // Funciones de toggle
-  function toggleSubmenus(checkbox) {
-    const subperms = checkbox.parentElement.nextElementSibling;
-    if (subperms && subperms.classList.contains('subpermissions')) {
-      subperms.style.display = checkbox.checked ? 'block' : 'none';
-      if (!checkbox.checked) {
-        subperms.querySelectorAll('input[type="checkbox"]').forEach(sub => {
-          sub.checked = false;
-          if (sub.classList.contains('submenu-checkbox')) {
-            const elements = sub.parentElement.nextElementSibling;
-            if (elements && elements.classList.contains('elements')) {
-              elements.style.display = 'none';
-              elements.querySelectorAll('input[type="checkbox"]').forEach(el => el.checked = false);
-            }
-          }
-        });
-      }
-    }
-  }
-
-  function toggleElements(checkbox) {
-    const elements = checkbox.parentElement.nextElementSibling;
-    if (elements && elements.classList.contains('elements')) {
-      elements.style.display = checkbox.checked ? 'block' : 'none';
-      if (!checkbox.checked) {
-        elements.querySelectorAll('input[type="checkbox"]').forEach(el => el.checked = false);
-      }
-    }
-  }
-
-  // Mostrar u ocultar el modal según el rol
-  function togglePermissionsModal(role) {
-    const modal = document.getElementById('permissionsModal');
-    if (role === 'operador' || role === 'gestor') {
-      modal.style.display = 'flex';
-    } else {
-      modal.style.display = 'none';
-    }
-  }
-
-  // Cargar permisos por defecto según rol
-  function loadDefaultPermissions() {
-    const role = document.getElementById('role').value;
-    const perms = defaultPermissions[role] || { menus: {}, submenus: {}, elements: {} };
-    const permissionsTree = document.getElementById('permissionsTree');
-
-    togglePermissionsModal(role);
-
-    if (role === 'administrador') {
-      document.querySelectorAll('.menu-checkbox').forEach(checkbox => {
-        checkbox.checked = true;
-        checkbox.disabled = true;
-        toggleSubmenus(checkbox);
-        const subperms = checkbox.parentElement.nextElementSibling;
-        subperms.querySelectorAll('.submenu-checkbox').forEach(sub => {
-          sub.checked = true;
-          sub.disabled = true;
-          toggleElements(sub);
-          const elements = sub.parentElement.nextElementSibling;
-          if (elements && elements.classList.contains('elements')) {
-            elements.querySelectorAll('.element-checkbox').forEach(el => {
-              el.checked = true;
-              el.disabled = true;
-            });
-          }
-        });
-      });
-    } else {
-      document.querySelectorAll('.menu-checkbox').forEach(checkbox => {
-        checkbox.disabled = false;
-        const menu = checkbox.getAttribute('data-menu');
-        checkbox.checked = perms.mens[menu] || false;
-        toggleSubmenus(checkbox);
-        const subperms = checkbox.parentElement.nextElementSibling;
-        subperms.querySelectorAll('.submenu-checkbox').forEach(sub => {
-          sub.disabled = false;
-          const submenu = sub.getAttribute('data-submenu');
-          sub.checked = perms.submenus[submenu] || false;
-          toggleElements(sub);
-          const elements = sub.parentElement.nextElementSibling;
-          if (elements && elements.classList.contains('elements')) {
-            elements.querySelectorAll('.element-checkbox').forEach(el => {
-              el.disabled = false;
-              const element = el.getAttribute('data-element');
-              el.checked = perms.elements[element] || false;
-            });
-          }
-        });
-      });
-    }
-  }
 
   // Cargar datos de usuarios en la tabla con paginación
   async function loadUsersTable(page = 1) {
@@ -414,15 +414,13 @@ function initializeApp() {
   });
 
   // Inicializar
-  document.addEventListener('DOMContentLoaded', () => {
-    loadPermissions();
-    loadDefaultPermissions();
-    loadUsersTable();
-    auth.onAuthStateChanged(user => {
-      if (user) {
-        applyPermissions();
-      }
-    });
+  loadPermissions();
+  loadDefaultPermissions();
+  loadUsersTable();
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      applyPermissions();
+    }
   });
 }
 

@@ -42,8 +42,8 @@
     </div>
     
     <div class="permissions-section">
-      <h3>Permisos Detallados</h3>
-      <p>Seleccione los permisos para menús, submenús y elementos específicos. Los permisos por defecto se cargan según el rol, pero puede personalizarlos.</p>
+      <h3>Permisos Detallados (Árbol Jerárquico)</h3>
+      <p>Seleccione permisos de manera granular. Al marcar un menú principal, se muestran submenús. Al marcar un submenú, se muestran contenedores (e.g., formulario, tabla) y sus elementos internos (campos, columnas, botones, etc.). Los permisos por defecto se cargan según el rol, pero puede personalizarlos.</p>
       
       <!-- Árbol de permisos -->
       <div class="permissions-tree">
@@ -54,44 +54,120 @@
             Implantes (Menú Principal)
           </label>
           <div class="subpermissions" style="display: none; margin-left: 20px;">
-            <label>
-              <input type="checkbox" class="submenu-checkbox" data-submenu="implantes-ingresos" onchange="toggleElements(this)">
-              Ingresos
-            </label>
-            <div class="elements" style="display: none; margin-left: 40px;">
-              <!-- Elementos específicos de Ingresos, si aplican -->
-              <label><input type="checkbox" data-element="implantes-ingresos-formulario"> Formulario</label><br>
-              <label><input type="checkbox" data-element="implantes-ingresos-tabla"> Tabla</label><br>
-              <label><input type="checkbox" data-element="implantes-ingresos-registrar"> Botón Registrar</label><br>
-              <label><input type="checkbox" data-element="implantes-ingresos-limpiar"> Botón Limpiar</label><br>
-              <label><input type="checkbox" data-element="implantes-ingresos-descargar"> Botón Descargar</label><br>
-              <label><input type="checkbox" data-element="implantes-ingresos-importar"> Botón Importar</label>
+            <!-- Submenú: Ingresos -->
+            <div class="submenu-group">
+              <label>
+                <input type="checkbox" class="submenu-checkbox" data-submenu="implantes-ingresos" onchange="toggleContainers(this)">
+                Ingresos
+              </label>
+              <div class="containers" style="display: none; margin-left: 40px;">
+                <!-- Contenedor: Formulario -->
+                <div class="container-group">
+                  <label>
+                    <input type="checkbox" class="container-checkbox" data-container="implantes-ingresos-formulario" onchange="toggleElements(this)">
+                    Formulario
+                  </label>
+                  <div class="elements" style="display: none; margin-left: 60px;">
+                    <!-- Campos del formulario -->
+                    <label><input type="checkbox" data-element="implantes-ingresos-formulario-campo-nombre"> Campo Nombre</label><br>
+                    <label><input type="checkbox" data-element="implantes-ingresos-formulario-campo-rut"> Campo RUT</label><br>
+                    <label><input type="checkbox" data-element="implantes-ingresos-formulario-campo-fecha"> Campo Fecha</label><br>
+                    <!-- Botones del formulario -->
+                    <label><input type="checkbox" data-element="implantes-ingresos-formulario-boton-registrar"> Botón Registrar</label><br>
+                    <label><input type="checkbox" data-element="implantes-ingresos-formulario-boton-limpiar"> Botón Limpiar</label>
+                  </div>
+                </div>
+                <!-- Contenedor: Tabla -->
+                <div class="container-group">
+                  <label>
+                    <input type="checkbox" class="container-checkbox" data-container="implantes-ingresos-tabla" onchange="toggleElements(this)">
+                    Tabla
+                  </label>
+                  <div class="elements" style="display: none; margin-left: 60px;">
+                    <!-- Columnas de la tabla -->
+                    <label><input type="checkbox" data-element="implantes-ingresos-tabla-columna-id"> Columna ID</label><br>
+                    <label><input type="checkbox" data-element="implantes-ingresos-tabla-columna-nombre"> Columna Nombre</label><br>
+                    <label><input type="checkbox" data-element="implantes-ingresos-tabla-columna-rut"> Columna RUT</label><br>
+                    <label><input type="checkbox" data-element="implantes-ingresos-tabla-columna-fecha"> Columna Fecha</label><br>
+                    <!-- Otros elementos -->
+                    <label><input type="checkbox" data-element="implantes-ingresos-tabla-paginacion"> Paginación</label><br>
+                    <label><input type="checkbox" data-element="implantes-ingresos-tabla-boton-descargar"> Botón Descargar</label><br>
+                    <label><input type="checkbox" data-element="implantes-ingresos-tabla-boton-importar"> Botón Importar</label>
+                  </div>
+                </div>
+              </div>
             </div>
-            <label>
-              <input type="checkbox" class="submenu-checkbox" data-submenu="implantes-cargar" onchange="toggleElements(this)">
-              Cargar
-            </label>
-            <div class="elements" style="display: none; margin-left: 40px;">
-              <label><input type="checkbox" data-element="implantes-cargar-formulario"> Formulario</label><br>
-              <label><input type="checkbox" data-element="implantes-cargar-tabla"> Tabla</label><br>
-              <label><input type="checkbox" data-element="implantes-cargar-registrar"> Botón Registrar</label><br>
-              <label><input type="checkbox" data-element="implantes-cargar-limpiar"> Botón Limpiar</label><br>
-              <label><input type="checkbox" data-element="implantes-cargar-descargar"> Botón Descargar</label><br>
-              <label><input type="checkbox" data-element="implantes-cargar-importar"> Botón Importar</label>
+            
+            <!-- Submenú: Cargar -->
+            <div class="submenu-group">
+              <label>
+                <input type="checkbox" class="submenu-checkbox" data-submenu="implantes-cargar" onchange="toggleContainers(this)">
+                Cargar
+              </label>
+              <div class="containers" style="display: none; margin-left: 40px;">
+                <!-- Contenedor: Formulario -->
+                <div class="container-group">
+                  <label>
+                    <input type="checkbox" class="container-checkbox" data-container="implantes-cargar-formulario" onchange="toggleElements(this)">
+                    Formulario
+                  </label>
+                  <div class="elements" style="display: none; margin-left: 60px;">
+                    <label><input type="checkbox" data-element="implantes-cargar-formulario-campo-archivo"> Campo Archivo</label><br>
+                    <label><input type="checkbox" data-element="implantes-cargar-formulario-campo-descripcion"> Campo Descripción</label><br>
+                    <label><input type="checkbox" data-element="implantes-cargar-formulario-boton-subir"> Botón Subir</label><br>
+                    <label><input type="checkbox" data-element="implantes-cargar-formulario-boton-limpiar"> Botón Limpiar</label>
+                  </div>
+                </div>
+                <!-- Contenedor: Tabla -->
+                <div class="container-group">
+                  <label>
+                    <input type="checkbox" class="container-checkbox" data-container="implantes-cargar-tabla" onchange="toggleElements(this)">
+                    Tabla
+                  </label>
+                  <div class="elements" style="display: none; margin-left: 60px;">
+                    <label><input type="checkbox" data-element="implantes-cargar-tabla-columna-id"> Columna ID</label><br>
+                    <label><input type="checkbox" data-element="implantes-cargar-tabla-columna-archivo"> Columna Archivo</label><br>
+                    <label><input type="checkbox" data-element="implantes-cargar-tabla-columna-fecha"> Columna Fecha</label><br>
+                    <label><input type="checkbox" data-element="implantes-cargar-tabla-paginacion"> Paginación</label><br>
+                    <label><input type="checkbox" data-element="implantes-cargar-tabla-boton-descargar"> Botón Descargar</label><br>
+                    <label><input type="checkbox" data-element="implantes-cargar-tabla-boton-importar"> Botón Importar</label><br>
+                    <label><input type="checkbox" data-element="implantes-cargar-tabla-boton-editar"> Botón Editar</label>
+                  </div>
+                </div>
+              </div>
             </div>
-            <label>
-              <input type="checkbox" class="submenu-checkbox" data-submenu="implantes-pacientes" onchange="toggleElements(this)">
-              Pacientes
-            </label>
-            <div class="elements" style="display: none; margin-left: 40px;">
-              <!-- Agrega elementos específicos si los hay -->
+            
+            <!-- Submenú: Pacientes -->
+            <div class="submenu-group">
+              <label>
+                <input type="checkbox" class="submenu-checkbox" data-submenu="implantes-pacientes" onchange="toggleContainers(this)">
+                Pacientes
+              </label>
+              <div class="containers" style="display: none; margin-left: 40px;">
+                <!-- Agrega contenedores similares: formulario con campos (nombre, rut, etc.), tabla con columnas (id, nombre, historial), botones, etc. -->
+                <div class="container-group">
+                  <label>
+                    <input type="checkbox" class="container-checkbox" data-container="implantes-pacientes-formulario" onchange="toggleElements(this)">
+                    Formulario
+                  </label>
+                  <div class="elements" style="display: none; margin-left: 60px;">
+                    <label><input type="checkbox" data-element="implantes-pacientes-formulario-campo-nombre"> Campo Nombre</label><br>
+                    <!-- Más campos... -->
+                  </div>
+                </div>
+                <!-- Tabla y otros... -->
+              </div>
             </div>
-            <label>
-              <input type="checkbox" class="submenu-checkbox" data-submenu="implantes-referencias" onchange="toggleElements(this)">
-              Referencias
-            </label>
-            <div class="elements" style="display: none; margin-left: 40px;">
-              <!-- Agrega elementos específicos si los hay -->
+            
+            <!-- Submenú: Referencias -->
+            <div class="submenu-group">
+              <label>
+                <input type="checkbox" class="submenu-checkbox" data-submenu="implantes-referencias" onchange="toggleContainers(this)">
+                Referencias
+              </label>
+              <div class="containers" style="display: none; margin-left: 40px;">
+                <!-- Similar estructura -->
+              </div>
             </div>
           </div>
         </div>
@@ -103,28 +179,57 @@
             Laboratorio (Menú Principal)
           </label>
           <div class="subpermissions" style="display: none; margin-left: 20px;">
-            <label>
-              <input type="checkbox" class="submenu-checkbox" data-submenu="laboratorio-analisis" onchange="toggleElements(this)">
-              Análisis
-            </label>
-            <div class="elements" style="display: none; margin-left: 40px;">
-              <!-- Elementos específicos de Análisis -->
-              <label><input type="checkbox" data-element="laboratorio-analisis-formulario"> Formulario</label><br>
-              <label><input type="checkbox" data-element="laboratorio-analisis-tabla"> Tabla</label><br>
-              <!-- Agrega más según necesites -->
+            <!-- Submenú: Análisis -->
+            <div class="submenu-group">
+              <label>
+                <input type="checkbox" class="submenu-checkbox" data-submenu="laboratorio-analisis" onchange="toggleContainers(this)">
+                Análisis
+              </label>
+              <div class="containers" style="display: none; margin-left: 40px;">
+                <!-- Contenedor: Formulario -->
+                <div class="container-group">
+                  <label>
+                    <input type="checkbox" class="container-checkbox" data-container="laboratorio-analisis-formulario" onchange="toggleElements(this)">
+                    Formulario
+                  </label>
+                  <div class="elements" style="display: none; margin-left: 60px;">
+                    <label><input type="checkbox" data-element="laboratorio-analisis-formulario-campo-muestra"> Campo Muestra</label><br>
+                    <label><input type="checkbox" data-element="laboratorio-analisis-formulario-campo-tipo"> Campo Tipo</label><br>
+                    <label><input type="checkbox" data-element="laboratorio-analisis-formulario-boton-analizar"> Botón Analizar</label>
+                  </div>
+                </div>
+                <!-- Contenedor: Tabla -->
+                <div class="container-group">
+                  <label>
+                    <input type="checkbox" class="container-checkbox" data-container="laboratorio-analisis-tabla" onchange="toggleElements(this)">
+                    Tabla
+                  </label>
+                  <div class="elements" style="display: none; margin-left: 60px;">
+                    <label><input type="checkbox" data-element="laboratorio-analisis-tabla-columna-id"> Columna ID</label><br>
+                    <label><input type="checkbox" data-element="laboratorio-analisis-tabla-columna-resultado"> Columna Resultado</label><br>
+                    <label><input type="checkbox" data-element="laboratorio-analisis-tabla-paginacion"> Paginación</label><br>
+                    <label><input type="checkbox" data-element="laboratorio-analisis-tabla-boton-exportar"> Botón Exportar</label>
+                  </div>
+                </div>
+              </div>
             </div>
-            <label>
-              <input type="checkbox" class="submenu-checkbox" data-submenu="laboratorio-resultados" onchange="toggleElements(this)">
-              Resultados
-            </label>
-            <div class="elements" style="display: none; margin-left: 40px;">
-              <!-- Elementos específicos -->
+            
+            <!-- Submenú: Resultados -->
+            <div class="submenu-group">
+              <label>
+                <input type="checkbox" class="submenu-checkbox" data-submenu="laboratorio-resultados" onchange="toggleContainers(this)">
+                Resultados
+              </label>
+              <div class="containers" style="display: none; margin-left: 40px;">
+                <!-- Estructura similar -->
+              </div>
             </div>
           </div>
         </div>
         
-        <!-- Agrega más grupos para otros menús como Consignación, Histórico, etc., siguiendo el mismo patrón -->
-        <!-- Por brevedad, no los incluyo todos, pero puedes replicar la estructura para cada menú en submenus -->
+        <!-- Agrega más permission-group para otros menús principales como Consignación, Histórico, etc. 
+        Replica la estructura: submenu-group > containers > container-group > elements.
+        Para brevedad, no incluyo todos, pero en producción, agrega uno por menú de submenus en menu.js -->
         
       </div>
     </div>

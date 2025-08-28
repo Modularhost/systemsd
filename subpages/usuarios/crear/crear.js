@@ -317,14 +317,138 @@ function setupFormHandler() {
 
   console.log('Configurando manejador del formulario...');
   
-  // Remover cualquier listener previo
-  const newForm = userForm.cloneNode(true);
-  userForm.parentNode.replaceChild(newForm, userForm);
+  // Agregar el listener al formulario existente
+  userForm.addEventListener('submit', handleFormSubmit);
   
-  // Agregar el nuevo listener
-  newForm.addEventListener('submit', handleFormSubmit);
+  // También agregar listener al botón directamente como respaldo
+  const submitButton = userForm.querySelector('button[type="submit"]');
+  if (submitButton) {
+    submitButton.addEventListener('click', handleButtonClick);
+  }
   
   console.log('Manejador del formulario configurado correctamente');
+}
+
+// Manejar clic en el botón (respaldo)
+async function handleButtonClick(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  
+  console.log('=== BOTÓN CREAR USUARIO CLICKEADO ===');
+  
+  if (!firebaseReady) {
+    console.error('Firebase no está listo');
+    alert('Error: Firebase no está listo. Espera un momento e intenta de nuevo.');
+    return;
+  }
+
+  if (!auth || !db) {
+    console.error('Firebase Auth o Firestore no están inicializados');
+    alert('Error: Firebase no está correctamente inicializado');
+    return;
+  }
+
+  // Validar formulario manualmente
+  const form = document.getElementById('userForm');
+  if (!form.checkValidity()) {
+    console.log('Formulario no es válido, mostrando errores');
+    form.reportValidity();
+    return;
+  }
+  
+  console.log('Formulario válido, procesando creación de usuario...');
+  
+  // Procesar la creación del usuario
+  await processUserCreation();
+}
+
+// Procesar la creación del usuario
+async function processUserCreation() {
+  console.log('=== INICIANDO CREACIÓN DE USUARIO ===');
+
+  // Recopilar datos del formulario
+  const userData = {
+    fullName: document.getElementById('fullName')?.value?.trim() || '',
+    username: document.getElementById('username')?.value?.trim() || '',
+    rut: document.getElementById('rut')?.value?.trim() || '',
+    dob: document.getElementById('dob')?.value || '',
+    email: document.getElementById('email')?.value?.trim() || '',
+    password: document.getElementById('password')?.value || '',
+    sex: document.getElementById('sex')?.value || '',
+    role: document.getElementById('role')?.value || '',
+    permissions: {
+      menus: {},
+      submenus: {},
+      elements: {}
+    }
+  };
+  
+  console.log('Datos del formulario recopilados:', userData);
+
+  // Validar datos del formulario
+  const validation = validateUserData(userData);
+  if (!validation.valid) {
+    console.error('Validación fallida:', validation.message);
+    alert(`Error: ${validation.message}`);
+    return;
+  }
+
+  try {
+    console.log('Creando usuario en Firebase Authentication...');
+    const userCredential = await auth.createUserWithEmailAndPassword(userData.email, userData.password);
+    const user = userCredential.user;
+    console.log('Usuario creado en Authentication con UID:', user.uid);
+
+    // Configurar permisos según el rol
+    configurePermissions(userData);
+
+    console.log('Guardando datos en Firestore...');
+    await db.collection('users').doc(user.uid).set({
+      uid: user.uid,
+      fullName: userData.fullName,
+      username: userData.username,
+      rut: userData.rut,
+      dob: userData.dob,
+      email: userData.email,
+      sex: userData.sex,
+      role: userData.role,
+      permissions: userData.permissions,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    
+    console.log('Datos guardados exitosamente en Firestore');
+
+    // Mostrar mensaje de éxito
+    alert('¡Usuario creado exitosamente!');
+    
+    // Limpiar formulario y UI
+    resetForm();
+    
+    // Recargar tabla de usuarios
+    await loadUsersTable(currentPage);
+    
+    console.log('=== CREACIÓN DE USUARIO COMPLETADA ===');
+    
+  } catch (error) {
+    console.error('Error al crear usuario:', error);
+    let errorMessage = 'Error desconocido';
+    
+    switch (error.code) {
+      case 'auth/email-already-in-use':
+        errorMessage = 'El correo electrónico ya está en uso';
+        break;
+      case 'auth/invalid-email':
+        errorMessage = 'Correo electrónico inválido';
+        break;
+      case 'auth/weak-password':
+        errorMessage = 'La contraseña es muy débil';
+        break;
+      default:
+        errorMessage = `${error.code || 'Error'}: ${error.message}`;
+    }
+    
+    alert(`Error al crear usuario: ${errorMessage}`);
+  }
 }
 
 // Manejar el envío del formulario
@@ -526,6 +650,18 @@ function resetForm() {
 
 // Configurar manejadores de eventos
 function setupEventHandlers() {
+  // Manejar cambio de rol
+  const roleSelect = document.getElementById('role');
+  if (roleSelect) {
+    roleSelect.addEventListener('change', loadDefaultPermissions);
+  }
+
+  // Manejar botón de crear usuario
+  const createUserBtn = document.getElementById('createUserBtn');
+  if (createUserBtn) {
+    createUserBtn.addEventListener('click', handleButtonClick);
+  }
+
   // Cerrar el modal
   const closeModal = document.querySelector('.close-modal');
   if (closeModal) {

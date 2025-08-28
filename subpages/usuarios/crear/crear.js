@@ -59,35 +59,31 @@ function loadPermissions() {
         html += `
           <div class="submenu-group">
             <label>
-              <input type="checkbox" class="submenu-checkbox" data-submenu="${menu}-${sub.id || sub.page}">
+              <input type="checkbox" class="submenu-checkbox" data-submenu="${menu}-${sub.page}" onchange="toggleElements(this)">
               ${sub.text}
             </label>
-          </div>
         `;
-      });
-    }
 
-    // Agregar elementos específicos para el menú "Usuarios"
-    if (menu === 'usuarios') {
-      html += `
-        <div class="submenu-group">
-          <label>
-            <input type="checkbox" class="submenu-checkbox" data-submenu="usuarios-crear" onchange="toggleElements(this)">
-            Crear (Página)
-          </label>
-          <div class="elements" style="display: none;">
-      `;
-      Object.values(createElements).forEach(element => {
-        html += `
-          <div class="element-group">
-            <label>
-              <input type="checkbox" class="element-checkbox" data-element="usuarios-crear-${element.id}">
-              ${element.text}
-            </label>
-          </div>
-        `;
+        // Agregar elementos específicos para el submenú "Crear" en "Usuarios"
+        if (menu === 'usuarios' && sub.page === 'crear') {
+          html += `
+            <div class="elements" style="display: none;">
+          `;
+          Object.values(createElements).forEach(element => {
+            html += `
+              <div class="element-group">
+                <label>
+                  <input type="checkbox" class="element-checkbox" data-element="usuarios-crear-${element.id}">
+                  ${element.text}
+                </label>
+              </div>
+            `;
+          });
+          html += `</div>`;
+        }
+
+        html += `</div>`;
       });
-      html += `</div></div>`;
     }
 
     html += `</div></div>`;
@@ -290,12 +286,12 @@ document.getElementById('userForm').addEventListener('submit', (e) => {
       userData.permissions.menus[menu] = true;
       if (submenus[menu]) {
         submenus[menu].forEach(sub => {
-          userData.permissions.submenus[`${menu}-${sub.id || sub.page}`] = true;
-        });
-      }
-      if (menu === 'usuarios') {
-        Object.keys(createElements).forEach(element => {
-          userData.permissions.elements[`usuarios-crear-${element}`] = true;
+          userData.permissions.submenus[`${menu}-${sub.page}`] = true;
+          if (menu === 'usuarios' && sub.page === 'crear') {
+            Object.keys(createElements).forEach(element => {
+              userData.permissions.elements[`usuarios-crear-${element}`] = true;
+            });
+          }
         });
       }
     });

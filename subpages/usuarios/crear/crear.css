@@ -4,7 +4,6 @@
   margin: 0;
   padding: 16px;
   background: #ffffff;
-  border-radius: 10px;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
   font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
   display: flex;
@@ -51,7 +50,6 @@ form#userForm {
   width: 100%;
   padding: 6px;
   border: 1px solid #ddd;
-  border-radius: 6px;
   font-size: 13px;
   background: #ffffff;
   transition: all 0.2s ease;
@@ -70,7 +68,6 @@ form#userForm {
   margin-top: 16px;
   padding: 12px;
   background: #f0f2f5;
-  border-radius: 8px;
   border: 1px solid #ddd;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   max-height: 400px; /* Limita la altura para permitir desplazamiento */
@@ -81,7 +78,6 @@ form#userForm {
   margin-top: 12px;
   padding: 12px;
   background: #ffffff;
-  border-radius: 6px;
   border: 1px solid #ddd;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
 }
@@ -91,7 +87,6 @@ form#userForm {
   padding: 8px;
   border-left: 3px solid #4cc9f0;
   background: linear-gradient(to right, #f0f7ff, #ffffff);
-  border-radius: 6px;
   transition: all 0.2s ease;
 }
 
@@ -106,7 +101,6 @@ form#userForm {
   padding: 6px;
   border-left: 2px solid #6b7280;
   background: #f0f2f5;
-  border-radius: 4px;
   transition: all 0.2s ease;
 }
 
@@ -149,7 +143,6 @@ button[type="submit"] {
   background: #4cc9f0;
   color: #ffffff;
   border: none;
-  border-radius: 6px;
   cursor: pointer;
   font-size: 13px;
   font-weight: 600;

@@ -133,7 +133,7 @@ button[type="submit"] {
   width: fit-content;
   margin-left: 12px; /* Alineado a la izquierda con un pequeño margen */
   margin-right: 0; /* Eliminado centrado */
-  padding: 4px 12px; /* Reducido para un botón más pequeño */
+  padding: 4px 8px; /* Reducido para un botón más pequeño */
   background: #4cc9f0;
   color: #ffffff;
   border: none;

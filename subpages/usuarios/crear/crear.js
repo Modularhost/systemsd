@@ -12,14 +12,14 @@ const menus = [
 // Elementos específicos de la página "Crear" en el módulo "Usuarios"
 const createElements = {
   form: { id: 'form', text: 'Formulario' },
-  'field-fullName': { id: 'field-fullName', text: 'Campo: Nombre Completo' },
-  'field-username': { id: 'field-username', text: 'Campo: Nombre de Usuario' },
-  'field-rut': { id: 'field-rut', text: 'Campo: RUT' },
-  'field-dob': { id: 'field-dob', text: 'Campo: Fecha de Nacimiento' },
-  'field-email': { id: 'field-email', text: 'Campo: Correo Electrónico' },
-  'field-password': { id: 'field-password', text: 'Campo: Contraseña' },
-  'field-sex': { id: 'field-sex', text: 'Campo: Sexo' },
-  'field-role': { id: 'field-role', text: 'Campo: Rol' },
+  'field-fullName': { id: 'fullName', text: 'Campo: Nombre Completo' },
+  'field-username': { id: 'username', text: 'Campo: Nombre de Usuario' },
+  'field-rut': { id: 'rut', text: 'Campo: RUT' },
+  'field-dob': { id: 'dob', text: 'Campo: Fecha de Nacimiento' },
+  'field-email': { id: 'email', text: 'Campo: Correo Electrónico' },
+  'field-password': { id: 'password', text: 'Campo: Contraseña' },
+  'field-sex': { id: 'sex', text: 'Campo: Sexo' },
+  'field-role': { id: 'role', text: 'Campo: Rol' },
   'submit-button': { id: 'submit-button', text: 'Botón: Crear Usuario' },
   table: { id: 'table', text: 'Tabla de Usuarios' },
   'column-fullName': { id: 'column-fullName', text: 'Columna: Nombre Completo' },
@@ -267,108 +267,25 @@ function initializeApp() {
     return;
   }
 
-  // Cargar datos de usuarios en la tabla con paginación
-  async function loadUsersTable(page = 1) {
-    console.log('Ejecutando loadUsersTable:', page);
-    const tableBody = document.getElementById('usersTableBody');
-    const pageInfo = document.getElementById('pageInfo');
-    const prevButton = document.getElementById('prevPage');
-    const nextButton = document.getElementById('nextPage');
-
-    try {
-      const usersSnapshot = await db.collection('users').get();
-      console.log('Usuarios obtenidos:', usersSnapshot.docs.length);
-      const users = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-      const totalPages = Math.ceil(users.length / itemsPerPage);
-      currentPage = Math.max(1, Math.min(page, totalPages));
-      const startIndex = (currentPage - 1) * itemsPerPage;
-      const endIndex = startIndex + itemsPerPage;
-      const paginatedUsers = users.slice(startIndex, endIndex);
-
-      tableBody.innerHTML = '';
-      paginatedUsers.forEach(user => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td ${user.permissions.elements['usuarios-crear-column-fullName'] ? '' : 'class="hidden"'}>${user.fullName}</td>
-          <td ${user.permissions.elements['usuarios-crear-column-username'] ? '' : 'class="hidden"'}>${user.username}</td>
-          <td ${user.permissions.elements['usuarios-crear-column-rut'] ? '' : 'class="hidden"'}>${user.rut}</td>
-          <td ${user.permissions.elements['usuarios-crear-column-dob'] ? '' : 'class="hidden"'}>${user.dob}</td>
-          <td ${user.permissions.elements['usuarios-crear-column-email'] ? '' : 'class="hidden"'}>${user.email}</td>
-          <td ${user.permissions.elements['usuarios-crear-column-sex'] ? '' : 'class="hidden"'}>${user.sex.charAt(0).toUpperCase() + user.sex.slice(1)}</td>
-          <td ${user.permissions.elements['usuarios-crear-column-role'] ? '' : 'class="hidden"'}>${user.role.charAt(0).toUpperCase() + user.role.slice(1)}</td>
-        `;
-        tableBody.appendChild(row);
-      });
-
-      pageInfo.textContent = `Página ${currentPage} de ${totalPages || 1}`;
-      prevButton.disabled = currentPage === 1;
-      nextButton.disabled = currentPage === totalPages || totalPages === 0;
-    } catch (error) {
-      console.error('Error al cargar usuarios:', error);
-      alert(`Error al cargar usuarios: ${error.message}`);
-    }
+  // Validar formulario antes de enviar
+  const userForm = document.getElementById('userForm');
+  if (!userForm) {
+    console.error('Formulario userForm no encontrado');
+    alert('Error: Formulario no encontrado');
+    return;
   }
-
-  // Aplicar permisos al cargar la página
-  async function applyPermissions() {
-    console.log('Ejecutando applyPermissions...');
-    const user = auth.currentUser;
-    if (user) {
-      try {
-        const userDoc = await db.collection('users').doc(user.uid).get();
-        if (userDoc.exists) {
-          const perms = userDoc.data().permissions;
-
-          document.querySelectorAll('[data-permission]').forEach(element => {
-            const permission = element.getAttribute('data-permission');
-            if (permission === 'form') {
-              element.classList.toggle('hidden', !perms.elements['usuarios-crear-form']);
-            } else if (permission.startsWith('field-') || permission === 'submit-button') {
-              element.classList.toggle('hidden', !perms.elements[`usuarios-crear-${permission}`]);
-            } else if (permission === 'table') {
-              element.classList.toggle('hidden', !perms.elements['usuarios-crear-table']);
-            } else if (permission.startsWith('column-')) {
-              element.classList.toggle('hidden', !perms.elements[`usuarios-crear-${permission}`]);
-            }
-          });
-
-          await loadUsersTable(currentPage);
-        } else {
-          console.warn('Usuario autenticado no encontrado en Firestore');
-        }
-      } catch (error) {
-        console.error('Error al aplicar permisos:', error);
-        alert(`Error al aplicar permisos: ${error.message}`);
-      }
-    } else {
-      console.warn('No hay usuario autenticado');
-    }
-  }
-
-  // Cerrar el modal
-  document.querySelector('.close-modal').addEventListener('click', () => {
-    console.log('Cerrando modal de permisos');
-    document.getElementById('permissionsModal').style.display = 'none';
-  });
-
-  // Guardar permisos desde el modal
-  document.getElementById('savePermissions').addEventListener('click', () => {
-    console.log('Guardando permisos desde el modal');
-    document.getElementById('permissionsModal').style.display = 'none';
-  });
 
   // Manejar envío del formulario
-  document.getElementById('userForm').addEventListener('submit', async (e) => {
+  userForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     console.log('Formulario enviado');
 
     const userData = {
-      fullName: document.getElementById('fullName').value,
-      username: document.getElementById('username').value,
-      rut: document.getElementById('rut').value,
+      fullName: document.getElementById('fullName').value.trim(),
+      username: document.getElementById('username').value.trim(),
+      rut: document.getElementById('rut').value.trim(),
       dob: document.getElementById('dob').value,
-      email: document.getElementById('email').value,
+      email: document.getElementById('email').value.trim(),
       password: document.getElementById('password').value,
       sex: document.getElementById('sex').value,
       role: document.getElementById('role').value,
@@ -379,6 +296,18 @@ function initializeApp() {
       }
     };
     console.log('Datos del formulario:', userData);
+
+    // Validar datos del formulario
+    if (!userData.email || !userData.password) {
+      console.error('Correo o contraseña vacíos');
+      alert('Error: Por favor, completa el correo y la contraseña');
+      return;
+    }
+    if (userData.password.length < 6) {
+      console.error('Contraseña demasiado corta');
+      alert('Error: La contraseña debe tener al menos 6 caracteres');
+      return;
+    }
 
     if (!auth) {
       console.error('Firebase Auth no está inicializado');
@@ -442,6 +371,94 @@ function initializeApp() {
       alert(`Error al crear usuario: ${error.code} - ${error.message}`);
     }
   });
+
+  // Cargar datos de usuarios en la tabla con paginación
+  async function loadUsersTable(page = 1) {
+    console.log('Ejecutando loadUsersTable:', page);
+    const tableBody = document.getElementById('usersTableBody');
+    const pageInfo = document.getElementById('pageInfo');
+    const prevButton = document.getElementById('prevPage');
+    const nextButton = document.getElementById('nextPage');
+
+    if (!db) {
+      console.error('Firestore no está inicializado');
+      return;
+    }
+
+    try {
+      const usersSnapshot = await db.collection('users').get();
+      console.log('Usuarios obtenidos:', usersSnapshot.docs.length);
+      const users = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+      const totalPages = Math.ceil(users.length / itemsPerPage);
+      currentPage = Math.max(1, Math.min(page, totalPages));
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
+      const paginatedUsers = users.slice(startIndex, endIndex);
+
+      tableBody.innerHTML = '';
+      paginatedUsers.forEach(user => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td ${user.permissions.elements['usuarios-crear-column-fullName'] ? '' : 'class="hidden"'}>${user.fullName}</td>
+          <td ${user.permissions.elements['usuarios-crear-column-username'] ? '' : 'class="hidden"'}>${user.username}</td>
+          <td ${user.permissions.elements['usuarios-crear-column-rut'] ? '' : 'class="hidden"'}>${user.rut}</td>
+          <td ${user.permissions.elements['usuarios-crear-column-dob'] ? '' : 'class="hidden"'}>${user.dob}</td>
+          <td ${user.permissions.elements['usuarios-crear-column-email'] ? '' : 'class="hidden"'}>${user.email}</td>
+          <td ${user.permissions.elements['usuarios-crear-column-sex'] ? '' : 'class="hidden"'}>${user.sex.charAt(0).toUpperCase() + user.sex.slice(1)}</td>
+          <td ${user.permissions.elements['usuarios-crear-column-role'] ? '' : 'class="hidden"'}>${user.role.charAt(0).toUpperCase() + user.role.slice(1)}</td>
+        `;
+        tableBody.appendChild(row);
+      });
+
+      pageInfo.textContent = `Página ${currentPage} de ${totalPages || 1}`;
+      prevButton.disabled = currentPage === 1;
+      nextButton.disabled = currentPage === totalPages || totalPages === 0;
+    } catch (error) {
+      console.error('Error al cargar usuarios:', error);
+      alert(`Error al cargar usuarios: ${error.message}`);
+    }
+  }
+
+  // Aplicar permisos al cargar la página
+  async function applyPermissions() {
+    console.log('Ejecutando applyPermissions...');
+    if (!auth) {
+      console.error('Firebase Auth no está inicializado');
+      return;
+    }
+    const user = auth.currentUser;
+    if (user) {
+      try {
+        const userDoc = await db.collection('users').doc(user.uid).get();
+        if (userDoc.exists) {
+          const perms = userDoc.data().permissions;
+
+          document.querySelectorAll('[data-permission]').forEach(element => {
+            const permission = element.getAttribute('data-permission');
+            if (permission === 'form') {
+              element.classList.toggle('hidden', !perms.elements['usuarios-crear-form']);
+            } else if (permission.startsWith('field-') || permission === 'submit-button') {
+              element.classList.toggle('hidden', !perms.elements[`usuarios-crear-${permission}`]);
+            } else if (permission === 'table') {
+              element.classList.toggle('hidden', !perms.elements['usuarios-crear-table']);
+            } else if (permission.startsWith('column-')) {
+              element.classList.toggle('hidden', !perms.elements[`usuarios-crear-${permission}`]);
+            }
+          });
+
+          await loadUsersTable(currentPage);
+        } else {
+          console.warn('Usuario autenticado no encontrado en Firestore');
+        }
+      } catch (error) {
+        console.error('Error al aplicar permisos:', error);
+        alert(`Error al aplicar permisos: ${error.message}`);
+      }
+    } else {
+      console.warn('No hay usuario autenticado');
+    }
+  }
 
   // Manejar botones de paginación
   document.getElementById('prevPage').addEventListener('click', async () => {

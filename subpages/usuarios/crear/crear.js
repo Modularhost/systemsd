@@ -101,6 +101,27 @@ function loadDefaultPermissions() {
   }
 }
 
+// Cargar datos de usuarios en la tabla
+function loadUsersTable() {
+  const users = JSON.parse(localStorage.getItem('users')) || [];
+  const tableBody = document.getElementById('usersTableBody');
+  tableBody.innerHTML = '';
+
+  users.forEach(user => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${user.fullName}</td>
+      <td>${user.username}</td>
+      <td>${user.rut}</td>
+      <td>${user.dob}</td>
+      <td>${user.email}</td>
+      <td>${user.sex.charAt(0).toUpperCase() + user.sex.slice(1)}</td>
+      <td>${user.role.charAt(0).toUpperCase() + user.role.slice(1)}</td>
+    `;
+    tableBody.appendChild(row);
+  });
+}
+
 // Cerrar el modal
 document.querySelector('.close-modal').addEventListener('click', () => {
   document.getElementById('permissionsModal').style.display = 'none';
@@ -157,8 +178,10 @@ document.getElementById('userForm').addEventListener('submit', (e) => {
   document.getElementById('userForm').reset();
   document.getElementById('permissionsModal').style.display = 'none';
   loadDefaultPermissions();
+  loadUsersTable(); // Actualizar la tabla después de crear un usuario
 });
 
 // Inicializar
 loadPermissions();
 loadDefaultPermissions();
+loadUsersTable(); // Cargar la tabla al iniciar

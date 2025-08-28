@@ -133,12 +133,12 @@ button[type="submit"] {
   width: fit-content;
   margin-left: auto;
   margin-right: auto;
-  padding: 6px 16px; /* Reducido para hacer el botón más pequeño */
+  padding: 6px 16px;
   background: #4cc9f0;
   color: #ffffff;
   border: none;
   cursor: pointer;
-  font-size: 12px; /* Reducido para un tamaño más pequeño */
+  font-size: 12px;
   font-weight: 600;
   transition: all 0.2s ease;
   margin-top: 16px;
@@ -174,9 +174,9 @@ button[type="submit"]:active {
   margin: auto;
   padding: 20px;
   border: 1px solid #888;
-  width: 90%; /* Aumentado para agrandar el modal */
-  max-width: 800px; /* Aumentado desde 600px */
-  max-height: 90vh; /* Aumentado desde 80vh */
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
   overflow-y: auto;
   border-radius: 8px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
@@ -223,6 +223,45 @@ button[type="submit"]:active {
   box-shadow: 0 1px 4px rgba(76, 201, 240, 0.2);
 }
 
+/* Estilos para la tabla de usuarios */
+.users-table-section {
+  margin-top: 24px;
+  padding: 12px;
+  background: #f0f2f5;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+#usersTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  color: #333;
+}
+
+#usersTable th,
+#usersTable td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+#usersTable th {
+  background: #4cc9f0;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+#usersTable tr:nth-child(even) {
+  background: #f8fafc;
+}
+
+#usersTable tr:hover {
+  background: #e5e7eb;
+}
+
 @media (max-width: 1024px) {
   form#userForm {
     grid-template-columns: repeat(2, 1fr);
@@ -248,6 +287,15 @@ button[type="submit"]:active {
   }
 
   .modal-content {
-    width: 95%; /* Ajustado para pantallas pequeñas */
+    width: 95%;
+  }
+
+  #usersTable {
+    font-size: 12px;
+  }
+
+  #usersTable th,
+  #usersTable td {
+    padding: 6px;
   }
 }

@@ -7,66 +7,66 @@ dateElement.textContent = today.toLocaleDateString('es-ES', options);
 // Datos de los submenús
 const submenus = {
   implantes: [
-    { text: 'Ingresos', page: 'ingresos', folder: 'implantes' },
-    { text: 'Cargar', page: 'cargar', folder: 'implantes' },
-    { text: 'Pacientes', page: 'pacientes', folder: 'implantes' },
-    { text: 'Referencias', page: 'referencias', folder: 'implantes' }
+    { text: 'Ingresos', page: 'ingresos', folder: 'implantes', jsFiles: ['ingresos', 'formulas', 'lecturas'] },
+    { text: 'Cargar', page: 'cargar', folder: 'implantes', jsFiles: ['cargar'] },
+    { text: 'Pacientes', page: 'pacientes', folder: 'implantes', jsFiles: ['pacientes', 'datos', 'historial', 'notificaciones'] },
+    { text: 'Referencias', page: 'referencias', folder: 'implantes', jsFiles: ['referencias'] }
   ],
   consignacion: [
-    { text: 'Registro', page: 'registro', folder: 'consignacion' },
-    { text: 'Seguimiento', page: 'seguimiento', folder: 'consignacion' },
-    { text: 'Reportes', page: 'reportes', folder: 'consignacion' }
+    { text: 'Registro', page: 'registro', folder: 'consignacion', jsFiles: ['registro'] },
+    { text: 'Seguimiento', page: 'seguimiento', folder: 'consignacion', jsFiles: ['seguimiento'] },
+    { text: 'Reportes', page: 'reportes', folder: 'consignacion', jsFiles: ['reportes'] }
   ],
   historico: [
-    { text: 'Consultas', page: 'consultas', folder: 'historico' },
-    { text: 'Archivos', page: 'archivos', folder: 'historico' }
+    { text: 'Consultas', page: 'consultas', folder: 'historico', jsFiles: ['consultas'] },
+    { text: 'Archivos', page: 'archivos', folder: 'historico', jsFiles: ['archivos'] }
   ],
   laboratorio: [
-    { text: 'Análisis', page: 'analisis', folder: 'laboratorio' },
-    { text: 'Resultados', page: 'resultados', folder: 'laboratorio' }
+    { text: 'Análisis', page: 'analisis', folder: 'laboratorio', jsFiles: ['analisis'] },
+    { text: 'Resultados', page: 'resultados', folder: 'laboratorio', jsFiles: ['resultados'] }
   ],
   visualizador: [
-    { text: 'Gráficos', page: 'graficos', folder: 'visualizador' },
-    { text: 'Imágenes', page: 'imagenes', folder: 'visualizador' }
+    { text: 'Gráficos', page: 'graficos', folder: 'visualizador', jsFiles: ['graficos'] },
+    { text: 'Imágenes', page: 'imagenes', folder: 'visualizador', jsFiles: ['imagenes'] }
   ],
   prestacion: [
-    { text: 'Servicios', page: 'servicios', folder: 'prestacion' },
-    { text: 'Facturación', page: 'facturacion', folder: 'prestacion' }
+    { text: 'Servicios', page: 'servicios', folder: 'prestacion', jsFiles: ['servicios'] },
+    { text: 'Facturación', page: 'facturacion', folder: 'prestacion', jsFiles: ['facturacion'] }
   ],
   herramientas: [
-    { text: 'Utilidades', page: 'utilidades', folder: 'herramientas' },
-    { text: 'Configuración', page: 'configuracion-herramientas', folder: 'herramientas' }
+    { text: 'Utilidades', page: 'utilidades', folder: 'herramientas', jsFiles: ['utilidades'] },
+    { text: 'Configuración', page: 'configuracion-herramientas', folder: 'herramientas', jsFiles: ['configuracion-herramientas'] }
   ],
   importacion: [
-    { text: 'Carga Masiva', page: 'carga-masiva', folder: 'importacion' },
-    { text: 'Validación', page: 'validacion', folder: 'importacion' }
+    { text: 'Carga Masiva', page: 'carga-masiva', folder: 'importacion', jsFiles: ['carga-masiva'] },
+    { text: 'Validación', page: 'validacion', folder: 'importacion', jsFiles: ['validacion'] }
   ],
   apuntes: [
-    { text: 'Notas', page: 'notas', folder: 'apuntes' },
-    { text: 'Recordatorios', page: 'recordatorios', folder: 'apuntes' }
+    { text: 'Notas', page: 'notas', folder: 'apuntes', jsFiles: ['notas'] },
+    { text: 'Recordatorios', page: 'recordatorios', folder: 'apuntes', jsFiles: ['recordatorios'] }
   ],
   migracion: [
-    { text: 'Transferencia', page: 'transferencia', folder: 'migracion' },
-    { text: 'Sincronización', page: 'sincronizacion', folder: 'migracion' }
+    { text: 'Transferencia', page: 'transferencia', folder: 'migracion', jsFiles: ['transferencia'] },
+    { text: 'Sincronización', page: 'sincronizacion', folder: 'migracion', jsFiles: ['sincronizacion'] }
   ],
   dashboard: [
-    { text: 'Resumen', page: 'resumen', folder: 'dashboard' },
-    { text: 'Estadísticas', page: 'estadisticas', folder: 'dashboard' }
+    { text: 'Resumen', page: 'resumen', folder: 'dashboard', jsFiles: ['resumen'] },
+    { text: 'Estadísticas', page: 'estadisticas', folder: 'dashboard', jsFiles: ['estadisticas'] }
   ],
   archivos: [
-    { text: 'Subir', page: 'subir', folder: 'archivos' },
-    { text: 'Gestionar', page: 'gestionar', folder: 'archivos' }
+    { text: 'Subir', page: 'subir', folder: 'archivos', jsFiles: ['subir'] },
+    { text: 'Gestionar', page: 'gestionar', folder: 'archivos', jsFiles: ['gestionar'] }
   ],
   usuarios: [
-    { text: 'Crear', page: 'crear-usuario', folder: 'usuarios' },
-    { text: 'Editar', page: 'editar-usuario', folder: 'usuarios' }
+    { text: 'Crear', page: 'crear-usuario', folder: 'usuarios', jsFiles: ['crear-usuario'] },
+    { text: 'Editar', page: 'editar-usuario', folder: 'usuarios', jsFiles: ['editar-usuario'] }
   ],
   configuracion: [
-    { text: 'Sistema', page: 'sistema', folder: 'configuracion' },
-    { text: 'Preferencias', page: 'preferencias', folder: 'configuracion' }
+    { text: 'Sistema', page: 'sistema', folder: 'configuracion', jsFiles: ['sistema'] },
+    { text: 'Preferencias', page: 'preferencias', folder: 'configuracion', jsFiles: ['preferencias'] }
   ],
   'cerrar-sesion': [
-    { text: 'Confirmar', page: 'confirmar-cerrar-sesion', folder: 'cerrar-sesion' }
+    { text: 'Confirmar', page: 'confirmar-cerrar-sesion', folder: 'cerrar-sesion', jsFiles: ['confirmar-cerrar-sesion'] }
   ]
 };
 
@@ -78,7 +78,7 @@ const backLink = document.querySelector('.back-link');
 const content = document.querySelector('.content');
 
 // Función para cargar contenido dinámico
-function loadSubpage(folder, page) {
+function loadSubpage(folder, page, jsFiles) {
   // Limpiar el contenido anterior
   content.innerHTML = '';
   
@@ -98,11 +98,13 @@ function loadSubpage(folder, page) {
       link.dataset.subpage = page;
       document.head.appendChild(link);
 
-      // Cargar JS
-      const script = document.createElement('script');
-      script.src = `../subpages/${folder}/${page}/${page}.js`;
-      script.dataset.subpage = page;
-      document.body.appendChild(script);
+      // Cargar todos los archivos JS especificados
+      jsFiles.forEach(jsFile => {
+        const script = document.createElement('script');
+        script.src = `../subpages/${folder}/${page}/${jsFile}.js`;
+        script.dataset.subpage = page;
+        document.body.appendChild(script);
+      });
     })
     .catch(error => {
       content.innerHTML = '<p>Error al cargar la página</p>';
@@ -119,7 +121,7 @@ document.querySelectorAll('.main-menu a').forEach(link => {
 
     // Poblar el contenido del submenú
     submenuContent.innerHTML = submenuItems.map(item => 
-      `<a href="#" data-folder="${item.folder}" data-page="${item.page}">${item.text}</a>`
+      `<a href="#" data-folder="${item.folder}" data-page="${item.page}" data-js-files="${item.jsFiles.join(',')}">${item.text}</a>`
     ).join('');
 
     // Ocultar menú principal y mostrar submenú
@@ -141,8 +143,9 @@ submenuContent.addEventListener('click', (e) => {
   if (e.target.tagName === 'A') {
     const folder = e.target.getAttribute('data-folder');
     const page = e.target.getAttribute('data-page');
-    if (folder && page) {
-      loadSubpage(folder, page);
+    const jsFiles = e.target.getAttribute('data-js-files').split(',');
+    if (folder && page && jsFiles) {
+      loadSubpage(folder, page, jsFiles);
     }
   }
 });

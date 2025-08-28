@@ -1,0 +1,20 @@
+.card {
+  background: #ffffff;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+}
+.card h3 {
+  color: #4cc9f0;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+.card p, .card li {
+  color: #555;
+  font-size: 13px;
+}
+.card ul {
+  list-style: disc;
+  padding-left: 18px;
+}

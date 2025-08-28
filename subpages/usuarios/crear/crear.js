@@ -76,8 +76,8 @@ function loadPermissions() {
     `;
 
     // Agregar submenús (si existen)
-    if (submenus[menu]) {
-      submenus[menu].forEach(sub => {
+    if (window.submenus[menu]) {
+      window.submenus[menu].forEach(sub => {
         html += `
           <div class="submenu-group">
             <label>
@@ -250,8 +250,8 @@ async function loadUsersTable(page = 1) {
 async function applyPermissions() {
   const user = auth.currentUser;
   if (user) {
-    const userDoc = await getDocs(collection(db, 'users'));
-    const currentUser = userDoc.docs.find(doc => doc.id === user.uid);
+    const usersSnapshot = await getDocs(collection(db, 'users'));
+    const currentUser = usersSnapshot.docs.find(doc => doc.id === user.uid);
     if (currentUser) {
       const perms = currentUser.data().permissions;
 
@@ -314,8 +314,8 @@ document.getElementById('userForm').addEventListener('submit', async (e) => {
     if (userData.role === 'administrador') {
       menus.forEach(menu => {
         userData.permissions.menus[menu] = true;
-        if (submenus[menu]) {
-          submenus[menu].forEach(sub => {
+        if (window.submenus[menu]) {
+          window.submenus[menu].forEach(sub => {
             userData.permissions.submenus[`${menu}-${sub.page}`] = true;
             if (menu === 'usuarios' && sub.page === 'crear') {
               Object.keys(createElements).forEach(element => {

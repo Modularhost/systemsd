@@ -1,37 +1,39 @@
 .user-create-form {
-  max-width: 900px;
+  max-width: 1200px;
   margin: 30px auto;
-  padding: 25px;
+  padding: 30px;
   background: #ffffff;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
   max-height: 85vh;
   font-family: 'Arial', sans-serif;
 }
 
 .user-create-form h2 {
-  font-size: 1.8rem;
+  font-size: 2rem;
   color: #333;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   text-align: center;
+  font-weight: 700;
 }
 
 .user-create-form h3 {
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   color: #444;
-  margin-top: 25px;
+  margin-top: 30px;
   margin-bottom: 15px;
+  font-weight: 600;
 }
 
 .form-group {
   margin-bottom: 20px;
 }
 
-/* Grid layout for form inputs */
+/* Four-column grid layout for form inputs */
 form#userForm {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(4, 1fr);
   gap: 20px;
 }
 
@@ -40,6 +42,7 @@ form#userForm {
   font-weight: 600;
   color: #555;
   margin-bottom: 8px;
+  font-size: 0.95rem;
 }
 
 .form-group input,
@@ -49,51 +52,57 @@ form#userForm {
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 1rem;
-  transition: border-color 0.3s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .form-group input:focus,
 .form-group select:focus {
   outline: none;
   border-color: #007bff;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+  box-shadow: 0 0 6px rgba(0, 123, 255, 0.3);
 }
 
 /* Full-width permissions section */
 .permissions-section {
   grid-column: 1 / -1;
   margin-top: 30px;
-}
-
-.permissions-tree {
-  margin-top: 15px;
-  padding: 15px;
+  padding: 20px;
   background: #f8f9fa;
   border-radius: 8px;
   border: 1px solid #e0e0e0;
 }
 
+.permissions-tree {
+  margin-top: 15px;
+  padding: 15px;
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
 .permission-group {
   margin-bottom: 15px;
-  padding: 10px;
-  border-left: 3px solid #007bff;
+  padding: 12px;
+  border-left: 4px solid #007bff;
+  background: #f1f3f5;
+  border-radius: 4px;
 }
 
 .submenu-group {
-  margin-left: 25px;
+  margin-left: 30px;
   margin-bottom: 10px;
-  padding: 8px;
-  border-left: 2px solid #6c757d;
+  padding: 10px;
+  border-left: 3px solid #6c757d;
 }
 
 .container-group {
-  margin-left: 50px;
+  margin-left: 60px;
   margin-bottom: 8px;
-  padding: 5px;
+  padding: 8px;
 }
 
 .elements {
-  margin-left: 75px;
+  margin-left: 90px;
 }
 
 label {
@@ -103,13 +112,14 @@ label {
 }
 
 label input[type="checkbox"] {
-  margin-right: 8px;
+  margin-right: 10px;
   accent-color: #007bff;
+  transform: scale(1.2);
 }
 
 button[type="submit"] {
   grid-column: 1 / -1;
-  padding: 12px 30px;
+  padding: 12px 40px;
   background: #007bff;
   color: white;
   border: none;
@@ -117,15 +127,23 @@ button[type="submit"] {
   cursor: pointer;
   font-size: 1.1rem;
   font-weight: 600;
-  transition: background 0.3s ease;
-  margin-top: 25px;
+  transition: background 0.3s ease, transform 0.2s ease;
+  margin-top: 30px;
+  text-align: center;
 }
 
 button[type="submit"]:hover {
   background: #0056b3;
+  transform: translateY(-2px);
 }
 
 /* Responsive design */
+@media (max-width: 1024px) {
+  form#userForm {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
   form#userForm {
     grid-template-columns: 1fr;
@@ -133,10 +151,17 @@ button[type="submit"]:hover {
 
   .user-create-form {
     margin: 15px;
-    padding: 15px;
+    padding: 20px;
   }
 
   .permissions-tree {
     font-size: 0.9rem;
+  }
+
+  .permission-group,
+  .submenu-group,
+  .container-group,
+  .elements {
+    margin-left: 10px;
   }
 }

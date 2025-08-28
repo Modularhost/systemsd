@@ -1,4 +1,3 @@
-
 <div class="user-create-form">
   <h2>Crear Nuevo Usuario</h2>
   <form id="userForm">
@@ -41,18 +40,24 @@
       </select>
     </div>
     
-    <div class="permissions-section">
-      <h3>Permisos Detallados</h3>
-      <p>Seleccione los menús y submenús que el usuario puede acceder. Los administradores tienen acceso completo automáticamente.</p>
-      
-      <!-- Árbol de permisos -->
-      <div class="permissions-tree" id="permissionsTree">
-        <!-- Los menús y submenús se cargarán dinámicamente desde JS -->
-      </div>
-    </div>
-    
     <button type="submit">Crear Usuario</button>
   </form>
 </div>
+
+<!-- Modal para Permisos Detallados -->
+<div id="permissionsModal" class="modal">
+  <div class="modal-content">
+    <span class="close-modal">&times;</span>
+    <div class="permissions-section">
+      <h3>Permisos Detallados</h3>
+      <p>Seleccione los menús y submenús que el usuario puede acceder.</p>
+      <div class="permissions-tree" id="permissionsTree">
+        <!-- Los menús y submenús se cargarán dinámicamente desde JS -->
+      </div>
+      <button id="savePermissions" class="modal-button">Guardar Permisos</button>
+    </div>
+  </div>
+</div>
+
 <script src="../menu.js"></script>
 <script src="crear.js"></script>

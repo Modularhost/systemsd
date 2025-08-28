@@ -1,5 +1,4 @@
-
-// Lista de menús desde menu.html
+// Lista de menús desde menu.js
 const menus = [
   'implantes', 'consignacion', 'historico', 'laboratorio', 'visualizador',
   'prestacion', 'herramientas', 'importacion', 'apuntes', 'migracion',
@@ -34,7 +33,7 @@ function loadPermissions() {
         html += `
           <div class="submenu-group">
             <label>
-              <input type="checkbox" class="submenu-checkbox" data-submenu="${menu}-${sub.id}">
+              <input type="checkbox" class="submenu-checkbox" data-submenu="${menu}-${sub.id || sub.page}">
               ${sub.text}
             </label>
           </div>
@@ -58,15 +57,26 @@ function toggleSubmenus(checkbox) {
   }
 }
 
+// Mostrar u ocultar el modal según el rol
+function togglePermissionsModal(role) {
+  const modal = document.getElementById('permissionsModal');
+  if (role === 'operador' || role === 'gestor') {
+    modal.style.display = 'flex';
+  } else {
+    modal.style.display = 'none';
+  }
+}
+
 // Cargar permisos por defecto según rol
 function loadDefaultPermissions() {
   const role = document.getElementById('role').value;
   const perms = defaultPermissions[role] || { menus: {}, submenus: {} };
   const permissionsTree = document.getElementById('permissionsTree');
 
+  togglePermissionsModal(role);
+
   if (role === 'administrador') {
     // Administradores tienen acceso completo
-    permissionsTree.style.display = 'none';
     document.querySelectorAll('.menu-checkbox').forEach(checkbox => {
       checkbox.checked = true;
       checkbox.disabled = true;
@@ -77,7 +87,6 @@ function loadDefaultPermissions() {
       });
     });
   } else {
-    permissionsTree.style.display = 'block';
     document.querySelectorAll('.menu-checkbox').forEach(checkbox => {
       checkbox.disabled = false;
       const menu = checkbox.getAttribute('data-menu');
@@ -91,6 +100,16 @@ function loadDefaultPermissions() {
     });
   }
 }
+
+// Cerrar el modal
+document.querySelector('.close-modal').addEventListener('click', () => {
+  document.getElementById('permissionsModal').style.display = 'none';
+});
+
+// Guardar permisos desde el modal
+document.getElementById('savePermissions').addEventListener('click', () => {
+  document.getElementById('permissionsModal').style.display = 'none';
+});
 
 // Manejar envío del formulario
 document.getElementById('userForm').addEventListener('submit', (e) => {
@@ -116,7 +135,7 @@ document.getElementById('userForm').addEventListener('submit', (e) => {
       userData.permissions.menus[menu] = true;
       if (submenus[menu]) {
         submenus[menu].forEach(sub => {
-          userData.permissions.submenus[`${menu}-${sub.id}`] = true;
+          userData.permissions.submenus[`${menu}-${sub.id || sub.page}`] = true;
         });
       }
     });
@@ -136,6 +155,7 @@ document.getElementById('userForm').addEventListener('submit', (e) => {
 
   alert('Usuario creado exitosamente!');
   document.getElementById('userForm').reset();
+  document.getElementById('permissionsModal').style.display = 'none';
   loadDefaultPermissions();
 });
 

@@ -8,7 +8,7 @@
   font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* Evita cualquier barra de desplazamiento en .user-create-form */
+  overflow: hidden;
 }
 
 .user-create-form h2 {
@@ -64,14 +64,13 @@ form#userForm {
 }
 
 .permissions-section {
-  grid-column: 1 / -1;
   margin-top: 16px;
   padding: 12px;
   background: #f0f2f5;
   border: 1px solid #ddd;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  max-height: 400px; /* Limita la altura para permitir desplazamiento */
-  overflow-y: auto; /* Barra de desplazamiento solo en .permissions-section */
+  max-height: 400px;
+  overflow-y: auto;
 }
 
 .permissions-tree {
@@ -136,10 +135,10 @@ label input[type="checkbox"]:hover {
 }
 
 button[type="submit"] {
-  width: fit-content; /* Ajusta el ancho al contenido */
+  width: fit-content;
   margin-left: auto;
-  margin-right: auto; /* Centra el botón */
-  padding: 8px 20px; /* Reducido ligeramente */
+  margin-right: auto;
+  padding: 8px 20px;
   background: #4cc9f0;
   color: #ffffff;
   border: none;
@@ -157,6 +156,74 @@ button[type="submit"]:hover {
 }
 
 button[type="submit"]:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(76, 201, 240, 0.2);
+}
+
+/* Estilos del Modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background-color: #ffffff;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.close-modal {
+  color: #aaa;
+  float: right;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close-modal:hover,
+.close-modal:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal-button {
+  width: fit-content;
+  margin: 16px auto;
+  padding: 8px 20px;
+  background: #4cc9f0;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  display: block;
+  transition: all 0.2s ease;
+}
+
+.modal-button:hover {
+  background: #3ba8d0;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(76, 201, 240, 0.3);
+}
+
+.modal-button:active {
   transform: translateY(0);
   box-shadow: 0 1px 4px rgba(76, 201, 240, 0.2);
 }
@@ -183,5 +250,9 @@ button[type="submit"]:active {
   .permission-group,
   .submenu-group {
     margin-left: 6px;
+  }
+
+  .modal-content {
+    width: 90%;
   }
 }

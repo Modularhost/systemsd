@@ -1,76 +1,10 @@
+
 // Lista de menús desde menu.html
 const menus = [
   'implantes', 'consignacion', 'historico', 'laboratorio', 'visualizador',
   'prestacion', 'herramientas', 'importacion', 'apuntes', 'migracion',
   'dashboard', 'archivos', 'usuarios', 'configuracion', 'cerrar-sesion'
 ];
-
-// Submenús desde menu.js
-const submenus = {
-  implantes: [
-    { id: 'ingresos', text: 'Ingresos', page: 'ingresos', folder: 'implantes', jsFiles: ['ingresos'] },
-    { id: 'cargar', text: 'Cargar', page: 'cargar', folder: 'implantes', jsFiles: ['cargar'] },
-    { id: 'pacientes', text: 'Pacientes', page: 'pacientes', folder: 'implantes', jsFiles: ['pacientes'] },
-    { id: 'referencias', text: 'Referencias', page: 'referencias', folder: 'implantes', jsFiles: ['referencias'] }
-  ],
-  consignacion: [
-    { id: 'registro', text: 'Registro', page: 'registro', folder: 'consignacion', jsFiles: ['registro'] },
-    { id: 'seguimiento', text: 'Seguimiento', page: 'seguimiento', folder: 'consignacion', jsFiles: ['seguimiento'] },
-    { id: 'reportes', text: 'Reportes', page: 'reportes', folder: 'consignacion', jsFiles: ['reportes'] }
-  ],
-  historico: [
-    { id: 'consultas', text: 'Consultas', page: 'consultas', folder: 'historico', jsFiles: ['consultas'] },
-    { id: 'archivos', text: 'Archivos', page: 'archivos', folder: 'historico', jsFiles: ['archivos'] }
-  ],
-  laboratorio: [
-    { id: 'analisis', text: 'Análisis', page: 'analisis', folder: 'laboratorio', jsFiles: ['analisis'] },
-    { id: 'resultados', text: 'Resultados', page: 'resultados', folder: 'laboratorio', jsFiles: ['resultados'] }
-  ],
-  visualizador: [
-    { id: 'graficos', text: 'Gráficos', page: 'graficos', folder: 'visualizador', jsFiles: ['graficos'] },
-    { id: 'imagenes', text: 'Imágenes', page: 'imagenes', folder: 'visualizador', jsFiles: ['imagenes'] }
-  ],
-  prestacion: [
-    { id: 'empresas', text: 'Empresas', page: 'empresas', folder: 'prestacion', jsFiles: ['empresas'] },
-    { id: 'medicos', text: 'Médicos', page: 'medicos', folder: 'prestacion', jsFiles: ['medicos'] },
-    { id: 'areas', text: 'Areas', page: 'areas', folder: 'prestacion', jsFiles: ['areas'] }
-  ],
-  herramientas: [
-    { id: 'utilidades', text: 'Utilidades', page: 'utilidades', folder: 'herramientas', jsFiles: ['utilidades'] },
-    { id: 'configuracion-herramientas', text: 'Configuración', page: 'configuracion-herramientas', folder: 'herramientas', jsFiles: ['configuracion-herramientas'] }
-  ],
-  importacion: [
-    { id: 'carga-masiva', text: 'Carga Masiva', page: 'carga-masiva', folder: 'importacion', jsFiles: ['carga-masiva'] },
-    { id: 'validacion', text: 'Validación', page: 'validacion', folder: 'importacion', jsFiles: ['validacion'] }
-  ],
-  apuntes: [
-    { id: 'notas', text: 'Notas', page: 'notas', folder: 'apuntes', jsFiles: ['notas'] },
-    { id: 'recordatorios', text: 'Recordatorios', page: 'recordatorios', folder: 'apuntes', jsFiles: ['recordatorios'] }
-  ],
-  migracion: [
-    { id: 'transferencia', text: 'Transferencia', page: 'transferencia', folder: 'migracion', jsFiles: ['transferencia'] },
-    { id: 'sincronizacion', text: 'Sincronización', page: 'sincronizacion', folder: 'migracion', jsFiles: ['sincronizacion'] }
-  ],
-  dashboard: [
-    { id: 'resumen', text: 'Resumen', page: 'resumen', folder: 'dashboard', jsFiles: ['resumen'] },
-    { id: 'estadisticas', text: 'Estadísticas', page: 'estadisticas', folder: 'dashboard', jsFiles: ['estadisticas'] }
-  ],
-  archivos: [
-    { id: 'subir', text: 'Subir', page: 'subir', folder: 'archivos', jsFiles: ['subir'] },
-    { id: 'gestionar', text: 'Gestionar', page: 'gestionar', folder: 'archivos', jsFiles: ['gestionar'] }
-  ],
-  usuarios: [
-    { id: 'crear', text: 'Crear', page: 'crear', folder: 'usuarios', jsFiles: ['crear'] },
-    { id: 'editar', text: 'Editar', page: 'editar', folder: 'usuarios', jsFiles: ['editar'] }
-  ],
-  configuracion: [
-    { id: 'sistema', text: 'Sistema', page: 'sistema', folder: 'configuracion', jsFiles: ['sistema'] },
-    { id: 'preferencias', text: 'Preferencias', page: 'preferencias', folder: 'configuracion', jsFiles: ['preferencias'] }
-  ],
-  'cerrar-sesion': [
-    { id: 'confirmar-cerrar-sesion', text: 'Confirmar', page: 'confirmar-cerrar-sesion', folder: 'cerrar-sesion', jsFiles: ['confirmar-cerrar-sesion'] }
-  ]
-};
 
 // Estructura para almacenar permisos por defecto
 let defaultPermissions = {

@@ -1,15 +1,12 @@
-// Variables globales para Firebase
 let auth = null;
 let db = null;
 
-// Lista de menús
 const menus = [
   'implantes', 'consignacion', 'historico', 'laboratorio', 'visualizador',
   'prestacion', 'herramientas', 'importacion', 'apuntes', 'migracion',
   'dashboard', 'archivos', 'usuarios', 'configuracion', 'cerrar-sesion'
 ];
 
-// Elementos específicos de la página "Crear" en el módulo "Usuarios"
 const createElements = {
   form: { id: 'form', text: 'Formulario' },
   'field-fullName': { id: 'fullName', text: 'Campo: Nombre Completo' },

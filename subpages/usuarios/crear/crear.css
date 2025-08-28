@@ -167,7 +167,6 @@ button[type="submit"]:active {
   box-shadow: 0 1px 4px rgba(76, 201, 240, 0.2);
 }
 
-/* Estilos del Modal */
 .modal {
   display: none;
   position: fixed;
@@ -235,7 +234,6 @@ button[type="submit"]:active {
   box-shadow: 0 1px 4px rgba(76, 201, 240, 0.2);
 }
 
-/* Estilos para la tabla de usuarios */
 .users-table-section {
   margin-top: 24px;
   padding: 12px;

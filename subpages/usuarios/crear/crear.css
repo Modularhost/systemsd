@@ -1,157 +1,177 @@
 .user-create-form {
-  max-width: 1200px;
-  margin: 30px auto;
-  padding: 30px;
+  max-width: 1280px;
+  margin: 40px auto;
+  padding: 32px;
   background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   overflow-y: auto;
-  max-height: 85vh;
-  font-family: 'Inter', 'Arial', sans-serif;
+  max-height: 90vh;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(145deg, #ffffff, #f8fafc);
 }
 
 .user-create-form h2 {
-  font-size: 2rem;
-  color: #1a1a1a;
-  margin-bottom: 25px;
+  font-size: 2.25rem;
+  color: #111827;
+  margin-bottom: 32px;
   text-align: center;
   font-weight: 700;
+  letter-spacing: -0.025em;
 }
 
 .user-create-form h3 {
-  font-size: 1.4rem;
-  color: #1a1a1a;
-  margin-top: 30px;
-  margin-bottom: 15px;
+  font-size: 1.5rem;
+  color: #111827;
+  margin-top: 32px;
+  margin-bottom: 16px;
   font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 form#userForm {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  gap: 24px;
 }
 
 .form-group label {
   display: block;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 8px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 10px;
   font-size: 0.95rem;
+  letter-spacing: -0.01em;
 }
 
 .form-group input,
 .form-group select {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   border: 1px solid #d1d5db;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 1rem;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  background: #ffffff;
+  transition: all 0.3s ease;
 }
 
 .form-group input:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #2563eb;
-  box-shadow: 0 0 6px rgba(37, 99, 235, 0.2);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  background: #f8fafc;
 }
 
 .permissions-section {
   grid-column: 1 / -1;
-  margin-top: 30px;
+  margin-top: 40px;
   padding: 24px;
   background: #f9fafb;
-  border-radius: 10px;
+  border-radius: 12px;
   border: 1px solid #e5e7eb;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
 }
 
 .permissions-tree {
   margin-top: 20px;
-  padding: 20px;
+  padding: 24px;
   background: #ffffff;
-  border-radius: 10px;
+  border-radius: 12px;
   border: 1px solid #e5e7eb;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.03);
 }
 
 .permission-group {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   padding: 16px;
-  border-left: 4px solid #2563eb;
-  background: #f8fafc;
-  border-radius: 6px;
-  transition: background 0.2s ease;
+  border-left: 4px solid #3b82f6;
+  background: linear-gradient(to right, #f0f7ff, #ffffff);
+  border-radius: 8px;
+  transition: all 0.2s ease;
 }
 
 .permission-group:hover {
-  background: #eff6ff;
+  transform: translateX(4px);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
 }
 
 .submenu-group {
-  margin-left: 32px;
-  margin-bottom: 12px;
+  margin-left: 40px;
+  margin-bottom: 16px;
   padding: 12px;
   border-left: 3px solid #6b7280;
   background: #f9fafb;
-  border-radius: 4px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.submenu-group:hover {
+  background: #f1f5f9;
 }
 
 label {
   cursor: pointer;
   font-size: 0.95rem;
-  color: #1a1a1a;
+  color: #111827;
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   transition: color 0.2s ease;
 }
 
 label:hover {
-  color: #2563eb;
+  color: #3b82f6;
 }
 
 label input[type="checkbox"] {
   margin-right: 12px;
-  accent-color: #2563eb;
-  transform: scale(1.3);
+  accent-color: #3b82f6;
+  transform: scale(1.4);
   border-radius: 4px;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+label input[type="checkbox"]:hover {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 button[type="submit"] {
   grid-column: 1 / -1;
-  padding: 14px 40px;
-  background: #2563eb;
-  color: white;
+  padding: 16px 48px;
+  background: #3b82f6;
+  color: #ffffff;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 1.1rem;
   font-weight: 600;
-  transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
-  margin-top: 30px;
+  letter-spacing: -0.01em;
+  transition: all 0.3s ease;
+  margin-top: 40px;
   text-align: center;
 }
 
 button[type="submit"]:hover {
-  background: #1e40af;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  background: #2563eb;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.3);
 }
 
 button[type="submit"]:active {
   transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
 }
 
 @media (max-width: 1024px) {
   form#userForm {
-    grid-template columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -161,8 +181,8 @@ button[type="submit"]:active {
   }
 
   .user-create-form {
-    margin: 15px;
-    padding: 20px;
+    margin: 20px;
+    padding: 24px;
   }
 
   .permissions-tree {
@@ -171,6 +191,6 @@ button[type="submit"]:active {
 
   .permission-group,
   .submenu-group {
-    margin-left: 10px;
+    margin-left: 12px;
   }
 }

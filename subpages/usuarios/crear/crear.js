@@ -278,7 +278,7 @@ function initializeApp() {
   // Manejar envío del formulario
   userForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    console.log('Formulario enviado');
+    console.log('Evento submit disparado');
 
     const userData = {
       fullName: document.getElementById('fullName').value.trim(),
@@ -306,6 +306,11 @@ function initializeApp() {
     if (userData.password.length < 6) {
       console.error('Contraseña demasiado corta');
       alert('Error: La contraseña debe tener al menos 6 caracteres');
+      return;
+    }
+    if (!userData.fullName || !userData.username || !userData.rut || !userData.dob || !userData.sex || !userData.role) {
+      console.error('Campos obligatorios vacíos');
+      alert('Error: Por favor, completa todos los campos obligatorios');
       return;
     }
 
@@ -460,33 +465,59 @@ function initializeApp() {
     }
   }
 
-  // Manejar botones de paginación
-  document.getElementById('prevPage').addEventListener('click', async () => {
-    console.log('Clic en Anterior, página actual:', currentPage);
-    if (currentPage > 1) {
-      await loadUsersTable(currentPage - 1);
-    }
-  });
+  // Cerrar el modal
+  const closeModal = document.querySelector('.close-modal');
+  if (closeModal) {
+    closeModal.addEventListener('click', () => {
+      console.log('Cerrando modal de permisos');
+      document.getElementById('permissionsModal').style.display = 'none';
+    });
+  }
 
-  document.getElementById('nextPage').addEventListener('click', async () => {
-    console.log('Clic en Siguiente, página actual:', currentPage);
-    const usersSnapshot = await db.collection('users').get();
-    const totalPages = Math.ceil(usersSnapshot.docs.length / itemsPerPage);
-    if (currentPage < totalPages) {
-      await loadUsersTable(currentPage + 1);
-    }
-  });
+  // Guardar permisos desde el modal
+  const savePermissions = document.getElementById('savePermissions');
+  if (savePermissions) {
+    savePermissions.addEventListener('click', () => {
+      console.log('Guardando permisos desde el modal');
+      document.getElementById('permissionsModal').style.display = 'none';
+    });
+  }
+
+  // Manejar botones de paginación
+  const prevPage = document.getElementById('prevPage');
+  if (prevPage) {
+    prevPage.addEventListener('click', async () => {
+      console.log('Clic en Anterior, página actual:', currentPage);
+      if (currentPage > 1) {
+        await loadUsersTable(currentPage - 1);
+      }
+    });
+  }
+
+  const nextPage = document.getElementById('nextPage');
+  if (nextPage) {
+    nextPage.addEventListener('click', async () => {
+      console.log('Clic en Siguiente, página actual:', currentPage);
+      const usersSnapshot = await db.collection('users').get();
+      const totalPages = Math.ceil(usersSnapshot.docs.length / itemsPerPage);
+      if (currentPage < totalPages) {
+        await loadUsersTable(currentPage + 1);
+      }
+    });
+  }
 
   // Inicializar
   loadPermissions();
   loadDefaultPermissions();
   loadUsersTable();
-  auth.onAuthStateChanged(user => {
-    console.log('Estado de autenticación cambiado:', user ? user.uid : 'No autenticado');
-    if (user) {
-      applyPermissions();
-    }
-  });
+  if (auth) {
+    auth.onAuthStateChanged(user => {
+      console.log('Estado de autenticación cambiado:', user ? user.uid : 'No autenticado');
+      if (user) {
+        applyPermissions();
+      }
+    });
+  }
 }
 
 // Iniciar la carga de scripts de Firebase

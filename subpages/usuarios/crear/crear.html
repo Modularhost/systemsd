@@ -1,27 +1,27 @@
 <div class="user-create-form">
   <h2>Crear Nuevo Usuario</h2>
-  <form id="userForm" autocomplete="off">
-    <div class="form-group">
+  <form id="userForm" autocomplete="off" data-permission="form">
+    <div class="form-group" data-permission="field-fullName">
       <label for="fullName">Nombre Completo:</label>
       <input type="text" id="fullName" required autocomplete="off">
     </div>
-    <div class="form-group">
+    <div class="form-group" data-permission="field-username">
       <label for="username">Nombre de Usuario:</label>
       <input type="text" id="username" required autocomplete="off">
     </div>
-    <div class="form-group">
+    <div class="form-group" data-permission="field-rut">
       <label for="rut">RUT:</label>
       <input type="text" id="rut" required autocomplete="off">
     </div>
-    <div class="form-group">
+    <div class="form-group" data-permission="field-dob">
       <label for="dob">Fecha de Nacimiento:</label>
       <input type="date" id="dob" required autocomplete="off">
     </div>
-    <div class="form-group">
+    <div class="form-group" data-permission="field-email">
       <label for="email">Correo Electrónico:</label>
       <input type="email" id="email" required autocomplete="off">
     </div>
-    <div class="form-group">
+    <div class="form-group" data-permission="field-sex">
       <label for="sex">Sexo:</label>
       <select id="sex" required>
         <option value="">Seleccione</option>
@@ -30,7 +30,7 @@
         <option value="otro">Otro</option>
       </select>
     </div>
-    <div class="form-group">
+    <div class="form-group" data-permission="field-role">
       <label for="role">Rol:</label>
       <select id="role" required onchange="loadDefaultPermissions()">
         <option value="">Seleccione</option>
@@ -40,22 +40,22 @@
       </select>
     </div>
     
-    <button type="submit">Crear Usuario</button>
+    <button type="submit" data-permission="submit-button">Crear Usuario</button>
   </form>
 
   <!-- Tabla de usuarios registrados -->
-  <div class="users-table-section">
+  <div class="users-table-section" data-permission="table">
     <h3>Usuarios Registrados</h3>
     <table id="usersTable">
       <thead>
         <tr>
-          <th>Nombre Completo</th>
-          <th>Nombre de Usuario</th>
-          <th>RUT</th>
-          <th>Fecha de Nacimiento</th>
-          <th>Correo Electrónico</th>
-          <th>Sexo</th>
-          <th>Rol</th>
+          <th data-permission="column-fullName">Nombre Completo</th>
+          <th data-permission="column-username">Nombre de Usuario</th>
+          <th data-permission="column-rut">RUT</th>
+          <th data-permission="column-dob">Fecha de Nacimiento</th>
+          <th data-permission="column-email">Correo Electrónico</th>
+          <th data-permission="column-sex">Sexo</th>
+          <th data-permission="column-role">Rol</th>
         </tr>
       </thead>
       <tbody id="usersTableBody">
@@ -76,9 +76,9 @@
     <span class="close-modal">&times;</span>
     <div class="permissions-section">
       <h3>Permisos Detallados</h3>
-      <p>Seleccione los menús y submenús que el usuario puede acceder.</p>
+      <p>Seleccione los menús, submenús y elementos que el usuario puede acceder.</p>
       <div class="permissions-tree" id="permissionsTree">
-        <!-- Los menús y submenús se cargarán dinámicamente desde JS -->
+        <!-- Los menús, submenús y elementos se cargarán dinámicamente desde JS -->
       </div>
       <button id="savePermissions" class="modal-button">Guardar Permisos</button>
     </div>

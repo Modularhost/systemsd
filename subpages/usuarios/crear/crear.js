@@ -5,11 +5,32 @@ const menus = [
   'dashboard', 'archivos', 'usuarios', 'configuracion', 'cerrar-sesion'
 ];
 
+// Elementos específicos de la página "Crear" en el módulo "Usuarios"
+const createElements = {
+  form: { id: 'form', text: 'Formulario' },
+  'field-fullName': { id: 'field-fullName', text: 'Campo: Nombre Completo' },
+  'field-username': { id: 'field-username', text: 'Campo: Nombre de Usuario' },
+  'field-rut': { id: 'field-rut', text: 'Campo: RUT' },
+  'field-dob': { id: 'field-dob', text: 'Campo: Fecha de Nacimiento' },
+  'field-email': { id: 'field-email', text: 'Campo: Correo Electrónico' },
+  'field-sex': { id: 'field-sex', text: 'Campo: Sexo' },
+  'field-role': { id: 'field-role', text: 'Campo: Rol' },
+  'submit-button': { id: 'submit-button', text: 'Botón: Crear Usuario' },
+  table: { id: 'table', text: 'Tabla de Usuarios' },
+  'column-fullName': { id: 'column-fullName', text: 'Columna: Nombre Completo' },
+  'column-username': { id: 'column-username', text: 'Columna: Nombre de Usuario' },
+  'column-rut': { id: 'column-rut', text: 'Columna: RUT' },
+  'column-dob': { id: 'column-dob', text: 'Columna: Fecha de Nacimiento' },
+  'column-email': { id: 'column-email', text: 'Columna: Correo Electrónico' },
+  'column-sex': { id: 'column-sex', text: 'Columna: Sexo' },
+  'column-role': { id: 'column-role', text: 'Columna: Rol' }
+};
+
 // Estructura para almacenar permisos por defecto
 let defaultPermissions = {
-  administrador: { menus: {}, submenus: {} },
-  operador: { menus: {}, submenus: {} },
-  gestor: { menus: {}, submenus: {} }
+  administrador: { menus: {}, submenus: {}, elements: {} },
+  operador: { menus: {}, submenus: {}, elements: {} },
+  gestor: { menus: {}, submenus: {}, elements: {} }
 };
 
 // Configuración de paginación
@@ -29,9 +50,10 @@ function loadPermissions() {
           <input type="checkbox" class="menu-checkbox" data-menu="${menu}" onchange="toggleSubmenus(this)">
           ${menuText} (Menú Principal)
         </label>
-        <div class="subpermissions" style="display: none; margin-left: 20px;">
+        <div class="subpermissions" style="display: none;">
     `;
 
+    // Agregar submenús (si existen)
     if (submenus[menu]) {
       submenus[menu].forEach(sub => {
         html += `
@@ -45,6 +67,29 @@ function loadPermissions() {
       });
     }
 
+    // Agregar elementos específicos para el menú "Usuarios"
+    if (menu === 'usuarios') {
+      html += `
+        <div class="submenu-group">
+          <label>
+            <input type="checkbox" class="submenu-checkbox" data-submenu="usuarios-crear" onchange="toggleElements(this)">
+            Crear (Página)
+          </label>
+          <div class="elements" style="display: none;">
+      `;
+      Object.values(createElements).forEach(element => {
+        html += `
+          <div class="element-group">
+            <label>
+              <input type="checkbox" class="element-checkbox" data-element="usuarios-crear-${element.id}">
+              ${element.text}
+            </label>
+          </div>
+        `;
+      });
+      html += `</div></div>`;
+    }
+
     html += `</div></div>`;
     tree.innerHTML += html;
   });
@@ -56,7 +101,26 @@ function toggleSubmenus(checkbox) {
   if (subperms && subperms.classList.contains('subpermissions')) {
     subperms.style.display = checkbox.checked ? 'block' : 'none';
     if (!checkbox.checked) {
-      subperms.querySelectorAll('input[type="checkbox"]').forEach(sub => sub.checked = false);
+      subperms.querySelectorAll('input[type="checkbox"]').forEach(sub => {
+        sub.checked = false;
+        if (sub.classList.contains('submenu-checkbox')) {
+          const elements = sub.parentElement.nextElementSibling;
+          if (elements && elements.classList.contains('elements')) {
+            elements.style.display = 'none';
+            elements.querySelectorAll('input[type="checkbox"]').forEach(el => el.checked = false);
+          }
+        }
+      });
+    }
+  }
+}
+
+function toggleElements(checkbox) {
+  const elements = checkbox.parentElement.nextElementSibling;
+  if (elements && elements.classList.contains('elements')) {
+    elements.style.display = checkbox.checked ? 'block' : 'none';
+    if (!checkbox.checked) {
+      elements.querySelectorAll('input[type="checkbox"]').forEach(el => el.checked = false);
     }
   }
 }
@@ -74,19 +138,29 @@ function togglePermissionsModal(role) {
 // Cargar permisos por defecto según rol
 function loadDefaultPermissions() {
   const role = document.getElementById('role').value;
-  const perms = defaultPermissions[role] || { menus: {}, submenus: {} };
+  const perms = defaultPermissions[role] || { menus: {}, submenus: {}, elements: {} };
   const permissionsTree = document.getElementById('permissionsTree');
 
   togglePermissionsModal(role);
 
   if (role === 'administrador') {
+    // Administradores tienen acceso completo
     document.querySelectorAll('.menu-checkbox').forEach(checkbox => {
       checkbox.checked = true;
       checkbox.disabled = true;
       toggleSubmenus(checkbox);
-      checkbox.parentElement.nextElementSibling.querySelectorAll('.submenu-checkbox').forEach(sub => {
+      const subperms = checkbox.parentElement.nextElementSibling;
+      subperms.querySelectorAll('.submenu-checkbox').forEach(sub => {
         sub.checked = true;
         sub.disabled = true;
+        toggleElements(sub);
+        const elements = sub.parentElement.nextElementSibling;
+        if (elements && elements.classList.contains('elements')) {
+          elements.querySelectorAll('.element-checkbox').forEach(el => {
+            el.checked = true;
+            el.disabled = true;
+          });
+        }
       });
     });
   } else {
@@ -95,10 +169,20 @@ function loadDefaultPermissions() {
       const menu = checkbox.getAttribute('data-menu');
       checkbox.checked = perms.menus[menu] || false;
       toggleSubmenus(checkbox);
-      checkbox.parentElement.nextElementSibling.querySelectorAll('.submenu-checkbox').forEach(sub => {
+      const subperms = checkbox.parentElement.nextElementSibling;
+      subperms.querySelectorAll('.submenu-checkbox').forEach(sub => {
         sub.disabled = false;
         const submenu = sub.getAttribute('data-submenu');
         sub.checked = perms.submenus[submenu] || false;
+        toggleElements(sub);
+        const elements = sub.parentElement.nextElementSibling;
+        if (elements && elements.classList.contains('elements')) {
+          elements.querySelectorAll('.element-checkbox').forEach(el => {
+            el.disabled = false;
+            const element = el.getAttribute('data-element');
+            el.checked = perms.elements[element] || false;
+          });
+        }
       });
     });
   }
@@ -124,13 +208,13 @@ function loadUsersTable(page = 1) {
   paginatedUsers.forEach(user => {
     const row = document.createElement('tr');
     row.innerHTML = `
-      <td>${user.fullName}</td>
-      <td>${user.username}</td>
-      <td>${user.rut}</td>
-      <td>${user.dob}</td>
-      <td>${user.email}</td>
-      <td>${user.sex.charAt(0).toUpperCase() + user.sex.slice(1)}</td>
-      <td>${user.role.charAt(0).toUpperCase() + user.role.slice(1)}</td>
+      <td ${user.permissions.elements['usuarios-crear-column-fullName'] ? '' : 'class="hidden"'}>${user.fullName}</td>
+      <td ${user.permissions.elements['usuarios-crear-column-username'] ? '' : 'class="hidden"'}>${user.username}</td>
+      <td ${user.permissions.elements['usuarios-crear-column-rut'] ? '' : 'class="hidden"'}>${user.rut}</td>
+      <td ${user.permissions.elements['usuarios-crear-column-dob'] ? '' : 'class="hidden"'}>${user.dob}</td>
+      <td ${user.permissions.elements['usuarios-crear-column-email'] ? '' : 'class="hidden"'}>${user.email}</td>
+      <td ${user.permissions.elements['usuarios-crear-column-sex'] ? '' : 'class="hidden"'}>${user.sex.charAt(0).toUpperCase() + user.sex.slice(1)}</td>
+      <td ${user.permissions.elements['usuarios-crear-column-role'] ? '' : 'class="hidden"'}>${user.role.charAt(0).toUpperCase() + user.role.slice(1)}</td>
     `;
     tableBody.appendChild(row);
   });
@@ -139,6 +223,35 @@ function loadUsersTable(page = 1) {
   pageInfo.textContent = `Página ${currentPage} de ${totalPages || 1}`;
   prevButton.disabled = currentPage === 1;
   nextButton.disabled = currentPage === totalPages || totalPages === 0;
+}
+
+// Aplicar permisos al cargar la página
+function applyPermissions() {
+  // Simulación del usuario actual (por ejemplo, usuario 9)
+  const currentUserId = 'user9'; // Deberías obtener esto de tu sistema de autenticación
+  const users = JSON.parse(localStorage.getItem('users')) || [];
+  const currentUser = users.find(user => user.uid === currentUserId);
+
+  if (currentUser && currentUser.permissions) {
+    const perms = currentUser.permissions;
+
+    // Ocultar/mostrar elementos del formulario
+    document.querySelectorAll('[data-permission]').forEach(element => {
+      const permission = element.getAttribute('data-permission');
+      if (permission === 'form') {
+        element.classList.toggle('hidden', !perms.elements['usuarios-crear-form']);
+      } else if (permission.startsWith('field-') || permission === 'submit-button') {
+        element.classList.toggle('hidden', !perms.elements[`usuarios-crear-${permission}`]);
+      } else if (permission === 'table') {
+        element.classList.toggle('hidden', !perms.elements['usuarios-crear-table']);
+      } else if (permission.startsWith('column-')) {
+        element.classList.toggle('hidden', !perms.elements[`usuarios-crear-${permission}`]);
+      }
+    });
+
+    // Ocultar/mostrar columnas dinámicamente en la tabla
+    loadUsersTable(currentPage);
+  }
 }
 
 // Cerrar el modal
@@ -156,6 +269,7 @@ document.getElementById('userForm').addEventListener('submit', (e) => {
   e.preventDefault();
 
   const userData = {
+    uid: `user${Math.floor(Math.random() * 1000)}`, // Simulación de UID único
     fullName: document.getElementById('fullName').value,
     username: document.getElementById('username').value,
     rut: document.getElementById('rut').value,
@@ -165,11 +279,13 @@ document.getElementById('userForm').addEventListener('submit', (e) => {
     role: document.getElementById('role').value,
     permissions: {
       menus: {},
-      submenus: {}
+      submenus: {},
+      elements: {}
     }
   };
 
   if (userData.role === 'administrador') {
+    // Asignar todos los permisos para administradores
     menus.forEach(menu => {
       userData.permissions.menus[menu] = true;
       if (submenus[menu]) {
@@ -177,13 +293,22 @@ document.getElementById('userForm').addEventListener('submit', (e) => {
           userData.permissions.submenus[`${menu}-${sub.id || sub.page}`] = true;
         });
       }
+      if (menu === 'usuarios') {
+        Object.keys(createElements).forEach(element => {
+          userData.permissions.elements[`usuarios-crear-${element}`] = true;
+        });
+      }
     });
   } else {
+    // Asignar permisos seleccionados para operadores y gestores
     document.querySelectorAll('.menu-checkbox').forEach(checkbox => {
       userData.permissions.menus[checkbox.getAttribute('data-menu')] = checkbox.checked;
     });
     document.querySelectorAll('.submenu-checkbox').forEach(checkbox => {
       userData.permissions.submenus[checkbox.getAttribute('data-submenu')] = checkbox.checked;
+    });
+    document.querySelectorAll('.element-checkbox').forEach(checkbox => {
+      userData.permissions.elements[checkbox.getAttribute('data-element')] = checkbox.checked;
     });
   }
 
@@ -195,7 +320,7 @@ document.getElementById('userForm').addEventListener('submit', (e) => {
   document.getElementById('userForm').reset();
   document.getElementById('permissionsModal').style.display = 'none';
   loadDefaultPermissions();
-  loadUsersTable(currentPage); // Actualizar la tabla manteniendo la página actual
+  loadUsersTable(currentPage);
 });
 
 // Manejar botones de paginación
@@ -217,3 +342,4 @@ document.getElementById('nextPage').addEventListener('click', () => {
 loadPermissions();
 loadDefaultPermissions();
 loadUsersTable();
+applyPermissions();

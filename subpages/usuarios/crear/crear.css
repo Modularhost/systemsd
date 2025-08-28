@@ -107,6 +107,19 @@ form#userForm {
   background: #e5e7eb;
 }
 
+.element-group {
+  margin-left: 40px;
+  margin-bottom: 6px;
+  padding: 4px;
+  border-left: 2px solid #9ca3af;
+  background: #f9fafb;
+  transition: all 0.2s ease;
+}
+
+.element-group:hover {
+  background: #e5e7eb;
+}
+
 label {
   cursor: pointer;
   font-size: 13px;
@@ -133,12 +146,12 @@ button[type="submit"] {
   width: fit-content;
   margin-left: 12px;
   margin-right: 0;
-  padding: 3px 10px; /* Reducido para un botón más pequeño */
+  padding: 3px 10px;
   background: #4cc9f0;
   color: #ffffff;
   border: none;
   cursor: pointer;
-  font-size: 10px; /* Reducido para un botón más pequeño */
+  font-size: 10px;
   font-weight: 600;
   transition: all 0.2s ease;
   margin-top: 12px;
@@ -253,7 +266,7 @@ button[type="submit"]:active {
 }
 
 #usersTable th {
-  background: #6b7280; /* Gris moderno para el encabezado */
+  background: #6b7280;
   color: #ffffff;
   font-weight: 600;
   position: sticky;
@@ -309,6 +322,10 @@ button[type="submit"]:active {
   color: #333;
 }
 
+.hidden {
+  display: none;
+}
+
 @media (max-width: 1024px) {
   form#userForm {
     grid-template-columns: repeat(2, 1fr);
@@ -329,7 +346,8 @@ button[type="submit"]:active {
   }
 
   .permission-group,
-  .submenu-group {
+  .submenu-group,
+  .element-group {
     margin-left: 6px;
   }
 

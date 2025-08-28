@@ -1,3 +1,10 @@
+// Verificar que firebase esté definido
+if (typeof firebase === 'undefined') {
+  console.error('Firebase no está definido. Asegúrate de que los scripts de Firebase se carguen correctamente.');
+  alert('Error: Firebase no está cargado. Revisa la consola para más detalles.');
+  throw new Error('Firebase no está definido');
+}
+
 // Configuración de Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyB_LByv2DPTs2298UEHSD7cFKZN6L8gtls",
@@ -71,7 +78,7 @@ function loadPermissions() {
     `;
 
     // Agregar submenús (si existen)
-    if (window.submenus[menu]) {
+    if (window.submenus && window.submenus[menu]) {
       window.submenus[menu].forEach(sub => {
         html += `
           <div class="submenu-group">
@@ -207,64 +214,78 @@ async function loadUsersTable(page = 1) {
   const prevButton = document.getElementById('prevPage');
   const nextButton = document.getElementById('nextPage');
 
-  // Obtener usuarios desde Firestore
-  const usersSnapshot = await db.collection('users').get();
-  const users = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  try {
+    // Obtener usuarios desde Firestore
+    const usersSnapshot = await db.collection('users').get();
+    const users = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-  // Calcular índices de paginación
-  const totalPages = Math.ceil(users.length / itemsPerPage);
-  currentPage = Math.max(1, Math.min(page, totalPages));
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const paginatedUsers = users.slice(startIndex, endIndex);
+    // Calcular índices de paginación
+    const totalPages = Math.ceil(users.length / itemsPerPage);
+    currentPage = Math.max(1, Math.min(page, totalPages));
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedUsers = users.slice(startIndex, endIndex);
 
-  // Llenar la tabla
-  tableBody.innerHTML = '';
-  paginatedUsers.forEach(user => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td ${user.permissions.elements['usuarios-crear-column-fullName'] ? '' : 'class="hidden"'}>${user.fullName}</td>
-      <td ${user.permissions.elements['usuarios-crear-column-username'] ? '' : 'class="hidden"'}>${user.username}</td>
-      <td ${user.permissions.elements['usuarios-crear-column-rut'] ? '' : 'class="hidden"'}>${user.rut}</td>
-      <td ${user.permissions.elements['usuarios-crear-column-dob'] ? '' : 'class="hidden"'}>${user.dob}</td>
-      <td ${user.permissions.elements['usuarios-crear-column-email'] ? '' : 'class="hidden"'}>${user.email}</td>
-      <td ${user.permissions.elements['usuarios-crear-column-sex'] ? '' : 'class="hidden"'}>${user.sex.charAt(0).toUpperCase() + user.sex.slice(1)}</td>
-      <td ${user.permissions.elements['usuarios-crear-column-role'] ? '' : 'class="hidden"'}>${user.role.charAt(0).toUpperCase() + user.role.slice(1)}</td>
-    `;
-    tableBody.appendChild(row);
-  });
+    // Llenar la tabla
+    tableBody.innerHTML = '';
+    paginatedUsers.forEach(user => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td ${user.permissions.elements['usuarios-crear-column-fullName'] ? '' : 'class="hidden"'}>${user.fullName}</td>
+        <td ${user.permissions.elements['usuarios-crear-column-username'] ? '' : 'class="hidden"'}>${user.username}</td>
+        <td ${user.permissions.elements['usuarios-crear-column-rut'] ? '' : 'class="hidden"'}>${user.rut}</td>
+        <td ${user.permissions.elements['usuarios-crear-column-dob'] ? '' : 'class="hidden"'}>${user.dob}</td>
+        <td ${user.permissions.elements['usuarios-crear-column-email'] ? '' : 'class="hidden"'}>${user.email}</td>
+        <td ${user.permissions.elements['usuarios-crear-column-sex'] ? '' : 'class="hidden"'}>${user.sex.charAt(0).toUpperCase() + user.sex.slice(1)}</td>
+        <td ${user.permissions.elements['usuarios-crear-column-role'] ? '' : 'class="hidden"'}>${user.role.charAt(0).toUpperCase() + user.role.slice(1)}</td>
+      `;
+      tableBody.appendChild(row);
+    });
 
-  // Actualizar información de paginación
-  pageInfo.textContent = `Página ${currentPage} de ${totalPages || 1}`;
-  prevButton.disabled = currentPage === 1;
-  nextButton.disabled = currentPage === totalPages || totalPages === 0;
+    // Actualizar información de paginación
+    pageInfo.textContent = `Página ${currentPage} de ${totalPages || 1}`;
+    prevButton.disabled = currentPage === 1;
+    nextButton.disabled = currentPage === totalPages || totalPages === 0;
+  } catch (error) {
+    console.error('Error al cargar usuarios:', error);
+    alert(`Error al cargar usuarios: ${error.message}`);
+  }
 }
 
 // Aplicar permisos al cargar la página
 async function applyPermissions() {
   const user = auth.currentUser;
   if (user) {
-    const userDoc = await db.collection('users').doc(user.uid).get();
-    if (userDoc.exists) {
-      const perms = userDoc.data().permissions;
+    try {
+      const userDoc = await db.collection('users').doc(user.uid).get();
+      if (userDoc.exists) {
+        const perms = userDoc.data().permissions;
 
-      // Ocultar/mostrar elementos del formulario
-      document.querySelectorAll('[data-permission]').forEach(element => {
-        const permission = element.getAttribute('data-permission');
-        if (permission === 'form') {
-          element.classList.toggle('hidden', !perms.elements['usuarios-crear-form']);
-        } else if (permission.startsWith('field-') || permission === 'submit-button') {
-          element.classList.toggle('hidden', !perms.elements[`usuarios-crear-${permission}`]);
-        } else if (permission === 'table') {
-          element.classList.toggle('hidden', !perms.elements['usuarios-crear-table']);
-        } else if (permission.startsWith('column-')) {
-          element.classList.toggle('hidden', !perms.elements[`usuarios-crear-${permission}`]);
-        }
-      });
+        // Ocultar/mostrar elementos del formulario
+        document.querySelectorAll('[data-permission]').forEach(element => {
+          const permission = element.getAttribute('data-permission');
+          if (permission === 'form') {
+            element.classList.toggle('hidden', !perms.elements['usuarios-crear-form']);
+          } else if (permission.startsWith('field-') || permission === 'submit-button') {
+            element.classList.toggle('hidden', !perms.elements[`usuarios-crear-${permission}`]);
+          } else if (permission === 'table') {
+            element.classList.toggle('hidden', !perms.elements['usuarios-crear-table']);
+          } else if (permission.startsWith('column-')) {
+            element.classList.toggle('hidden', !perms.elements[`usuarios-crear-${permission}`]);
+          }
+        });
 
-      // Ocultar/mostrar columnas dinámicamente en la tabla
-      await loadUsersTable(currentPage);
+        // Ocultar/mostrar columnas dinámicamente en la tabla
+        await loadUsersTable(currentPage);
+      } else {
+        console.warn('Usuario autenticado no encontrado en Firestore');
+      }
+    } catch (error) {
+      console.error('Error al aplicar permisos:', error);
+      alert(`Error al aplicar permisos: ${error.message}`);
     }
+  } else {
+    console.warn('No hay usuario autenticado');
   }
 }
 
@@ -307,7 +328,7 @@ document.getElementById('userForm').addEventListener('submit', async (e) => {
     if (userData.role === 'administrador') {
       menus.forEach(menu => {
         userData.permissions.menus[menu] = true;
-        if (window.submenus[menu]) {
+        if (window.submenus && window.submenus[menu]) {
           window.submenus[menu].forEach(sub => {
             userData.permissions.submenus[`${menu}-${sub.page}`] = true;
             if (menu === 'usuarios' && sub.page === 'crear') {
@@ -370,11 +391,13 @@ document.getElementById('nextPage').addEventListener('click', async () => {
 });
 
 // Inicializar
-loadPermissions();
-loadDefaultPermissions();
-loadUsersTable();
-auth.onAuthStateChanged(user => {
-  if (user) {
-    applyPermissions();
-  }
+document.addEventListener('DOMContentLoaded', () => {
+  loadPermissions();
+  loadDefaultPermissions();
+  loadUsersTable();
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      applyPermissions();
+    }
+  });
 });

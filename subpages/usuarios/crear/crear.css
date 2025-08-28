@@ -73,7 +73,7 @@ form#userForm {
   border-radius: 8px;
   border: 1px solid #ddd;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  max-height: 300px; /* Limita la altura para permitir desplazamiento */
+  max-height: 600px; /* Limita la altura para permitir desplazamiento */
   overflow-y: auto; /* Barra de desplazamiento solo en .permissions-section */
 }
 

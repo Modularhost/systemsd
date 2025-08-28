@@ -52,6 +52,19 @@ body { display: flex; flex-direction: column; height: 100vh; background: #f5f5f5
 }
 .sidebar a:hover { background: #ddd; color: #333; }
 
+/* Submenu */
+.submenu {
+  display: none;
+  width: 100%;
+}
+.back-link {
+  color: #4cc9f0 !important;
+  font-weight: bold;
+}
+.submenu-content a {
+  padding-left: 20px; /* Indent submenu items */
+}
+
 /* Main content */
 .main {
   flex: 1;

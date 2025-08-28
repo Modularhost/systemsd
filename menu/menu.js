@@ -1,15 +1,13 @@
-// Mostrar la fecha actual
 const dateElement = document.getElementById('currentDate');
 const today = new Date();
 const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 dateElement.textContent = today.toLocaleDateString('es-ES', options);
 
-// Datos de los submenús
 const submenus = {
   implantes: [
-    { text: 'Ingresos', page: 'ingresos', folder: 'implantes', jsFiles: ['ingresos', 'formulas', 'lecturas'] },
+    { text: 'Ingresos', page: 'ingresos', folder: 'implantes', jsFiles: ['ingresos'] },
     { text: 'Cargar', page: 'cargar', folder: 'implantes', jsFiles: ['cargar'] },
-    { text: 'Pacientes', page: 'pacientes', folder: 'implantes', jsFiles: ['pacientes', 'datos', 'historial', 'notificaciones'] },
+    { text: 'Pacientes', page: 'pacientes', folder: 'implantes', jsFiles: ['pacientes'] },
     { text: 'Referencias', page: 'referencias', folder: 'implantes', jsFiles: ['referencias'] }
   ],
   consignacion: [
@@ -30,8 +28,9 @@ const submenus = {
     { text: 'Imágenes', page: 'imagenes', folder: 'visualizador', jsFiles: ['imagenes'] }
   ],
   prestacion: [
-    { text: 'Servicios', page: 'servicios', folder: 'prestacion', jsFiles: ['servicios'] },
-    { text: 'Facturación', page: 'facturacion', folder: 'prestacion', jsFiles: ['facturacion'] }
+    { text: 'Empresas', page: 'empresas', folder: 'prestacion', jsFiles: ['empresas'] },
+    { text: 'Médicos', page: 'medicos', folder: 'prestacion', jsFiles: ['medicos'] },
+    { text: 'Areas', page: 'areas', folder: 'prestacion', jsFiles: ['areas'] }
   ],
   herramientas: [
     { text: 'Utilidades', page: 'utilidades', folder: 'herramientas', jsFiles: ['utilidades'] },
@@ -70,22 +69,17 @@ const submenus = {
   ]
 };
 
-// Elementos del DOM
 const mainMenu = document.querySelector('.main-menu');
 const submenu = document.querySelector('.submenu');
 const submenuContent = document.querySelector('.submenu-content');
 const backLink = document.querySelector('.back-link');
 const content = document.querySelector('.content');
 
-// Función para cargar contenido dinámico
 function loadSubpage(folder, page, jsFiles) {
-  // Limpiar el contenido anterior
   content.innerHTML = '';
   
-  // Remover estilos y scripts anteriores
   document.querySelectorAll('link[data-subpage], script[data-subpage]').forEach(el => el.remove());
 
-  // Cargar HTML
   fetch(`../subpages/${folder}/${page}/${page}.html`)
     .then(response => response.text())
     .then(data => {
@@ -98,7 +92,6 @@ function loadSubpage(folder, page, jsFiles) {
       link.dataset.subpage = page;
       document.head.appendChild(link);
 
-      // Cargar todos los archivos JS especificados
       jsFiles.forEach(jsFile => {
         const script = document.createElement('script');
         script.src = `../subpages/${folder}/${page}/${jsFile}.js`;
@@ -112,32 +105,27 @@ function loadSubpage(folder, page, jsFiles) {
     });
 }
 
-// Mostrar submenú al hacer clic en un enlace del menú principal
 document.querySelectorAll('.main-menu a').forEach(link => {
   link.addEventListener('click', (e) => {
     e.preventDefault();
     const submenuId = link.getAttribute('data-submenu');
     const submenuItems = submenus[submenuId] || [];
 
-    // Poblar el contenido del submenú
     submenuContent.innerHTML = submenuItems.map(item => 
       `<a href="#" data-folder="${item.folder}" data-page="${item.page}" data-js-files="${item.jsFiles.join(',')}">${item.text}</a>`
     ).join('');
 
-    // Ocultar menú principal y mostrar submenú
     mainMenu.style.display = 'none';
     submenu.style.display = 'block';
   });
 });
 
-// Volver al menú principal
 backLink.addEventListener('click', (e) => {
   e.preventDefault();
   submenu.style.display = 'none';
   mainMenu.style.display = 'block';
 });
 
-// Cargar subpágina al hacer clic en un enlace del submenú
 submenuContent.addEventListener('click', (e) => {
   e.preventDefault();
   if (e.target.tagName === 'A') {

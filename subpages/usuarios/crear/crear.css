@@ -2,56 +2,57 @@
   width: 100%;
   height: 100%;
   margin: 0;
-  padding: 16px; /* Reducido para coincidir con el estilo compacto de menu.css */
+  padding: 16px;
   background: #ffffff;
-  border-radius: 10px; /* Coincide con .card en menu.css */
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05); /* Coincide con .card */
-  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; /* Igual que menu.css */
+  border-radius: 10px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
   display: flex;
   flex-direction: column;
+  overflow: hidden; /* Evita cualquier barra de desplazamiento en .user-create-form */
 }
 
 .user-create-form h2 {
-  font-size: 18px; /* Igual que .header h1 en menu.css */
-  color: #4cc9f0; /* Coincide con el color de acento de menu.css */
-  margin-bottom: 16px; /* Reducido */
+  font-size: 18px;
+  color: #4cc9f0;
+  margin-bottom: 16px;
   text-align: center;
   font-weight: 700;
 }
 
 .user-create-form h3 {
-  font-size: 14px; /* Igual que .card h3 en menu.css */
-  color: #4cc9f0; /* Coincide con el color de acento */
-  margin-top: 16px; /* Reducido */
-  margin-bottom: 8px; /* Reducido */
+  font-size: 14px;
+  color: #4cc9f0;
+  margin-top: 16px;
+  margin-bottom: 8px;
   font-weight: 600;
 }
 
 .form-group {
-  margin-bottom: 12px; /* Reducido para menos espacio entre filas */
+  margin-bottom: 12px;
 }
 
 form#userForm {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 12px; /* Reducido para mayor compacidad */
+  gap: 12px;
 }
 
 .form-group label {
   display: block;
   font-weight: 500;
-  color: #333; /* Coincide con .sidebar a */
-  margin-bottom: 6px; /* Reducido */
-  font-size: 13px; /* Igual que .sidebar a y .card p */
+  color: #333;
+  margin-bottom: 6px;
+  font-size: 13px;
 }
 
 .form-group input,
 .form-group select {
   width: 100%;
-  padding: 6px; /* Reducido para campos más cortos */
-  border: 1px solid #ddd; /* Coincide con .sidebar border */
-  border-radius: 6px; /* Coincide con .sidebar a */
-  font-size: 13px; /* Igual que .sidebar a y .card p */
+  padding: 6px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 13px;
   background: #ffffff;
   transition: all 0.2s ease;
 }
@@ -59,24 +60,26 @@ form#userForm {
 .form-group input:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #4cc9f0; /* Coincide con el color de acento */
-  box-shadow: 0 0 0 2px rgba(76, 201, 240, 0.2); /* Adaptado a menu.css */
+  border-color: #4cc9f0;
+  box-shadow: 0 0 0 2px rgba(76, 201, 240, 0.2);
   background: #f8fafc;
 }
 
 .permissions-section {
   grid-column: 1 / -1;
-  margin-top: 16px; /* Reducido */
-  padding: 12px; /* Reducido */
-  background: #f0f2f5; /* Coincide con .main en menu.css */
+  margin-top: 16px;
+  padding: 12px;
+  background: #f0f2f5;
   border-radius: 8px;
-  border: 1px solid #ddd; /* Coincide con .sidebar */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Más ligero */
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  max-height: 300px; /* Limita la altura para permitir desplazamiento */
+  overflow-y: auto; /* Barra de desplazamiento solo en .permissions-section */
 }
 
 .permissions-tree {
-  margin-top: 12px; /* Reducido */
-  padding: 12px; /* Reducido */
+  margin-top: 12px;
+  padding: 12px;
   background: #ffffff;
   border-radius: 6px;
   border: 1px solid #ddd;
@@ -84,9 +87,9 @@ form#userForm {
 }
 
 .permission-group {
-  margin-bottom: 12px; /* Reducido */
-  padding: 8px; /* Reducido */
-  border-left: 3px solid #4cc9f0; /* Coincide con el color de acento */
+  margin-bottom: 12px;
+  padding: 8px;
+  border-left: 3px solid #4cc9f0;
   background: linear-gradient(to right, #f0f7ff, #ffffff);
   border-radius: 6px;
   transition: all 0.2s ease;
@@ -98,11 +101,11 @@ form#userForm {
 }
 
 .submenu-group {
-  margin-left: 20px; /* Reducido */
-  margin-bottom: 8px; /* Reducido */
-  padding: 6px; /* Reducido */
+  margin-left: 20px;
+  margin-bottom: 8px;
+  padding: 6px;
   border-left: 2px solid #6b7280;
-  background: #f0f2f5; /* Coincide con .main */
+  background: #f0f2f5;
   border-radius: 4px;
   transition: all 0.2s ease;
 }
@@ -113,22 +116,22 @@ form#userForm {
 
 label {
   cursor: pointer;
-  font-size: 13px; /* Igual que .sidebar a y .card p */
+  font-size: 13px;
   color: #333;
   display: flex;
   align-items: center;
-  margin-bottom: 6px; /* Reducido */
+  margin-bottom: 6px;
   transition: color 0.2s ease;
 }
 
 label:hover {
-  color: #4cc9f0; /* Coincide con el color de acento */
+  color: #4cc9f0;
 }
 
 label input[type="checkbox"] {
-  margin-right: 6px; /* Reducido */
-  accent-color: #4cc9f0; /* Coincide con el color de acento */
-  transform: scale(1.1); /* Reducido */
+  margin-right: 6px;
+  accent-color: #4cc9f0;
+  transform: scale(1.1);
   border-radius: 3px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -139,22 +142,23 @@ label input[type="checkbox"]:hover {
 }
 
 button[type="submit"] {
-  grid-column: 1 / -1;
-  padding: 8px 24px; /* Reducido para mayor compacidad */
-  background: #4cc9f0; /* Coincide con el color de acento */
+  width: fit-content; /* Ajusta el ancho al contenido */
+  margin-left: auto;
+  margin-right: auto; /* Centra el botón */
+  padding: 8px 20px; /* Reducido ligeramente */
+  background: #4cc9f0;
   color: #ffffff;
   border: none;
-  border-radius: 6px; /* Coincide con .sidebar a */
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 13px; /* Igual que .sidebar a y .card p */
+  font-size: 13px;
   font-weight: 600;
   transition: all 0.2s ease;
-  margin-top: 16px; /* Reducido */
-  text-align: center;
+  margin-top: 16px;
 }
 
 button[type="submit"]:hover {
-  background: #3ba8d0; /* Tono más oscuro del color de acento */
+  background: #3ba8d0;
   transform: translateY(-1px);
   box-shadow: 0 2px 8px rgba(76, 201, 240, 0.3);
 }
@@ -176,15 +180,15 @@ button[type="submit"]:active {
   }
 
   .user-create-form {
-    padding: 12px; /* Reducido */
+    padding: 12px;
   }
 
   .permissions-tree {
-    font-size: 12px; /* Más pequeño para pantallas pequeñas */
+    font-size: 12px;
   }
 
   .permission-group,
   .submenu-group {
-    margin-left: 6px; /* Reducido */
+    margin-left: 6px;
   }
 }

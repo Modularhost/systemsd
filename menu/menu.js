@@ -1,6 +1,3 @@
-console.log('menu.js se ha cargado correctamente');
-
-// Mostrar fecha actual
 const dateElement = document.getElementById('currentDate');
 if (dateElement) {
     const today = new Date();
@@ -10,7 +7,6 @@ if (dateElement) {
     console.error('Error: No se encontró el elemento #currentDate');
 }
 
-// Estructura de submenús
 const submenus = {
     implantes: [
         { text: 'Ingresos', page: 'ingresos', folder: 'implantes', jsFiles: ['ingresos'] },
@@ -77,11 +73,9 @@ const submenus = {
     ]
 };
 
-// Cargar scripts de Firebase
 function loadScript(url) {
     return new Promise((resolve, reject) => {
         if (document.querySelector(`script[src="${url}"]`)) {
-            console.log(`Script ${url} ya está cargado`);
             resolve();
             return;
         }
@@ -89,7 +83,6 @@ function loadScript(url) {
         script.src = url;
         script.async = true;
         script.onload = () => {
-            console.log(`Script ${url} cargado correctamente`);
             resolve();
         };
         script.onerror = () => {
@@ -100,24 +93,19 @@ function loadScript(url) {
     });
 }
 
-// Inicializar Firebase
 if (document.readyState === 'loading') {
-    console.log('DOM aún cargando, esperando DOMContentLoaded');
     document.addEventListener('DOMContentLoaded', initializeMenu);
 } else {
-    console.log('DOM ya cargado, inicializando menú');
     initializeMenu();
 }
 
 function initializeMenu() {
-    console.log('Iniciando menú');
     Promise.all([
         loadScript('https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js'),
         loadScript('https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js'),
         loadScript('https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js')
     ])
     .then(() => {
-        console.log('Scripts de Firebase cargados correctamente');
         if (!firebase.apps.length) {
             firebase.initializeApp({
                 apiKey: "AIzaSyB_LByv2DPTs2298UEHSD7cFKZN6L8gtls",
@@ -128,9 +116,7 @@ function initializeMenu() {
                 appId: "1:116607414952:web:31a7e3f47711844b95889d",
                 measurementId: "G-C8V7X0RGH5"
             });
-            console.log('Firebase se ha inicializado correctamente');
         } else {
-            console.log('Firebase ya estaba inicializado');
         }
         const db = firebase.firestore();
         const auth = firebase.auth();
@@ -140,7 +126,7 @@ function initializeMenu() {
         const submenuContent = document.querySelector('.submenu-content');
         const backLink = document.querySelector('.back-link');
         const content = document.querySelector('.content');
-        const userElement = document.querySelector('.user'); // Elemento para mostrar el nombre del usuario
+        const userElement = document.querySelector('.user'); 
 
         if (!mainMenu || !submenu || !submenuContent || !backLink || !content || !userElement) {
             console.error('Error: No se encontraron uno o más elementos del DOM');
@@ -148,7 +134,6 @@ function initializeMenu() {
         }
 
         function loadSubpage(folder, page, jsFiles, permissions) {
-            console.log(`Cargando subpágina: ${folder}/${page}`);
             content.innerHTML = '';
             document.querySelectorAll('link[data-subpage], script[data-subpage]').forEach(el => el.remove());
 
@@ -159,7 +144,6 @@ function initializeMenu() {
                 })
                 .then(data => {
                     content.innerHTML = data;
-                    console.log(`Página ${page}.html cargada`);
 
                     const link = document.createElement('link');
                     link.rel = 'stylesheet';
@@ -175,7 +159,6 @@ function initializeMenu() {
                             script.dataset.subpage = page;
                             document.body.appendChild(script);
                         } else {
-                            console.log(`Script ${scriptSrc} ya está cargado`);
                         }
                     });
                 })
@@ -186,7 +169,6 @@ function initializeMenu() {
         }
 
         function renderMenu(permissions) {
-            console.log('Renderizando menú con permisos:', permissions);
             mainMenu.innerHTML = Object.keys(submenus)
                 .filter(menu => permissions[menu])
                 .map(menu => `
@@ -223,7 +205,6 @@ function initializeMenu() {
                 if (folder && page && jsFiles && permissions[folder]?.[page]) {
                     loadSubpage(folder, page, jsFiles, permissions);
                 } else {
-                    console.log('Acceso denegado a la página:', page);
                     content.innerHTML = '<p>No tienes permiso para acceder a esta página</p>';
                 }
             });
@@ -237,19 +218,15 @@ function initializeMenu() {
 
         auth.onAuthStateChanged(async user => {
             if (user) {
-                console.log('Usuario autenticado:', user.uid);
                 try {
                     const doc = await db.collection('users').doc(user.uid).get();
                     if (doc.exists) {
                         const userData = doc.data();
                         const permissions = userData.permissions || {};
                         const fullName = userData.fullName || 'Usuario';
-                        console.log('Permisos obtenidos:', permissions);
-                        console.log('Nombre completo:', fullName);
-                        userElement.textContent = `Bienvenido, ${fullName}`; // Actualizar el nombre del usuario
+                        userElement.textContent = `Bienvenido, ${fullName}`; 
                         renderMenu(permissions);
                     } else {
-                        console.log('No se encontraron datos para el usuario');
                         userElement.textContent = 'Bienvenido, Usuario';
                         mainMenu.innerHTML = '<p>No se encontraron permisos</p>';
                     }
@@ -259,7 +236,6 @@ function initializeMenu() {
                     mainMenu.innerHTML = '<p>Error al cargar permisos</p>';
                 }
             } else {
-                console.log('No hay usuario autenticado');
                 userElement.textContent = 'Bienvenido, Usuario';
                 mainMenu.innerHTML = '<p>Inicia sesión para ver el menú</p>';
             }

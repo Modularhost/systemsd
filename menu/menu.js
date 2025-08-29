@@ -140,8 +140,9 @@ function initializeMenu() {
         const submenuContent = document.querySelector('.submenu-content');
         const backLink = document.querySelector('.back-link');
         const content = document.querySelector('.content');
+        const userElement = document.querySelector('.user'); // Elemento para mostrar el nombre del usuario
 
-        if (!mainMenu || !submenu || !submenuContent || !backLink || !content) {
+        if (!mainMenu || !submenu || !submenuContent || !backLink || !content || !userElement) {
             console.error('Error: No se encontraron uno o más elementos del DOM');
             return;
         }
@@ -240,19 +241,26 @@ function initializeMenu() {
                 try {
                     const doc = await db.collection('users').doc(user.uid).get();
                     if (doc.exists) {
-                        const permissions = doc.data().permissions || {};
+                        const userData = doc.data();
+                        const permissions = userData.permissions || {};
+                        const fullName = userData.fullName || 'Usuario';
                         console.log('Permisos obtenidos:', permissions);
+                        console.log('Nombre completo:', fullName);
+                        userElement.textContent = `Bienvenido, ${fullName}`; // Actualizar el nombre del usuario
                         renderMenu(permissions);
                     } else {
-                        console.log('No se encontraron permisos para el usuario');
+                        console.log('No se encontraron datos para el usuario');
+                        userElement.textContent = 'Bienvenido, Usuario';
                         mainMenu.innerHTML = '<p>No se encontraron permisos</p>';
                     }
                 } catch (error) {
-                    console.error('Error al obtener permisos:', error);
+                    console.error('Error al obtener datos del usuario:', error);
+                    userElement.textContent = 'Bienvenido, Usuario';
                     mainMenu.innerHTML = '<p>Error al cargar permisos</p>';
                 }
             } else {
                 console.log('No hay usuario autenticado');
+                userElement.textContent = 'Bienvenido, Usuario';
                 mainMenu.innerHTML = '<p>Inicia sesión para ver el menú</p>';
             }
         });

@@ -1,11 +1,8 @@
 console.log('crear.js se ha cargado correctamente');
 
 // Bandera para modo de prueba (sin autenticación)
-if (typeof TEST_MODE === 'undefined') {
-    const TEST_MODE = true; // Cambiar a false cuando estés listo para usar autenticación
-} else {
-    console.log('TEST_MODE ya está definido, usando valor existente:', TEST_MODE);
-}
+const TEST_MODE = typeof window.TEST_MODE !== 'undefined' ? window.TEST_MODE : true; // Usar valor existente o true por defecto
+console.log('TEST_MODE definido como:', TEST_MODE);
 
 // Función para cargar un script dinámicamente
 function loadScript(url) {

@@ -467,7 +467,7 @@ button[type="submit"]:active {
   }
 
   .form-group.form-group-button {
-    justify-content: center; /* Centrar el botón horizontalmente */
+    justify-content: center; 
   }
 
   .user-create-form {

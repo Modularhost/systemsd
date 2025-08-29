@@ -1,6 +1,6 @@
 console.log('crear.js se ha cargado correctamente');
 
-// Función para cargar un script dinámicamente solo si no está ya cargado
+// Función para cargar un script dinámicamente
 function loadScript(url) {
     return new Promise((resolve, reject) => {
         if (document.querySelector(`script[src="${url}"]`)) {
@@ -8,7 +8,6 @@ function loadScript(url) {
             resolve();
             return;
         }
-
         const script = document.createElement('script');
         script.src = url;
         script.async = true;
@@ -24,7 +23,7 @@ function loadScript(url) {
     });
 }
 
-// Configuración de Firebase (proteger contra redeclaración)
+// Configuración de Firebase
 if (typeof firebaseConfig === 'undefined') {
     window.firebaseConfig = {
         apiKey: "AIzaSyB_LByv2DPTs2298UEHSD7cFKZN6L8gtls",
@@ -51,11 +50,10 @@ if (document.readyState === 'loading') {
 
 function initializeApp() {
     console.log('Iniciando aplicación');
-
-    // Cargar scripts de Firebase y luego inicializar
     Promise.all([
         loadScript('https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js'),
-        loadScript('https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js')
+        loadScript('https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js'),
+        loadScript('https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js')
     ])
     .then(() => {
         console.log('Scripts de Firebase cargados correctamente');
@@ -67,72 +65,40 @@ function initializeApp() {
                 console.log('Firebase ya estaba inicializado');
             }
             const db = firebase.firestore();
-            console.log('Firestore inicializado');
+            const auth = firebase.auth();
+            console.log('Firestore y Auth inicializados');
 
-            // Estructura de submenús (copiada de menu.js para generar los permisos)
+            // Estructura de submenús y elementos
             const submenus = {
-                implantes: [
-                    { text: 'Ingresos', page: 'ingresos', folder: 'implantes', jsFiles: ['ingresos'] },
-                    { text: 'Cargar', page: 'cargar', folder: 'implantes', jsFiles: ['cargar'] },
-                    { text: 'Pacientes', page: 'pacientes', folder: 'implantes', jsFiles: ['pacientes'] },
-                    { text: 'Referencias', page: 'referencias', folder: 'implantes', jsFiles: ['referencias'] }
-                ],
-                consignacion: [
-                    { text: 'Registro', page: 'registro', folder: 'consignacion', jsFiles: ['registro'] },
-                    { text: 'Seguimiento', page: 'seguimiento', folder: 'consignacion', jsFiles: ['seguimiento'] },
-                    { text: 'Reportes', page: 'reportes', folder: 'consignacion', jsFiles: ['reportes'] }
-                ],
-                historico: [
-                    { text: 'Consultas', page: 'consultas', folder: 'historico', jsFiles: ['consultas'] },
-                    { text: 'Archivos', page: 'archivos', folder: 'historico', jsFiles: ['archivos'] }
-                ],
-                laboratorio: [
-                    { text: 'Análisis', page: 'analisis', folder: 'laboratorio', jsFiles: ['analisis'] },
-                    { text: 'Resultados', page: 'resultados', folder: 'laboratorio', jsFiles: ['resultados'] }
-                ],
-                visualizador: [
-                    { text: 'Gráficos', page: 'graficos', folder: 'visualizador', jsFiles: ['graficos'] },
-                    { text: 'Imágenes', page: 'imagenes', folder: 'visualizador', jsFiles: ['imagenes'] }
-                ],
-                prestacion: [
-                    { text: 'Empresas', page: 'empresas', folder: 'prestacion', jsFiles: ['empresas'] },
-                    { text: 'Médicos', page: 'medicos', folder: 'prestacion', jsFiles: ['medicos'] },
-                    { text: 'Areas', page: 'areas', folder: 'prestacion', jsFiles: ['areas'] }
-                ],
-                herramientas: [
-                    { text: 'Utilidades', page: 'utilidades', folder: 'herramientas', jsFiles: ['utilidades'] },
-                    { text: 'Configuración', page: 'configuracion-herramientas', folder: 'herramientas', jsFiles: ['configuracion-herramientas'] }
-                ],
-                importacion: [
-                    { text: 'Carga Masiva', page: 'carga-masiva', folder: 'importacion', jsFiles: ['carga-masiva'] },
-                    { text: 'Validación', page: 'validacion', folder: 'importacion', jsFiles: ['validacion'] }
-                ],
-                apuntes: [
-                    { text: 'Notas', page: 'notas', folder: 'apuntes', jsFiles: ['notas'] },
-                    { text: 'Recordatorios', page: 'recordatorios', folder: 'apuntes', jsFiles: ['recordatorios'] }
-                ],
-                migracion: [
-                    { text: 'Transferencia', page: 'transferencia', folder: 'migracion', jsFiles: ['transferencia'] },
-                    { text: 'Sincronización', page: 'sincronizacion', folder: 'migracion', jsFiles: ['sincronizacion'] }
-                ],
-                dashboard: [
-                    { text: 'Resumen', page: 'resumen', folder: 'dashboard', jsFiles: ['resumen'] },
-                    { text: 'Estadísticas', page: 'estadisticas', folder: 'dashboard', jsFiles: ['estadisticas'] }
-                ],
-                archivos: [
-                    { text: 'Subir', page: 'subir', folder: 'archivos', jsFiles: ['subir'] },
-                    { text: 'Gestionar', page: 'gestionar', folder: 'archivos', jsFiles: ['gestionar'] }
-                ],
                 usuarios: [
-                    { text: 'Crear', page: 'crear', folder: 'usuarios', jsFiles: ['crear'] },
+                    {
+                        text: 'Crear',
+                        page: 'crear',
+                        folder: 'usuarios',
+                        jsFiles: ['crear'],
+                        elements: [
+                            { id: 'form', text: 'Formulario', permissionKey: 'form' },
+                            {
+                                id: 'table',
+                                text: 'Tabla',
+                                permissionKey: 'table',
+                                columns: [
+                                    { id: 'fullName', text: 'Nombre Completo', permissionKey: 'column-fullName' },
+                                    { id: 'username', text: 'Nombre de Usuario', permissionKey: 'column-username' },
+                                    { id: 'rut', text: 'RUT', permissionKey: 'column-rut' },
+                                    { id: 'dob', text: 'Fecha de Nacimiento', permissionKey: 'column-dob' },
+                                    { id: 'email', text: 'Correo Electrónico', permissionKey: 'column-email' },
+                                    { id: 'sex', text: 'Sexo', permissionKey: 'column-sex' },
+                                    { id: 'role', text: 'Rol', permissionKey: 'column-role' }
+                                ]
+                            }
+                        ]
+                    },
                     { text: 'Editar', page: 'editar', folder: 'usuarios', jsFiles: ['editar'] }
                 ],
-                configuracion: [
-                    { text: 'Sistema', page: 'sistema', folder: 'configuracion', jsFiles: ['sistema'] },
-                    { text: 'Preferencias', page: 'preferencias', folder: 'configuracion', jsFiles: ['preferencias'] }
-                ],
-                'cerrar-sesion': [
-                    { text: 'Confirmar', page: 'confirmar-cerrar-sesion', folder: 'cerrar-sesion', jsFiles: ['confirmar-cerrar-sesion'] }
+                implantes: [
+                    { text: 'Ingresos', page: 'ingresos', folder: 'implantes', jsFiles: ['ingresos'] },
+                    { text: 'Cargar', page: 'cargar', folder: 'implantes', jsFiles: ['cargar'] }
                 ]
             };
 
@@ -144,55 +110,25 @@ function initializeApp() {
             const savePermissionsBtn = document.getElementById('savePermissions');
             const userForm = document.getElementById('userForm');
             const createUserBtn = document.getElementById('createUserBtn');
+            const usersTableSection = document.querySelector('.users-table-section');
             const usersTableBody = document.getElementById('usersTableBody');
             const prevPageBtn = document.getElementById('prevPage');
             const nextPageBtn = document.getElementById('nextPage');
             const pageInfo = document.getElementById('pageInfo');
 
-            // Verificar que los elementos del DOM existan
-            if (!roleSelect) {
-                console.error('Error: No se encontró el elemento con id="role"');
+            // Verificar elementos del DOM
+            if (!roleSelect || !permissionsModal || !permissionsTree || !closeModal ||
+                !savePermissionsBtn || !userForm || !createUserBtn || !usersTableSection ||
+                !usersTableBody || !prevPageBtn || !nextPageBtn || !pageInfo) {
+                console.error('Error: No se encontraron uno o más elementos del DOM');
                 return;
             }
-            if (!permissionsModal) {
-                console.error('Error: No se encontró el elemento con id="permissionsModal"');
-                return;
-            }
-            if (!permissionsTree) {
-                console.error('Error: No se encontró el elemento con id="permissionsTree"');
-                return;
-            }
-            if (!closeModal) {
-                console.error('Error: No se encontró el elemento con class="close-modal"');
-                return;
-            }
-            if (!savePermissionsBtn) {
-                console.error('Error: No se encontró el elemento con id="savePermissions"');
-                return;
-            }
-            if (!userForm) {
-                console.error('Error: No se encontró el elemento con id="userForm"');
-                return;
-            }
-            if (!createUserBtn) {
-                console.error('Error: No se encontró el elemento con id="createUserBtn"');
-                return;
-            }
-            if (!usersTableBody) {
-                console.error('Error: No se encontró el elemento con id="usersTableBody"');
-                return;
-            }
-            if (!prevPageBtn || !nextPageBtn || !pageInfo) {
-                console.error('Error: No se encontraron los elementos de paginación');
-                return;
-            }
-
             console.log('Todos los elementos del DOM encontrados correctamente');
 
-            // Variable para almacenar los permisos seleccionados
+            // Variable para permisos seleccionados
             let selectedPermissions = {};
 
-            // Función para generar los checkboxes de permisos
+            // Generar árbol de permisos
             function generatePermissionsTree() {
                 console.log('Generando árbol de permisos');
                 permissionsTree.innerHTML = '';
@@ -206,61 +142,146 @@ function initializeApp() {
                         </label>
                         <div class="submenu-group" style="display: none;">
                             ${submenus[menu].map(submenu => `
-                                <label>
-                                    <input type="checkbox" class="submenu-checkbox" data-menu="${menu}" data-submenu="${submenu.page}">
-                                    ${submenu.text}
-                                </label>
+                                <div class="submenu-item">
+                                    <label>
+                                        <input type="checkbox" class="submenu-checkbox" data-menu="${menu}" data-submenu="${submenu.page}">
+                                        ${submenu.text}
+                                    </label>
+                                    ${submenu.elements ? `
+                                        <div class="elements-group" style="display: none;">
+                                            ${submenu.elements.map(element => `
+                                                <div class="element-item">
+                                                    <label>
+                                                        <input type="checkbox" class="element-checkbox" data-menu="${menu}" data-submenu="${submenu.page}" data-element="${element.permissionKey}">
+                                                        ${element.text}
+                                                    </label>
+                                                    ${element.columns ? `
+                                                        <div class="columns-group" style="display: none;">
+                                                            ${element.columns.map(column => `
+                                                                <label>
+                                                                    <input type="checkbox" class="column-checkbox" data-menu="${menu}" data-submenu="${submenu.page}" data-element="${element.permissionKey}" data-column="${column.permissionKey}">
+                                                                    ${column.text}
+                                                                </label>
+                                                            `).join('')}
+                                                        </div>
+                                                    ` : ''}
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    ` : ''}
+                                </div>
                             `).join('')}
                         </div>
                     `;
                     permissionsTree.appendChild(menuDiv);
                 });
 
-                // Mostrar submenús al seleccionar un menú
+                // Manejar eventos de cambio en el árbol de permisos
                 permissionsTree.addEventListener('change', (e) => {
                     console.log('Evento change disparado en permissionsTree');
                     if (e.target.classList.contains('menu-checkbox')) {
                         const menu = e.target.dataset.menu;
                         console.log(`Checkbox de menú "${menu}" cambiado, checked: ${e.target.checked}`);
-                        // Buscar submenu-group dentro del mismo permission-group
                         const permissionGroup = e.target.closest('.permission-group');
-                        const submenuGroup = permissionGroup ? permissionGroup.querySelector('.submenu-group') : null;
+                        const submenuGroup = permissionGroup.querySelector('.submenu-group');
                         if (submenuGroup) {
-                            console.log('submenu-group encontrado, actualizando display');
                             submenuGroup.style.display = e.target.checked ? 'block' : 'none';
+                            if (!e.target.checked) {
+                                submenuGroup.querySelectorAll('.submenu-checkbox').forEach(checkbox => {
+                                    checkbox.checked = false;
+                                    delete selectedPermissions[menu];
+                                    submenuGroup.querySelectorAll('.elements-group').forEach(group => {
+                                        group.style.display = 'none';
+                                        group.querySelectorAll('.element-checkbox').forEach(el => el.checked = false);
+                                        group.querySelectorAll('.columns-group').forEach(col => {
+                                            col.style.display = 'none';
+                                            col.querySelectorAll('.column-checkbox').forEach(colCheckbox => colCheckbox.checked = false);
+                                        });
+                                    });
+                                });
+                                console.log('Submenús y elementos deseleccionados para', menu);
+                            }
                         } else {
                             console.error('Error: No se encontró submenu-group para el menú', menu);
                         }
-
-                        // Si se deselecciona un menú, deseleccionar todos sus submenús
-                        if (!e.target.checked && submenuGroup) {
-                            submenuGroup.querySelectorAll('.submenu-checkbox').forEach(checkbox => {
-                                checkbox.checked = false;
-                                if (selectedPermissions[menu]) {
-                                    delete selectedPermissions[menu];
-                                }
-                            });
-                            console.log('Submenús deseleccionados para', menu);
-                        }
                     }
 
-                    // Actualizar permisos seleccionados
                     if (e.target.classList.contains('submenu-checkbox')) {
                         const menu = e.target.dataset.menu;
                         const submenu = e.target.dataset.submenu;
                         console.log(`Checkbox de submenú "${submenu}" cambiado, checked: ${e.target.checked}`);
-                        if (!selectedPermissions[menu]) {
-                            selectedPermissions[menu] = [];
+                        const submenuItem = e.target.closest('.submenu-item');
+                        const elementsGroup = submenuItem.querySelector('.elements-group');
+                        if (elementsGroup) {
+                            elementsGroup.style.display = e.target.checked ? 'block' : 'none';
+                            if (!e.target.checked) {
+                                elementsGroup.querySelectorAll('.element-checkbox').forEach(checkbox => {
+                                    checkbox.checked = false;
+                                    if (selectedPermissions[menu]?.[submenu]) {
+                                        delete selectedPermissions[menu][submenu];
+                                    }
+                                    elementsGroup.querySelectorAll('.columns-group').forEach(col => {
+                                        col.style.display = 'none';
+                                        col.querySelectorAll('.column-checkbox').forEach(colCheckbox => colCheckbox.checked = false);
+                                    });
+                                });
+                            }
                         }
                         if (e.target.checked) {
-                            if (!selectedPermissions[menu].includes(submenu)) {
-                                selectedPermissions[menu].push(submenu);
+                            if (!selectedPermissions[menu]) selectedPermissions[menu] = {};
+                            if (!selectedPermissions[menu][submenu]) selectedPermissions[menu][submenu] = {};
+                        } else if (selectedPermissions[menu]?.[submenu]) {
+                            delete selectedPermissions[menu][submenu];
+                            if (Object.keys(selectedPermissions[menu]).length === 0) delete selectedPermissions[menu];
+                        }
+                        console.log('Permisos seleccionados actualizados:', selectedPermissions);
+                    }
+
+                    if (e.target.classList.contains('element-checkbox')) {
+                        const menu = e.target.dataset.menu;
+                        const submenu = e.target.dataset.submenu;
+                        const element = e.target.dataset.element;
+                        console.log(`Checkbox de elemento "${element}" cambiado, checked: ${e.target.checked}`);
+                        const elementItem = e.target.closest('.element-item');
+                        const columnsGroup = elementItem.querySelector('.columns-group');
+                        if (columnsGroup) {
+                            columnsGroup.style.display = e.target.checked ? 'block' : 'none';
+                            if (!e.target.checked) {
+                                columnsGroup.querySelectorAll('.column-checkbox').forEach(checkbox => checkbox.checked = false);
                             }
-                        } else {
-                            selectedPermissions[menu] = selectedPermissions[menu].filter(s => s !== submenu);
-                            if (selectedPermissions[menu].length === 0) {
-                                delete selectedPermissions[menu];
+                        }
+                        if (e.target.checked) {
+                            if (!selectedPermissions[menu]) selectedPermissions[menu] = {};
+                            if (!selectedPermissions[menu][submenu]) selectedPermissions[menu][submenu] = {};
+                            selectedPermissions[menu][submenu][element] = element === 'table' ? { enabled: true, columns: [] } : true;
+                        } else if (selectedPermissions[menu]?.[submenu]?.[element]) {
+                            delete selectedPermissions[menu][submenu][element];
+                            if (Object.keys(selectedPermissions[menu][submenu]).length === 0) delete selectedPermissions[menu][submenu];
+                            if (Object.keys(selectedPermissions[menu]).length === 0) delete selectedPermissions[menu];
+                        }
+                        console.log('Permisos seleccionados actualizados:', selectedPermissions);
+                    }
+
+                    if (e.target.classList.contains('column-checkbox')) {
+                        const menu = e.target.dataset.menu;
+                        const submenu = e.target.dataset.submenu;
+                        const element = e.target.dataset.element;
+                        const column = e.target.dataset.column;
+                        console.log(`Checkbox de columna "${column}" cambiado, checked: ${e.target.checked}`);
+                        if (e.target.checked) {
+                            if (!selectedPermissions[menu]) selectedPermissions[menu] = {};
+                            if (!selectedPermissions[menu][submenu]) selectedPermissions[menu][submenu] = {};
+                            if (!selectedPermissions[menu][submenu][element]) selectedPermissions[menu][submenu][element] = { enabled: true, columns: [] };
+                            if (!selectedPermissions[menu][submenu][element].columns.includes(column)) {
+                                selectedPermissions[menu][submenu][element].columns.push(column);
                             }
+                        } else if (selectedPermissions[menu]?.[submenu]?.[element]?.columns) {
+                            selectedPermissions[menu][submenu][element].columns = selectedPermissions[menu][submenu][element].columns.filter(c => c !== column);
+                            if (selectedPermissions[menu][submenu][element].columns.length === 0) {
+                                delete selectedPermissions[menu][submenu][element];
+                            }
+                            if (Object.keys(selectedPermissions[menu][submenu]).length === 0) delete selectedPermissions[menu][submenu];
+                            if (Object.keys(selectedPermissions[menu]).length === 0) delete selectedPermissions[menu];
                         }
                         console.log('Permisos seleccionados actualizados:', selectedPermissions);
                     }
@@ -277,7 +298,7 @@ function initializeApp() {
                 } else {
                     console.log('Ocultando modal de permisos');
                     permissionsModal.style.display = 'none';
-                    selectedPermissions = {}; // Limpiar permisos si se selecciona otro rol
+                    selectedPermissions = {};
                     console.log('Permisos limpiados:', selectedPermissions);
                 }
             });
@@ -294,7 +315,7 @@ function initializeApp() {
                 permissionsModal.style.display = 'none';
             });
 
-            // Crear usuario y guardar en Firestore
+            // Crear usuario
             createUserBtn.addEventListener('click', async () => {
                 console.log('Botón Crear Usuario clickeado');
                 const userData = {
@@ -309,7 +330,6 @@ function initializeApp() {
                     permissions: selectedPermissions
                 };
 
-                // Validar que todos los campos estén completos
                 if (!userData.fullName || !userData.username || !userData.rut || !userData.dob ||
                     !userData.email || !userData.password || !userData.sex || !userData.role) {
                     console.log('Campos incompletos, mostrando alerta');
@@ -318,16 +338,21 @@ function initializeApp() {
                 }
 
                 try {
+                    console.log('Creando usuario en Firebase Auth:', userData.email);
+                    const userCredential = await auth.createUserWithEmailAndPassword(userData.email, userData.password);
+                    console.log('Usuario creado en Auth:', userCredential.user.uid);
+                    delete userData.password;
+                    userData.uid = userCredential.user.uid;
                     console.log('Guardando usuario en Firestore:', userData);
-                    await db.collection('users').add(userData);
-                    console.log('Usuario creado exitosamente');
+                    await db.collection('users').doc(userData.uid).set(userData);
+                    console.log('Usuario creado exitosamente en Firestore');
                     userForm.reset();
                     selectedPermissions = {};
                     console.log('Formulario reseteado, permisos limpiados');
-                    loadUsers(); // Actualizar la tabla
+                    loadUsers();
                 } catch (error) {
                     console.error('Error al crear usuario:', error);
-                    alert('Error al crear usuario. Por favor, intenta de nuevo.');
+                    alert('Error al crear usuario: ' + error.message);
                 }
             });
 
@@ -350,19 +375,25 @@ function initializeApp() {
 
             function renderUsers() {
                 console.log('Renderizando usuarios, página:', currentPage);
+                const userPermissions = getCurrentUserPermissions();
+                const allowedColumns = userPermissions?.usuarios?.crear?.table?.columns || [
+                    'column-fullName', 'column-username', 'column-rut', 'column-dob',
+                    'column-email', 'column-sex', 'column-role'
+                ];
+
                 const start = (currentPage - 1) * usersPerPage;
                 const end = start + usersPerPage;
                 const paginatedUsers = users.slice(start, end);
 
                 usersTableBody.innerHTML = paginatedUsers.map(user => `
                     <tr>
-                        <td>${user.fullName}</td>
-                        <td>${user.username}</td>
-                        <td>${user.rut}</td>
-                        <td>${user.dob}</td>
-                        <td>${user.email}</td>
-                        <td>${user.sex}</td>
-                        <td>${user.role}</td>
+                        ${allowedColumns.includes('column-fullName') ? `<td>${user.fullName}</td>` : ''}
+                        ${allowedColumns.includes('column-username') ? `<td>${user.username}</td>` : ''}
+                        ${allowedColumns.includes('column-rut') ? `<td>${user.rut}</td>` : ''}
+                        ${allowedColumns.includes('column-dob') ? `<td>${user.dob}</td>` : ''}
+                        ${allowedColumns.includes('column-email') ? `<td>${user.email}</td>` : ''}
+                        ${allowedColumns.includes('column-sex') ? `<td>${user.sex}</td>` : ''}
+                        ${allowedColumns.includes('column-role') ? `<td>${user.role}</td>` : ''}
                     </tr>
                 `).join('');
 
@@ -388,15 +419,74 @@ function initializeApp() {
                 }
             });
 
-            // Cargar usuarios al iniciar
-            console.log('Iniciando carga de usuarios');
-            loadUsers();
+            // Obtener permisos del usuario actual
+            async function getCurrentUserPermissions() {
+                console.log('Obteniendo permisos del usuario actual');
+                const user = auth.currentUser;
+                if (!user) {
+                    console.log('No hay usuario autenticado');
+                    return {};
+                }
+                try {
+                    const doc = await db.collection('users').doc(user.uid).get();
+                    if (doc.exists) {
+                        const permissions = doc.data().permissions || {};
+                        console.log('Permisos del usuario:', permissions);
+                        return permissions;
+                    } else {
+                        console.log('No se encontraron datos del usuario');
+                        return {};
+                    }
+                } catch (error) {
+                    console.error('Error al obtener permisos:', error);
+                    return {};
+                }
+            }
+
+            // Aplicar permisos al cargar la página
+            async function applyPermissions() {
+                console.log('Aplicando permisos al cargar la página');
+                const userPermissions = await getCurrentUserPermissions();
+                const hasFormAccess = userPermissions?.usuarios?.crear?.form;
+                const hasTableAccess = userPermissions?.usuarios?.crear?.table?.enabled;
+
+                if (!hasFormAccess) {
+                    console.log('Ocultando formulario por falta de permisos');
+                    userForm.style.display = 'none';
+                }
+                if (!hasTableAccess) {
+                    console.log('Ocultando tabla por falta de permisos');
+                    usersTableSection.style.display = 'none';
+                } else {
+                    const headers = document.querySelectorAll('#usersTable th');
+                    headers.forEach(header => {
+                        const columnKey = header.dataset.permission;
+                        if (!userPermissions?.usuarios?.crear?.table?.columns.includes(columnKey)) {
+                            console.log(`Ocultando columna ${columnKey}`);
+                            header.style.display = 'none';
+                        }
+                    });
+                }
+            }
+
+            // Cargar usuarios y aplicar permisos al iniciar
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    console.log('Usuario autenticado:', user.uid);
+                    loadUsers();
+                    applyPermissions();
+                } else {
+                    console.log('No hay usuario autenticado');
+                    content.innerHTML = '<p>Inicia sesión para continuar</p>';
+                }
+            });
         } catch (error) {
             console.error('Error al inicializar Firebase:', error);
+            alert('Error al inicializar Firebase');
         }
     })
     .catch(error => {
-        console.error('Error al cargar los scripts de Firebase:', error);
-        alert('No se pudieron cargar los scripts de Firebase. Por favor, revisa tu conexión o intenta de nuevo.');
+        console.error('Error al cargar scripts de Firebase:', error);
+        alert('No se pudieron cargar los scripts de Firebase');
     });
 }

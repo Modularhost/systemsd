@@ -1,143 +1,264 @@
+console.log('menu.js se ha cargado correctamente');
+
+// Mostrar fecha actual
 const dateElement = document.getElementById('currentDate');
-const today = new Date();
-const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-dateElement.textContent = today.toLocaleDateString('es-ES', options);
-
-const submenus = {
-  implantes: [
-    { text: 'Ingresos', page: 'ingresos', folder: 'implantes', jsFiles: ['ingresos'] },
-    { text: 'Cargar', page: 'cargar', folder: 'implantes', jsFiles: ['cargar'] },
-    { text: 'Pacientes', page: 'pacientes', folder: 'implantes', jsFiles: ['pacientes'] },
-    { text: 'Referencias', page: 'referencias', folder: 'implantes', jsFiles: ['referencias'] }
-  ],
-  consignacion: [
-    { text: 'Registro', page: 'registro', folder: 'consignacion', jsFiles: ['registro'] },
-    { text: 'Seguimiento', page: 'seguimiento', folder: 'consignacion', jsFiles: ['seguimiento'] },
-    { text: 'Reportes', page: 'reportes', folder: 'consignacion', jsFiles: ['reportes'] }
-  ],
-  historico: [
-    { text: 'Consultas', page: 'consultas', folder: 'historico', jsFiles: ['consultas'] },
-    { text: 'Archivos', page: 'archivos', folder: 'historico', jsFiles: ['archivos'] }
-  ],
-  laboratorio: [
-    { text: 'Análisis', page: 'analisis', folder: 'laboratorio', jsFiles: ['analisis'] },
-    { text: 'Resultados', page: 'resultados', folder: 'laboratorio', jsFiles: ['resultados'] }
-  ],
-  visualizador: [
-    { text: 'Gráficos', page: 'graficos', folder: 'visualizador', jsFiles: ['graficos'] },
-    { text: 'Imágenes', page: 'imagenes', folder: 'visualizador', jsFiles: ['imagenes'] }
-  ],
-  prestacion: [
-    { text: 'Empresas', page: 'empresas', folder: 'prestacion', jsFiles: ['empresas'] },
-    { text: 'Médicos', page: 'medicos', folder: 'prestacion', jsFiles: ['medicos'] },
-    { text: 'Areas', page: 'areas', folder: 'prestacion', jsFiles: ['areas'] }
-  ],
-  herramientas: [
-    { text: 'Utilidades', page: 'utilidades', folder: 'herramientas', jsFiles: ['utilidades'] },
-    { text: 'Configuración', page: 'configuracion-herramientas', folder: 'herramientas', jsFiles: ['configuracion-herramientas'] }
-  ],
-  importacion: [
-    { text: 'Carga Masiva', page: 'carga-masiva', folder: 'importacion', jsFiles: ['carga-masiva'] },
-    { text: 'Validación', page: 'validacion', folder: 'importacion', jsFiles: ['validacion'] }
-  ],
-  apuntes: [
-    { text: 'Notas', page: 'notas', folder: 'apuntes', jsFiles: ['notas'] },
-    { text: 'Recordatorios', page: 'recordatorios', folder: 'apuntes', jsFiles: ['recordatorios'] }
-  ],
-  migracion: [
-    { text: 'Transferencia', page: 'transferencia', folder: 'migracion', jsFiles: ['transferencia'] },
-    { text: 'Sincronización', page: 'sincronizacion', folder: 'migracion', jsFiles: ['sincronizacion'] }
-  ],
-  dashboard: [
-    { text: 'Resumen', page: 'resumen', folder: 'dashboard', jsFiles: ['resumen'] },
-    { text: 'Estadísticas', page: 'estadisticas', folder: 'dashboard', jsFiles: ['estadisticas'] }
-  ],
-  archivos: [
-    { text: 'Subir', page: 'subir', folder: 'archivos', jsFiles: ['subir'] },
-    { text: 'Gestionar', page: 'gestionar', folder: 'archivos', jsFiles: ['gestionar'] }
-  ],
-  usuarios: [
-    { text: 'Crear', page: 'crear', folder: 'usuarios', jsFiles: ['crear'] },
-    { text: 'Editar', page: 'editar', folder: 'usuarios', jsFiles: ['editar'] }
-  ],
-  configuracion: [
-    { text: 'Sistema', page: 'sistema', folder: 'configuracion', jsFiles: ['sistema'] },
-    { text: 'Preferencias', page: 'preferencias', folder: 'configuracion', jsFiles: ['preferencias'] }
-  ],
-  'cerrar-sesion': [
-    { text: 'Confirmar', page: 'confirmar-cerrar-sesion', folder: 'cerrar-sesion', jsFiles: ['confirmar-cerrar-sesion'] }
-  ]
-};
-
-const mainMenu = document.querySelector('.main-menu');
-const submenu = document.querySelector('.submenu');
-const submenuContent = document.querySelector('.submenu-content');
-const backLink = document.querySelector('.back-link');
-const content = document.querySelector('.content');
-
-function loadSubpage(folder, page, jsFiles) {
-    content.innerHTML = '';
-
-    document.querySelectorAll('link[data-subpage], script[data-subpage]').forEach(el => el.remove());
-
-    fetch(`../subpages/${folder}/${page}/${page}.html`)
-        .then(response => response.text())
-        .then(data => {
-            content.innerHTML = data;
-
-            const link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.href = `../subpages/${folder}/${page}/${page}.css`;
-            link.dataset.subpage = page;
-            document.head.appendChild(link);
-
-            jsFiles.forEach(jsFile => {
-                const scriptSrc = `../subpages/${folder}/${page}/${jsFile}.js`;
-                if (!document.querySelector(`script[src="${scriptSrc}"]`)) {
-                    const script = document.createElement('script');
-                    script.src = scriptSrc;
-                    script.dataset.subpage = page;
-                    document.body.appendChild(script);
-                } else {
-                    console.log(`Script ${scriptSrc} ya está cargado`);
-                }
-            });
-        })
-        .catch(error => {
-            content.innerHTML = '<p>Error al cargar la página</p>';
-            console.error('Error al cargar subpágina:', error);
-        });
+if (dateElement) {
+    const today = new Date();
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    dateElement.textContent = today.toLocaleDateString('es-ES', options);
+} else {
+    console.error('Error: No se encontró el elemento #currentDate');
 }
 
-document.querySelectorAll('.main-menu a').forEach(link => {
-  link.addEventListener('click', (e) => {
-    e.preventDefault();
-    const submenuId = link.getAttribute('data-submenu');
-    const submenuItems = submenus[submenuId] || [];
+// Estructura de submenús
+const submenus = {
+    implantes: [
+        { text: 'Ingresos', page: 'ingresos', folder: 'implantes', jsFiles: ['ingresos'] },
+        { text: 'Cargar', page: 'cargar', folder: 'implantes', jsFiles: ['cargar'] },
+        { text: 'Pacientes', page: 'pacientes', folder: 'implantes', jsFiles: ['pacientes'] },
+        { text: 'Referencias', page: 'referencias', folder: 'implantes', jsFiles: ['referencias'] }
+    ],
+    consignacion: [
+        { text: 'Registro', page: 'registro', folder: 'consignacion', jsFiles: ['registro'] },
+        { text: 'Seguimiento', page: 'seguimiento', folder: 'consignacion', jsFiles: ['seguimiento'] },
+        { text: 'Reportes', page: 'reportes', folder: 'consignacion', jsFiles: ['reportes'] }
+    ],
+    historico: [
+        { text: 'Consultas', page: 'consultas', folder: 'historico', jsFiles: ['consultas'] },
+        { text: 'Archivos', page: 'archivos', folder: 'historico', jsFiles: ['archivos'] }
+    ],
+    laboratorio: [
+        { text: 'Análisis', page: 'analisis', folder: 'laboratorio', jsFiles: ['analisis'] },
+        { text: 'Resultados', page: 'resultados', folder: 'laboratorio', jsFiles: ['resultados'] }
+    ],
+    visualizador: [
+        { text: 'Gráficos', page: 'graficos', folder: 'visualizador', jsFiles: ['graficos'] },
+        { text: 'Imágenes', page: 'imagenes', folder: 'visualizador', jsFiles: ['imagenes'] }
+    ],
+    prestacion: [
+        { text: 'Empresas', page: 'empresas', folder: 'prestacion', jsFiles: ['empresas'] },
+        { text: 'Médicos', page: 'medicos', folder: 'prestacion', jsFiles: ['medicos'] },
+        { text: 'Areas', page: 'areas', folder: 'prestacion', jsFiles: ['areas'] }
+    ],
+    herramientas: [
+        { text: 'Utilidades', page: 'utilidades', folder: 'herramientas', jsFiles: ['utilidades'] },
+        { text: 'Configuración', page: 'configuracion-herramientas', folder: 'herramientas', jsFiles: ['configuracion-herramientas'] }
+    ],
+    importacion: [
+        { text: 'Carga Masiva', page: 'carga-masiva', folder: 'importacion', jsFiles: ['carga-masiva'] },
+        { text: 'Validación', page: 'validacion', folder: 'importacion', jsFiles: ['validacion'] }
+    ],
+    apuntes: [
+        { text: 'Notas', page: 'notas', folder: 'apuntes', jsFiles: ['notas'] },
+        { text: 'Recordatorios', page: 'recordatorios', folder: 'apuntes', jsFiles: ['recordatorios'] }
+    ],
+    migracion: [
+        { text: 'Transferencia', page: 'transferencia', folder: 'migracion', jsFiles: ['transferencia'] },
+        { text: 'Sincronización', page: 'sincronizacion', folder: 'migracion', jsFiles: ['sincronizacion'] }
+    ],
+    dashboard: [
+        { text: 'Resumen', page: 'resumen', folder: 'dashboard', jsFiles: ['resumen'] },
+        { text: 'Estadísticas', page: 'estadisticas', folder: 'dashboard', jsFiles: ['estadisticas'] }
+    ],
+    archivos: [
+        { text: 'Subir', page: 'subir', folder: 'archivos', jsFiles: ['subir'] },
+        { text: 'Gestionar', page: 'gestionar', folder: 'archivos', jsFiles: ['gestionar'] }
+    ],
+    usuarios: [
+        { text: 'Crear', page: 'crear', folder: 'usuarios', jsFiles: ['crear'] },
+        { text: 'Editar', page: 'editar', folder: 'usuarios', jsFiles: ['editar'] }
+    ],
+    configuracion: [
+        { text: 'Sistema', page: 'sistema', folder: 'configuracion', jsFiles: ['sistema'] },
+        { text: 'Preferencias', page: 'preferencias', folder: 'configuracion', jsFiles: ['preferencias'] }
+    ],
+    'cerrar-sesion': [
+        { text: 'Confirmar', page: 'confirmar-cerrar-sesion', folder: 'cerrar-sesion', jsFiles: ['confirmar-cerrar-sesion'] }
+    ]
+};
 
-    submenuContent.innerHTML = submenuItems.map(item => 
-      `<a href="#" data-folder="${item.folder}" data-page="${item.page}" data-js-files="${item.jsFiles.join(',')}">${item.text}</a>`
-    ).join('');
+// Cargar scripts de Firebase
+function loadScript(url) {
+    return new Promise((resolve, reject) => {
+        if (document.querySelector(`script[src="${url}"]`)) {
+            console.log(`Script ${url} ya está cargado`);
+            resolve();
+            return;
+        }
+        const script = document.createElement('script');
+        script.src = url;
+        script.async = true;
+        script.onload = () => {
+            console.log(`Script ${url} cargado correctamente`);
+            resolve();
+        };
+        script.onerror = () => {
+            console.error(`Error al cargar script ${url}`);
+            reject(new Error(`No se pudo cargar el script ${url}`));
+        };
+        document.head.appendChild(script);
+    });
+}
 
-    mainMenu.style.display = 'none';
-    submenu.style.display = 'block';
-  });
-});
+// Inicializar Firebase
+if (document.readyState === 'loading') {
+    console.log('DOM aún cargando, esperando DOMContentLoaded');
+    document.addEventListener('DOMContentLoaded', initializeMenu);
+} else {
+    console.log('DOM ya cargado, inicializando menú');
+    initializeMenu();
+}
 
-backLink.addEventListener('click', (e) => {
-  e.preventDefault();
-  submenu.style.display = 'none';
-  mainMenu.style.display = 'block';
-});
+function initializeMenu() {
+    console.log('Iniciando menú');
+    Promise.all([
+        loadScript('https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js'),
+        loadScript('https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js'),
+        loadScript('https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js')
+    ])
+    .then(() => {
+        console.log('Scripts de Firebase cargados correctamente');
+        if (!firebase.apps.length) {
+            firebase.initializeApp({
+                apiKey: "AIzaSyB_LByv2DPTs2298UEHSD7cFKZN6L8gtls",
+                authDomain: "systemsd-b4678.firebaseapp.com",
+                projectId: "systemsd-b4678",
+                storageBucket: "systemsd-b4678.firebasestorage.app",
+                messagingSenderId: "116607414952",
+                appId: "1:116607414952:web:31a7e3f47711844b95889d",
+                measurementId: "G-C8V7X0RGH5"
+            });
+            console.log('Firebase se ha inicializado correctamente');
+        } else {
+            console.log('Firebase ya estaba inicializado');
+        }
+        const db = firebase.firestore();
+        const auth = firebase.auth();
 
-submenuContent.addEventListener('click', (e) => {
-  e.preventDefault();
-  if (e.target.tagName === 'A') {
-    const folder = e.target.getAttribute('data-folder');
-    const page = e.target.getAttribute('data-page');
-    const jsFiles = e.target.getAttribute('data-js-files').split(',');
-    if (folder && page && jsFiles) {
-      loadSubpage(folder, page, jsFiles);
-    }
-  }
-});
+        const mainMenu = document.querySelector('.main-menu');
+        const submenu = document.querySelector('.submenu');
+        const submenuContent = document.querySelector('.submenu-content');
+        const backLink = document.querySelector('.back-link');
+        const content = document.querySelector('.content');
+
+        if (!mainMenu || !submenu || !submenuContent || !backLink || !content) {
+            console.error('Error: No se encontraron uno o más elementos del DOM');
+            return;
+        }
+
+        function loadSubpage(folder, page, jsFiles, permissions) {
+            console.log(`Cargando subpágina: ${folder}/${page}`);
+            content.innerHTML = '';
+            document.querySelectorAll('link[data-subpage], script[data-subpage]').forEach(el => el.remove());
+
+            fetch(`../subpages/${folder}/${page}/${page}.html`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Página no encontrada');
+                    return response.text();
+                })
+                .then(data => {
+                    content.innerHTML = data;
+                    console.log(`Página ${page}.html cargada`);
+
+                    const link = document.createElement('link');
+                    link.rel = 'stylesheet';
+                    link.href = `../subpages/${folder}/${page}/${page}.css`;
+                    link.dataset.subpage = page;
+                    document.head.appendChild(link);
+
+                    jsFiles.forEach(jsFile => {
+                        const scriptSrc = `../subpages/${folder}/${page}/${jsFile}.js`;
+                        if (!document.querySelector(`script[src="${scriptSrc}"]`)) {
+                            const script = document.createElement('script');
+                            script.src = scriptSrc;
+                            script.dataset.subpage = page;
+                            document.body.appendChild(script);
+                        } else {
+                            console.log(`Script ${scriptSrc} ya está cargado`);
+                        }
+                    });
+                })
+                .catch(error => {
+                    content.innerHTML = '<p>Error al cargar la página</p>';
+                    console.error('Error al cargar subpágina:', error);
+                });
+        }
+
+        function renderMenu(permissions) {
+            console.log('Renderizando menú con permisos:', permissions);
+            mainMenu.innerHTML = Object.keys(submenus)
+                .filter(menu => permissions[menu])
+                .map(menu => `
+                    <a href="#" data-submenu="${menu}">
+                        ${menu.charAt(0).toUpperCase() + menu.slice(1).replace('-', ' ')}
+                    </a>
+                `).join('');
+
+            mainMenu.addEventListener('click', (e) => {
+                e.preventDefault();
+                const link = e.target.closest('a');
+                if (!link) return;
+                const submenuId = link.getAttribute('data-submenu');
+                if (!submenuId || !submenus[submenuId] || !permissions[submenuId]) return;
+
+                const submenuItems = submenus[submenuId].filter(item => permissions[submenuId][item.page]);
+                submenuContent.innerHTML = submenuItems.map(item => `
+                    <a href="#" data-folder="${item.folder}" data-page="${item.page}" data-js-files="${item.jsFiles.join(',')}">
+                        ${item.text}
+                    </a>
+                `).join('');
+
+                mainMenu.style.display = 'none';
+                submenu.style.display = 'block';
+            });
+
+            submenuContent.addEventListener('click', (e) => {
+                e.preventDefault();
+                const link = e.target.closest('a');
+                if (!link) return;
+                const folder = link.getAttribute('data-folder');
+                const page = link.getAttribute('data-page');
+                const jsFiles = link.getAttribute('data-js-files').split(',');
+                if (folder && page && jsFiles && permissions[folder]?.[page]) {
+                    loadSubpage(folder, page, jsFiles, permissions);
+                } else {
+                    console.log('Acceso denegado a la página:', page);
+                    content.innerHTML = '<p>No tienes permiso para acceder a esta página</p>';
+                }
+            });
+
+            backLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                submenu.style.display = 'none';
+                mainMenu.style.display = 'block';
+            });
+        }
+
+        auth.onAuthStateChanged(async user => {
+            if (user) {
+                console.log('Usuario autenticado:', user.uid);
+                try {
+                    const doc = await db.collection('users').doc(user.uid).get();
+                    if (doc.exists) {
+                        const permissions = doc.data().permissions || {};
+                        console.log('Permisos obtenidos:', permissions);
+                        renderMenu(permissions);
+                    } else {
+                        console.log('No se encontraron permisos para el usuario');
+                        mainMenu.innerHTML = '<p>No se encontraron permisos</p>';
+                    }
+                } catch (error) {
+                    console.error('Error al obtener permisos:', error);
+                    mainMenu.innerHTML = '<p>Error al cargar permisos</p>';
+                }
+            } else {
+                console.log('No hay usuario autenticado');
+                mainMenu.innerHTML = '<p>Inicia sesión para ver el menú</p>';
+            }
+        });
+    })
+    .catch(error => {
+        console.error('Error al cargar scripts de Firebase:', error);
+        alert('No se pudieron cargar los scripts de Firebase');
+    });
+}

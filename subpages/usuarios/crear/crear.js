@@ -40,9 +40,17 @@ if (typeof firebaseConfig === 'undefined') {
     console.log('firebaseConfig ya estaba definido');
 }
 
-// Esperar a que el DOM esté completamente cargado
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOMContentLoaded disparado');
+// Verificar si el DOM está listo
+if (document.readyState === 'loading') {
+    console.log('DOM aún cargando, esperando DOMContentLoaded');
+    document.addEventListener('DOMContentLoaded', initializeApp);
+} else {
+    console.log('DOM ya cargado, inicializando app');
+    initializeApp();
+}
+
+function initializeApp() {
+    console.log('Iniciando aplicación');
 
     // Cargar scripts de Firebase y luego inicializar
     Promise.all([
@@ -373,7 +381,6 @@ document.addEventListener('DOMContentLoaded', () => {
             // Cargar usuarios al iniciar
             console.log('Iniciando carga de usuarios');
             loadUsers();
-
         } catch (error) {
             console.error('Error al inicializar Firebase:', error);
         }
@@ -382,4 +389,4 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Error al cargar los scripts de Firebase:', error);
         alert('No se pudieron cargar los scripts de Firebase. Por favor, revisa tu conexión o intenta de nuevo.');
     });
-});
+}

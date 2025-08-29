@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registrar Administrador</title>
+    <style>
+        .content {
+            width: 100%;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 0;
+            margin: 0;
+        }
+
+        .user-create-form {
+            width: 100%;
+            padding: 16px;
+            background: #ffffff;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-create-form h2 {
+            font-size: 18px;
+            color: #4cc9f0;
+            margin-bottom: 16px;
+            text-align: left;
+            font-weight: 700;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        form#adminForm {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: auto;
+            gap: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #333;
+            margin-bottom: 4px;
+            font-size: 12px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 4px;
+            border: 1px solid #ddd;
+            font-size: 12px;
+            background: #ffffff;
+            transition: all 0.2s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #4cc9f0;
+            box-shadow: 0 0 0 2px rgba(76, 201, 240, 0.2);
+            background: #f8fafc;
+        }
+
+        .form-group-button {
+            grid-column: 1 / span 2;
+            display: flex;
+            justify-content: center;
+        }
+
+        .form-group-button button#registerAdminBtn {
+            width: 200px;
+            padding: 8px;
+            background: #4cc9f0;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            border-radius: 4px;
+        }
+
+        .form-group-button button#registerAdminBtn:hover {
+            background: #3ba8d0;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(76, 201, 240, 0.3);
+        }
+
+        .form-group-button button#registerAdminBtn:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 4px rgba(76, 201, 240, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            form#adminForm {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group-button {
+                grid-column: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <div class="user-create-form">
+            <h2>Registrar Administrador</h2>
+            <form id="adminForm" autocomplete="off">
+                <div class="form-group">
+                    <label for="fullName">Nombre Completo:</label>
+                    <input type="text" id="fullName" required autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="username">Nombre de Usuario:</label>
+                    <input type="text" id="username" required autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="rut">RUT:</label>
+                    <input type="text" id="rut" required autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="dob">Fecha de Nacimiento:</label>
+                    <input type="date" id="dob" required autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="email">Correo Electrónico:</label>
+                    <input type="email" id="email" required autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="password">Contraseña:</label>
+                    <input type="password" id="password" required autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="sex">Sexo:</label>
+                    <select id="sex" required>
+                        <option value="">Seleccione</option>
+                        <option value="masculino">Masculino</option>
+                        <option value="femenino">Femenino</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                </div>
+                <div class="form-group form-group-button">
+                    <button type="button" id="registerAdminBtn">Registrar Administrador</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+    <script>
+        console.log('register-admin.js se ha cargado correctamente');
+
+        // Configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyB_LByv2DPTs2298UEHSD7cFKZN6L8gtls",
+            authDomain: "systemsd-b4678.firebaseapp.com",
+            projectId: "systemsd-b4678",
+            storageBucket: "systemsd-b4678.firebasestorage.app",
+            messagingSenderId: "116607414952",
+            appId: "1:116607414952:web:31a7e3f47711844b95889d",
+            measurementId: "G-C8V7X0RGH5"
+        };
+
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        console.log('Firebase inicializado');
+
+        // Estructura de submenús para permisos completos
+        const submenus = {
+            usuarios: [
+                {
+                    text: 'Crear',
+                    page: 'crear',
+                    folder: 'usuarios',
+                    jsFiles: ['crear'],
+                    elements: [
+                        {
+                            id: 'form',
+                            text: 'Formulario',
+                            permissionKey: 'form',
+                            fields: [
+                                { id: 'fullName', text: 'Nombre Completo', permissionKey: 'field-fullName' },
+                                { id: 'username', text: 'Nombre de Usuario', permissionKey: 'field-username' },
+                                { id: 'rut', text: 'RUT', permissionKey: 'field-rut' },
+                                { id: 'dob', text: 'Fecha de Nacimiento', permissionKey: 'field-dob' },
+                                { id: 'email', text: 'Correo Electrónico', permissionKey: 'field-email' },
+                                { id: 'password', text: 'Contraseña', permissionKey: 'field-password' },
+                                { id: 'sex', text: 'Sexo', permissionKey: 'field-sex' },
+                                { id: 'role', text: 'Rol', permissionKey: 'field-role' },
+                                { id: 'submit-button', text: 'Botón Crear', permissionKey: 'submit-button' }
+                            ]
+                        },
+                        {
+                            id: 'table',
+                            text: 'Tabla',
+                            permissionKey: 'table',
+                            columns: [
+                                { id: 'fullName', text: 'Nombre Completo', permissionKey: 'column-fullName' },
+                                { id: 'username', text: 'Nombre de Usuario', permissionKey: 'column-username' },
+                                { id: 'rut', text: 'RUT', permissionKey: 'column-rut' },
+                                { id: 'dob', text: 'Fecha de Nacimiento', permissionKey: 'column-dob' },
+                                { id: 'email', text: 'Correo Electrónico', permissionKey: 'column-email' },
+                                { id: 'sex', text: 'Sexo', permissionKey: 'column-sex' },
+                                { id: 'role', text: 'Rol', permissionKey: 'column-role' }
+                            ]
+                        }
+                    ]
+                },
+                { text: 'Editar', page: 'editar', folder: 'usuarios', jsFiles: ['editar'] }
+            ],
+            implantes: [
+                { text: 'Ingresos', page: 'ingresos', folder: 'implantes', jsFiles: ['ingresos'] },
+                { text: 'Cargar', page: 'cargar', folder: 'implantes', jsFiles: ['cargar'] }
+            ],
+            consignacion: [
+                { text: 'Registro', page: 'registro', folder: 'consignacion', jsFiles: ['registro'] },
+                { text: 'Seguimiento', page: 'seguimiento', folder: 'consignacion', jsFiles: ['seguimiento'] },
+                { text: 'Reportes', page: 'reportes', folder: 'consignacion', jsFiles: ['reportes'] }
+            ],
+            historico: [
+                { text: 'Consultas', page: 'consultas', folder: 'historico', jsFiles: ['consultas'] },
+                { text: 'Archivos', page: 'archivos', folder: 'historico', jsFiles: ['archivos'] }
+            ],
+            laboratorio: [
+                { text: 'Análisis', page: 'analisis', folder: 'laboratorio', jsFiles: ['analisis'] },
+                { text: 'Resultados', page: 'resultados', folder: 'laboratorio', jsFiles: ['resultados'] }
+            ],
+            visualizador: [
+                { text: 'Gráficos', page: 'graficos', folder: 'visualizador', jsFiles: ['graficos'] },
+                { text: 'Imágenes', page: 'imagenes', folder: 'visualizador', jsFiles: ['imagenes'] }
+            ],
+            prestacion: [
+                { text: 'Empresas', page: 'empresas', folder: 'prestacion', jsFiles: ['empresas'] },
+                { text: 'Médicos', page: 'medicos', folder: 'prestacion', jsFiles: ['medicos'] },
+                { text: 'Areas', page: 'areas', folder: 'prestacion', jsFiles: ['areas'] }
+            ],
+            herramientas: [
+                { text: 'Utilidades', page: 'utilidades', folder: 'herramientas', jsFiles: ['utilidades'] },
+                { text: 'Configuración', page: 'configuracion-herramientas', folder: 'herramientas', jsFiles: ['configuracion-herramientas'] }
+            ],
+            importacion: [
+                { text: 'Carga Masiva', page: 'carga-masiva', folder: 'importacion', jsFiles: ['carga-masiva'] },
+                { text: 'Validación', page: 'validacion', folder: 'importacion', jsFiles: ['validacion'] }
+            ],
+            apuntes: [
+                { text: 'Notas', page: 'notas', folder: 'apuntes', jsFiles: ['notas'] },
+                { text: 'Recordatorios', page: 'recordatorios', folder: 'apuntes', jsFiles: ['recordatorios'] }
+            ],
+            migracion: [
+                { text: 'Transferencia', page: 'transferencia', folder: 'migracion', jsFiles: ['transferencia'] },
+                { text: 'Sincronización', page: 'sincronizacion', folder: 'migracion', jsFiles: ['sincronizacion'] }
+            ],
+            dashboard: [
+                { text: 'Resumen', page: 'resumen', folder: 'dashboard', jsFiles: ['resumen'] },
+                { text: 'Estadísticas', page: 'estadisticas', folder: 'dashboard', jsFiles: ['estadisticas'] }
+            ],
+            archivos: [
+                { text: 'Subir', page: 'subir', folder: 'archivos', jsFiles: ['subir'] },
+                { text: 'Gestionar', page: 'gestionar', folder: 'archivos', jsFiles: ['gestionar'] }
+            ],
+            configuracion: [
+                { text: 'Sistema', page: 'sistema', folder: 'configuracion', jsFiles: ['sistema'] },
+                { text: 'Preferencias', page: 'preferencias', folder: 'configuracion', jsFiles: ['preferencias'] }
+            ],
+            'cerrar-sesion': [
+                { text: 'Confirmar', page: 'confirmar-cerrar-sesion', folder: 'cerrar-sesion', jsFiles: ['confirmar-cerrar-sesion'] }
+            ]
+        };
+
+        // Generar permisos completos para administrador
+        function generateFullPermissions() {
+            console.log('Generando permisos completos para administrador');
+            const fullPermissions = {};
+            Object.keys(submenus).forEach(menu => {
+                fullPermissions[menu] = {};
+                submenus[menu].forEach(submenu => {
+                    fullPermissions[menu][submenu.page] = {};
+                    if (submenu.elements) {
+                        submenu.elements.forEach(element => {
+                            if (element.fields) {
+                                fullPermissions[menu][submenu.page][element.permissionKey] = {
+                                    enabled: true,
+                                    fields: element.fields.map(field => field.permissionKey)
+                                };
+                            } else if (element.columns) {
+                                fullPermissions[menu][submenu.page][element.permissionKey] = {
+                                    enabled: true,
+                                    columns: element.columns.map(column => column.permissionKey)
+                                };
+                            } else {
+                                fullPermissions[menu][submenu.page][element.permissionKey] = true;
+                            }
+                        });
+                    }
+                });
+            });
+            console.log('Permisos completos generados:', JSON.stringify(fullPermissions, null, 2));
+            return fullPermissions;
+        }
+
+        // Registrar administrador
+        document.getElementById('registerAdminBtn').addEventListener('click', async () => {
+            console.log('Botón Registrar Administrador clickeado');
+            const userData = {
+                fullName: document.getElementById('fullName').value,
+                username: document.getElementById('username').value,
+                rut: document.getElementById('rut').value,
+                dob: document.getElementById('dob').value,
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value,
+                sex: document.getElementById('sex').value,
+                role: 'administrador',
+                permissions: generateFullPermissions()
+            };
+
+            if (!userData.fullName || !userData.username || !userData.rut || !userData.dob ||
+                !userData.email || !userData.password || !userData.sex) {
+                console.log('Campos incompletos, mostrando alerta');
+                alert('Por favor, completa todos los campos.');
+                return;
+            }
+
+            try {
+                console.log('Creando administrador en Firebase Auth:', userData.email);
+                const userCredential = await auth.createUserWithEmailAndPassword(userData.email, userData.password);
+                console.log('Administrador creado en Auth:', userCredential.user.uid);
+                delete userData.password;
+                userData.uid = userCredential.user.uid;
+                console.log('Guardando administrador en Firestore:', userData);
+                await db.collection('users').doc(userData.uid).set(userData);
+                console.log('Administrador creado exitosamente en Firestore');
+                alert('Administrador registrado exitosamente');
+                document.getElementById('adminForm').reset();
+            } catch (error) {
+                console.error('Error al registrar administrador:', error);
+                alert('Error al registrar administrador: ' + error.message);
+            }
+        });
+    </script>
+</body>
+</html>

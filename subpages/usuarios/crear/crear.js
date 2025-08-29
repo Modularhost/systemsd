@@ -18,7 +18,7 @@ function loadScript(url) {
         };
         script.onerror = () => {
             console.error(`Error al cargar script ${url}`);
-            reject();
+            reject(new Error(`No se pudo cargar el script ${url}`));
         };
         document.head.appendChild(script);
     });
@@ -35,16 +35,22 @@ if (typeof firebaseConfig === 'undefined') {
         appId: "1:116607414952:web:31a7e3f47711844b95889d",
         measurementId: "G-C8V7X0RGH5"
     };
+    console.log('firebaseConfig definido');
+} else {
+    console.log('firebaseConfig ya estaba definido');
 }
 
 // Esperar a que el DOM esté completamente cargado
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOMContentLoaded disparado');
+
     // Cargar scripts de Firebase y luego inicializar
     Promise.all([
         loadScript('https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js'),
         loadScript('https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js')
     ])
     .then(() => {
+        console.log('Scripts de Firebase cargados correctamente');
         try {
             if (!firebase.apps.length) {
                 firebase.initializeApp(window.firebaseConfig);
@@ -53,6 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log('Firebase ya estaba inicializado');
             }
             const db = firebase.firestore();
+            console.log('Firestore inicializado');
 
             // Estructura de submenús (copiada de menu.js para generar los permisos)
             const submenus = {
@@ -172,11 +179,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            console.log('Todos los elementos del DOM encontrados correctamente');
+
             // Variable para almacenar los permisos seleccionados
             let selectedPermissions = {};
 
             // Función para generar los checkboxes de permisos
             function generatePermissionsTree() {
+                console.log('Generando árbol de permisos');
                 permissionsTree.innerHTML = '';
                 Object.keys(submenus).forEach(menu => {
                     const menuDiv = document.createElement('div');
@@ -200,6 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Mostrar submenús al seleccionar un menú
                 permissionsTree.addEventListener('change', (e) => {
+                    console.log('Evento change disparado en permissionsTree');
                     if (e.target.classList.contains('menu-checkbox')) {
                         const menu = e.target.dataset.menu;
                         const submenuGroup = e.target.nextElementSibling;
@@ -233,34 +244,41 @@ document.addEventListener('DOMContentLoaded', () => {
                                 delete selectedPermissions[menu];
                             }
                         }
+                        console.log('Permisos seleccionados actualizados:', selectedPermissions);
                     }
                 });
             }
 
             // Mostrar el modal cuando se selecciona "Operador" o "Gestor"
             roleSelect.addEventListener('change', (e) => {
+                console.log('Evento change disparado en roleSelect, valor:', e.target.value);
                 if (e.target.value === 'operador' || e.target.value === 'gestor') {
+                    console.log('Mostrando modal de permisos');
                     permissionsModal.style.display = 'flex';
                     generatePermissionsTree();
                 } else {
+                    console.log('Ocultando modal de permisos');
                     permissionsModal.style.display = 'none';
                     selectedPermissions = {}; // Limpiar permisos si se selecciona otro rol
+                    console.log('Permisos limpiados:', selectedPermissions);
                 }
             });
 
             // Cerrar el modal
             closeModal.addEventListener('click', () => {
+                console.log('Cerrando modal');
                 permissionsModal.style.display = 'none';
             });
 
             // Guardar permisos y cerrar el modal
             savePermissionsBtn.addEventListener('click', () => {
-                console.log('Permisos seleccionados:', selectedPermissions);
+                console.log('Permisos guardados:', selectedPermissions);
                 permissionsModal.style.display = 'none';
             });
 
             // Crear usuario y guardar en Firestore
             createUserBtn.addEventListener('click', async () => {
+                console.log('Botón Crear Usuario clickeado');
                 const userData = {
                     fullName: document.getElementById('fullName').value,
                     username: document.getElementById('username').value,
@@ -276,15 +294,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Validar que todos los campos estén completos
                 if (!userData.fullName || !userData.username || !userData.rut || !userData.dob ||
                     !userData.email || !userData.password || !userData.sex || !userData.role) {
+                    console.log('Campos incompletos, mostrando alerta');
                     alert('Por favor, completa todos los campos.');
                     return;
                 }
 
                 try {
+                    console.log('Guardando usuario en Firestore:', userData);
                     await db.collection('users').add(userData);
                     console.log('Usuario creado exitosamente');
                     userForm.reset();
                     selectedPermissions = {};
+                    console.log('Formulario reseteado, permisos limpiados');
                     loadUsers(); // Actualizar la tabla
                 } catch (error) {
                     console.error('Error al crear usuario:', error);
@@ -299,8 +320,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             async function loadUsers() {
                 try {
+                    console.log('Cargando usuarios desde Firestore');
                     const snapshot = await db.collection('users').get();
                     users = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    console.log('Usuarios cargados:', users.length);
                     renderUsers();
                 } catch (error) {
                     console.error('Error al cargar usuarios:', error);
@@ -308,9 +331,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             function renderUsers() {
+                console.log('Renderizando usuarios, página:', currentPage);
                 const start = (currentPage - 1) * usersPerPage;
                 const end = start + usersPerPage;
-                const paginatedUsers = users.slice(start, end);
+                constzawa paginatedUsers = users.slice(start, end);
 
                 usersTableBody.innerHTML = paginatedUsers.map(user => `
                     <tr>
@@ -327,9 +351,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 pageInfo.textContent = `Página ${currentPage} de ${Math.ceil(users.length / usersPerPage)}`;
                 prevPageBtn.disabled = currentPage === 1;
                 nextPageBtn.disabled = end >= users.length;
+                console.log('Tabla de usuarios actualizada');
             }
 
             prevPageBtn.addEventListener('click', () => {
+                console.log('Botón Anterior clickeado');
                 if (currentPage > 1) {
                     currentPage--;
                     renderUsers();
@@ -337,6 +363,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             nextPageBtn.addEventListener('click', () => {
+                console.log('Botón Siguiente clickeado');
                 if (currentPage < Math.ceil(users.length / usersPerPage)) {
                     currentPage++;
                     renderUsers();
@@ -344,6 +371,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             // Cargar usuarios al iniciar
+            console.log('Iniciando carga de usuarios');
             loadUsers();
 
         } catch (error) {
@@ -352,5 +380,6 @@ document.addEventListener('DOMContentLoaded', () => {
     })
     .catch(error => {
         console.error('Error al cargar los scripts de Firebase:', error);
+        alert('No se pudieron cargar los scripts de Firebase. Por favor, revisa tu conexión o intenta de nuevo.');
     });
 });

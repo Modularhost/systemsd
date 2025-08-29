@@ -334,7 +334,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log('Renderizando usuarios, página:', currentPage);
                 const start = (currentPage - 1) * usersPerPage;
                 const end = start + usersPerPage;
-                constzawa paginatedUsers = users.slice(start, end);
+                const paginatedUsers = users.slice(start, end);
 
                 usersTableBody.innerHTML = paginatedUsers.map(user => `
                     <tr>

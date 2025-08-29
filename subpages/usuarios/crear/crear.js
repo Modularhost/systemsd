@@ -3,7 +3,7 @@ console.log('crear.js se ha cargado correctamente');
 // Bandera para modo de prueba (sin autenticación), usando namespace para evitar conflictos
 window.AppConfig = window.AppConfig || {};
 if (!window.AppConfig.hasOwnProperty('TEST_MODE')) {
-    window.AppConfig.TEST_MODE = true; // Valor por defecto
+    window.AppConfig.TEST_MODE = false; // Desactivar modo de prueba
 }
 console.log('TEST_MODE definido como:', window.AppConfig.TEST_MODE);
 
@@ -665,6 +665,10 @@ function initializeApp() {
                 console.log('Aplicando permisos a campos del formulario:', allowedFields);
                 document.querySelectorAll('.form-group').forEach(group => {
                     const fieldKey = group.dataset.permission;
+                    if (!fieldKey) {
+                        console.warn(`Elemento .form-group sin data-permission: ${group.innerHTML}`);
+                        return; // Evitar procesar elementos sin data-permission
+                    }
                     if (!allowedFields.includes(fieldKey)) {
                         console.log(`Ocultando campo ${fieldKey}`);
                         group.style.display = 'none';
@@ -679,6 +683,10 @@ function initializeApp() {
                 console.log('Aplicando permisos a columnas de la tabla:', allowedColumns);
                 document.querySelectorAll('#usersTable th').forEach(header => {
                     const columnKey = header.dataset.permission;
+                    if (!columnKey) {
+                        console.warn(`Encabezado de tabla sin data-permission: ${header.innerHTML}`);
+                        return; // Evitar procesar encabezados sin data-permission
+                    }
                     if (!allowedColumns.includes(columnKey)) {
                         console.log(`Ocultando columna ${columnKey}`);
                         header.style.display = 'none';

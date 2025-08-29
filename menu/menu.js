@@ -76,7 +76,6 @@ const submenus = {
 function loadScript(url) {
     return new Promise((resolve, reject) => {
         if (document.querySelector(`script[src="${url}"]`)) {
-            console.log(`Script ${url} ya está cargado`);
             resolve();
             return;
         }
@@ -84,7 +83,6 @@ function loadScript(url) {
         script.src = url;
         script.async = true;
         script.onload = () => {
-            console.log(`Script ${url} cargado correctamente`);
             resolve();
         };
         script.onerror = () => {
@@ -118,9 +116,7 @@ function initializeMenu() {
                 appId: "1:116607414952:web:31a7e3f47711844b95889d",
                 measurementId: "G-C8V7X0RGH5"
             });
-            console.log('Firebase inicializado correctamente');
         } else {
-            console.log('Firebase ya estaba inicializado');
         }
         const db = firebase.firestore();
         const auth = firebase.auth();
@@ -140,7 +136,6 @@ function initializeMenu() {
         function loadSubpage(folder, page, jsFiles, permissions) {
             content.innerHTML = '';
             document.querySelectorAll('link[data-subpage], script[data-subpage]').forEach(el => {
-                console.log(`Eliminando elemento: ${el.tagName} con src/href: ${el.src || el.href}`);
                 el.remove();
             });
 
@@ -166,7 +161,6 @@ function initializeMenu() {
                             script.dataset.subpage = page;
                             document.body.appendChild(script);
                         } else {
-                            console.log(`Script ${scriptSrc} ya está cargado`);
                         }
                     });
                 })
@@ -234,7 +228,6 @@ function initializeMenu() {
                         const permissions = userData.permissions || {};
                         const fullName = userData.fullName || 'Usuario';
                         userElement.textContent = `Bienvenido, ${fullName}`; 
-                        console.log('Renderizando menú con permisos:', JSON.stringify(permissions, null, 2));
                         renderMenu(permissions);
                     } else {
                         userElement.textContent = 'Bienvenido, Usuario';
@@ -249,7 +242,6 @@ function initializeMenu() {
             } else {
                 userElement.textContent = 'Bienvenido, Usuario';
                 mainMenu.innerHTML = '<p>Inicia sesión para ver el menú</p>';
-                console.log('No hay usuario autenticado');
             }
         });
     })

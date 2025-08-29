@@ -76,33 +76,37 @@ const backLink = document.querySelector('.back-link');
 const content = document.querySelector('.content');
 
 function loadSubpage(folder, page, jsFiles) {
-  content.innerHTML = '';
-  
-  document.querySelectorAll('link[data-subpage], script[data-subpage]').forEach(el => el.remove());
+    content.innerHTML = '';
 
-  fetch(`../subpages/${folder}/${page}/${page}.html`)
-    .then(response => response.text())
-    .then(data => {
-      content.innerHTML = data;
+    document.querySelectorAll('link[data-subpage], script[data-subpage]').forEach(el => el.remove());
 
-      // Cargar CSS
-      const link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.href = `../subpages/${folder}/${page}/${page}.css`;
-      link.dataset.subpage = page;
-      document.head.appendChild(link);
+    fetch(`../subpages/${folder}/${page}/${page}.html`)
+        .then(response => response.text())
+        .then(data => {
+            content.innerHTML = data;
 
-      jsFiles.forEach(jsFile => {
-        const script = document.createElement('script');
-        script.src = `../subpages/${folder}/${page}/${jsFile}.js`;
-        script.dataset.subpage = page;
-        document.body.appendChild(script);
-      });
-    })
-    .catch(error => {
-      content.innerHTML = '<p>Error al cargar la página</p>';
-      console.error('Error al cargar subpágina:', error);
-    });
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = `../subpages/${folder}/${page}/${page}.css`;
+            link.dataset.subpage = page;
+            document.head.appendChild(link);
+
+            jsFiles.forEach(jsFile => {
+                const scriptSrc = `../subpages/${folder}/${page}/${jsFile}.js`;
+                if (!document.querySelector(`script[src="${scriptSrc}"]`)) {
+                    const script = document.createElement('script');
+                    script.src = scriptSrc;
+                    script.dataset.subpage = page;
+                    document.body.appendChild(script);
+                } else {
+                    console.log(`Script ${scriptSrc} ya está cargado`);
+                }
+            });
+        })
+        .catch(error => {
+            content.innerHTML = '<p>Error al cargar la página</p>';
+            console.error('Error al cargar subpágina:', error);
+        });
 }
 
 document.querySelectorAll('.main-menu a').forEach(link => {

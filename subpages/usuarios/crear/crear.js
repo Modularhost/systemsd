@@ -1,8 +1,11 @@
 console.log('crear.js se ha cargado correctamente');
 
-// Bandera para modo de prueba (sin autenticación)
-const TEST_MODE = typeof window.TEST_MODE !== 'undefined' ? window.TEST_MODE : true; // Usar valor existente o true por defecto
-console.log('TEST_MODE definido como:', TEST_MODE);
+// Bandera para modo de prueba (sin autenticación), usando namespace para evitar conflictos
+window.AppConfig = window.AppConfig || {};
+if (!window.AppConfig.hasOwnProperty('TEST_MODE')) {
+    window.AppConfig.TEST_MODE = true; // Valor por defecto
+}
+console.log('TEST_MODE definido como:', window.AppConfig.TEST_MODE);
 
 // Función para cargar un script dinámicamente
 function loadScript(url) {
@@ -55,16 +58,16 @@ if (document.readyState === 'loading') {
 function initializeApp() {
     console.log('Iniciando aplicación');
     // Cargar scripts de Firebase solo si no está en modo de prueba
-    const firebasePromise = TEST_MODE ? Promise.resolve() : Promise.all([
+    const firebasePromise = window.AppConfig.TEST_MODE ? Promise.resolve() : Promise.all([
         loadScript('https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js'),
         loadScript('https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js'),
         loadScript('https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js')
     ]);
 
     firebasePromise.then(() => {
-        console.log(TEST_MODE ? 'Modo de prueba activo, Firebase no inicializado' : 'Scripts de Firebase cargados correctamente');
+        console.log(window.AppConfig.TEST_MODE ? 'Modo de prueba activo, Firebase no inicializado' : 'Scripts de Firebase cargados correctamente');
         let db, auth;
-        if (!TEST_MODE) {
+        if (!window.AppConfig.TEST_MODE) {
             if (!firebase.apps.length) {
                 firebase.initializeApp(window.firebaseConfig);
                 console.log('Firebase se ha inicializado correctamente');
@@ -481,7 +484,7 @@ function initializeApp() {
                 return;
             }
 
-            if (TEST_MODE) {
+            if (window.AppConfig.TEST_MODE) {
                 console.log('Modo de prueba: Simulando creación de usuario', userData);
                 alert('Usuario simulado creado: ' + JSON.stringify(userData, null, 2));
                 userForm.reset();
@@ -516,7 +519,7 @@ function initializeApp() {
 
         async function loadUsers() {
             try {
-                if (TEST_MODE) {
+                if (window.AppConfig.TEST_MODE) {
                     console.log('Modo de prueba: Simulando carga de usuarios');
                     users = [
                         { id: 'test1', fullName: 'Usuario Test 1', username: 'user1', rut: '12345678-9', dob: '1990-01-01', email: 'user1@test.com', sex: 'masculino', role: 'administrador' },
@@ -537,7 +540,7 @@ function initializeApp() {
 
         function renderUsers() {
             console.log('Renderizando usuarios, página:', currentPage);
-            const userPermissions = TEST_MODE ? simulatePermissions() : getCurrentUserPermissions();
+            const userPermissions = window.AppConfig.TEST_MODE ? simulatePermissions() : getCurrentUserPermissions();
             const allowedColumns = userPermissions?.usuarios?.crear?.table?.columns || [
                 'column-fullName', 'column-username', 'column-rut', 'column-dob',
                 'column-email', 'column-sex', 'column-role'
@@ -587,7 +590,32 @@ function initializeApp() {
             return {
                 usuarios: {
                     crear: {
-                        table: { enabled: true, columns: ['column-fullName', 'column-role'] }
+                        form: {
+                            enabled: true,
+                            fields: [
+                                'field-fullName',
+                                'field-username',
+                                'field-rut',
+                                'field-dob',
+                                'field-email',
+                                'field-password',
+                                'field-sex',
+                                'field-role',
+                                'submit-button'
+                            ]
+                        },
+                        table: {
+                            enabled: true,
+                            columns: [
+                                'column-fullName',
+                                'column-username',
+                                'column-rut',
+                                'column-dob',
+                                'column-email',
+                                'column-sex',
+                                'column-role'
+                            ]
+                        }
                     }
                 }
             };
@@ -595,7 +623,7 @@ function initializeApp() {
 
         // Obtener permisos del usuario actual
         async function getCurrentUserPermissions() {
-            if (TEST_MODE) {
+            if (window.AppConfig.TEST_MODE) {
                 console.log('Modo de prueba: Retornando permisos simulados');
                 return simulatePermissions();
             }
@@ -660,7 +688,7 @@ function initializeApp() {
         }
 
         // Cargar usuarios y aplicar permisos al iniciar
-        if (TEST_MODE) {
+        if (window.AppConfig.TEST_MODE) {
             console.log('Modo de prueba: Cargando usuarios y aplicando permisos simulados');
             loadUsers();
             applyPermissions();

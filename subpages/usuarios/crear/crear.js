@@ -221,17 +221,26 @@ function initializeApp() {
                     console.log('Evento change disparado en permissionsTree');
                     if (e.target.classList.contains('menu-checkbox')) {
                         const menu = e.target.dataset.menu;
-                        const submenuGroup = e.target.nextElementSibling;
-                        submenuGroup.style.display = e.target.checked ? 'block' : 'none';
+                        console.log(`Checkbox de menú "${menu}" cambiado, checked: ${e.target.checked}`);
+                        // Buscar submenu-group dentro del mismo permission-group
+                        const permissionGroup = e.target.closest('.permission-group');
+                        const submenuGroup = permissionGroup ? permissionGroup.querySelector('.submenu-group') : null;
+                        if (submenuGroup) {
+                            console.log('submenu-group encontrado, actualizando display');
+                            submenuGroup.style.display = e.target.checked ? 'block' : 'none';
+                        } else {
+                            console.error('Error: No se encontró submenu-group para el menú', menu);
+                        }
 
                         // Si se deselecciona un menú, deseleccionar todos sus submenús
-                        if (!e.target.checked) {
+                        if (!e.target.checked && submenuGroup) {
                             submenuGroup.querySelectorAll('.submenu-checkbox').forEach(checkbox => {
                                 checkbox.checked = false;
                                 if (selectedPermissions[menu]) {
                                     delete selectedPermissions[menu];
                                 }
                             });
+                            console.log('Submenús deseleccionados para', menu);
                         }
                     }
 
@@ -239,6 +248,7 @@ function initializeApp() {
                     if (e.target.classList.contains('submenu-checkbox')) {
                         const menu = e.target.dataset.menu;
                         const submenu = e.target.dataset.submenu;
+                        console.log(`Checkbox de submenú "${submenu}" cambiado, checked: ${e.target.checked}`);
                         if (!selectedPermissions[menu]) {
                             selectedPermissions[menu] = [];
                         }

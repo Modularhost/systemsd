@@ -105,7 +105,7 @@ function initializeMenu() {
     const submenuContent = document.querySelector('.submenu-content');
     const backLink = document.querySelector('.back-link');
     const content = document.querySelector('.content');
-    const userElement = document.querySelector('.user'); 
+    const userElement = document.querySelector('.user');
     const sidebar = document.querySelector('.sidebar');
     const toggleSidebar = document.getElementById('toggle-sidebar');
 
@@ -114,7 +114,6 @@ function initializeMenu() {
         return;
     }
 
-    // Definir permisos completos sin requerir autenticación
     const permissions = {};
     Object.keys(submenus).forEach(menu => {
         permissions[menu] = {};
@@ -162,17 +161,12 @@ function initializeMenu() {
     }
 
     function renderMenu() {
-        mainMenu.innerHTML = Object.keys(submenus)
-            .filter(menu => permissions[menu])
-            .map(menu => {
-                const menuText = menu.charAt(0).toUpperCase() + menu.slice(1).replace('-', ' ');
-                return `
-                <a href="#" data-submenu="${menu}" data-tooltip="${menuText}">
-                    <i class="fas fa-chevron-right"></i>
-                    <span class="menu-text">${menuText}</span>
-                </a>
-            `;
-            }).join('');
+        mainMenu.querySelectorAll('a').forEach(link => {
+            const submenuId = link.getAttribute('data-submenu');
+            if (!submenuId || !submenus[submenuId] || !permissions[submenuId]) {
+                link.style.display = 'none';
+            }
+        });
 
         mainMenu.addEventListener('click', (e) => {
             e.preventDefault();

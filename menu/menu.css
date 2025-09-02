@@ -8,7 +8,7 @@
 body {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; 
+  min-height: 100vh;
   background: #f5f5f5;
   color: #333;
 }
@@ -40,7 +40,7 @@ body {
 .layout {
   display: flex;
   flex: 1;
-  min-height: 0; 
+  min-height: 0;
 }
 
 .sidebar {
@@ -51,15 +51,17 @@ body {
   flex-direction: column;
   padding: 15px 10px;
   align-items: flex-start;
-  overflow-y: auto; 
+  overflow-y: auto;
   position: relative;
   transition: width 0.3s ease;
-  z-index: 1100;
+  z-index: 1200;
 }
 
 .sidebar.collapsed {
   width: 50px;
   align-items: center;
+  position: relative;
+  overflow: visible;
 }
 
 .sidebar.collapsed h2 {
@@ -85,7 +87,7 @@ body {
 .sidebar.collapsed a:hover::after {
   content: attr(data-tooltip);
   position: absolute;
-  left: calc(100% + 5px);
+  left: calc(100% + 10px);
   top: 50%;
   transform: translateY(-50%);
   background: #333;
@@ -94,19 +96,19 @@ body {
   border-radius: 4px;
   white-space: nowrap;
   font-size: 12px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  z-index: 1000; 
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  z-index: 1300;
 }
 
 .sidebar.collapsed a:hover::before {
   content: "";
   position: absolute;
-  left: 100%;
+  left: calc(100% + 5px);
   top: 50%;
   transform: translateY(-50%);
   border: 5px solid transparent;
   border-right-color: #333;
-  z-index: 1000; 
+  z-index: 1300;
 }
 
 .sidebar h2 {
@@ -165,13 +167,14 @@ body {
   flex-direction: column;
   background: #f0f2f5;
   transition: margin-left 0.3s ease;
+  z-index: 1000;
 }
 
 .content {
   padding: 15px;
   flex: 1;
-  max-height: calc(100vh - 60px); 
-  overflow-y: auto; 
+  max-height: calc(100vh - 60px);
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 12px;

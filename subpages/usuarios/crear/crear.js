@@ -452,43 +452,43 @@ function initializeApp() {
         });
 
         createUserBtn.addEventListener('click', async () => {
-            console.log('Botón Crear Usuario clickeado');
-            const userData = {
-                fullName: document.getElementById('fullName').value,
-                username: document.getElementById('username').value,
-                rut: document.getElementById('rut').value,
-                dob: document.getElementById('dob').value,
-                email: document.getElementById('email').value,
-                password: document.getElementById('password').value,
-                sex: document.getElementById('sex').value,
-                role: roleSelect.value,
-                permissions: selectedPermissions
-            };
+  console.log('Botón Crear Usuario clickeado');
+  const userData = {
+    fullName: document.getElementById('fullName').value,
+    username: document.getElementById('username').value,
+    rut: document.getElementById('rut').value,
+    dob: document.getElementById('dob').value,
+    email: document.getElementById('email').value,
+    password: document.getElementById('password').value,
+    sex: document.getElementById('sex').value,
+    role: roleSelect.value,
+    permissions: selectedPermissions
+  };
 
-            if (!userData.fullName || !userData.username || !userData.rut || !userData.dob ||
-                !userData.email || !userData.password || !userData.sex || !userData.role) {
-                alert('Por favor, completa todos los campos.');
-                return;
-            }
+  if (!userData.fullName || !userData.username || !userData.rut || !userData.dob ||
+      !userData.email || !userData.password || !userData.sex || !userData.role) {
+    alert('Por favor, completa todos los campos.');
+    return;
+  }
 
-            try {
-                // Llama a la Cloud Function (reemplaza 'createUser' con el nombre de tu función)
-                const createUserFunction = firebase.functions().httpsCallable('createUser');
-                const result = await createUserFunction(userData);
-                console.log('Usuario creado exitosamente:', result.data.uid);
-                alert('Usuario creado con éxito.');
-                userForm.reset();
-                selectedPermissions = {};
-                loadUsers(); // Recarga la tabla
-            } catch (error) {
-                console.error('Error al crear usuario:', error);
-                if (error.code === 'permission-denied') {
-                    alert('No tienes permisos suficientes para crear usuarios.');
-                } else {
-                    alert('Error al crear usuario: ' + error.message);
-                }
-            }
-        });
+  try {
+    // Llama a la Cloud Function (reemplaza 'createUser' con el nombre de tu función)
+    const createUserFunction = firebase.functions().httpsCallable('createUser');
+    const result = await createUserFunction(userData);
+    console.log('Usuario creado exitosamente:', result.data.uid);
+    alert('Usuario creado con éxito.');
+    userForm.reset();
+    selectedPermissions = {};
+    loadUsers(); // Recarga la tabla
+  } catch (error) {
+    console.error('Error al crear usuario:', error);
+    if (error.code === 'permission-denied') {
+      alert('No tienes permisos suficientes para crear usuarios.');
+    } else {
+      alert('Error al crear usuario: ' + error.message);
+    }
+  }
+});
 
         let currentPage = 1;
         const usersPerPage = 10;

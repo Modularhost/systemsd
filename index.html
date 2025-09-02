@@ -61,7 +61,6 @@
       border-radius: 16px;
       backdrop-filter: blur(10px);
       width: 350px;
-      max-width: 90%;
       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
       text-align: center;
       z-index: 1;
@@ -140,28 +139,6 @@
     .links a:hover {
       text-decoration: underline;
     }
-
-    @media (max-width: 480px) {
-      .container {
-        padding: 20px;
-      }
-
-      .brand h1 {
-        font-size: 28px;
-      }
-
-      .brand p {
-        font-size: 14px;
-      }
-
-      .logo {
-        font-size: 36px;
-      }
-
-      .title {
-        font-size: 18px;
-      }
-    }
   </style>
 </head>
 <body>
@@ -197,17 +174,10 @@
 
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-functions-compat.js"></script>
   <script>
     console.log('index.js se ha cargado correctamente');
 
-    // Configuración global para modo de prueba
-    window.AppConfig = window.AppConfig || {};
-    window.AppConfig.TEST_MODE = false;
-    console.log('TEST_MODE definido como:', window.AppConfig.TEST_MODE);
-
-    // Configuración de Firebase
-    window.firebaseConfig = {
+    const firebaseConfig = {
       apiKey: "AIzaSyB_LByv2DPTs2298UEHSD7cFKZN6L8gtls",
       authDomain: "systemsd-b4678.firebaseapp.com",
       projectId: "systemsd-b4678",
@@ -217,24 +187,16 @@
       measurementId: "G-C8V7X0RGH5"
     };
 
-    // Inicializa Firebase
-    firebase.initializeApp(window.firebaseConfig);
+    firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     console.log('Firebase inicializado');
 
-    // Manejo del formulario de inicio de sesión
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       console.log('Formulario de inicio de sesión enviado');
 
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
-
-      if (!email || !password) {
-        console.log('Campos incompletos');
-        alert('Por favor, completa todos los campos.');
-        return;
-      }
 
       try {
         console.log('Iniciando sesión con:', email);
@@ -243,27 +205,7 @@
         window.location.href = 'menu/menu.html';
       } catch (error) {
         console.error('Error al iniciar sesión:', error);
-        let errorMessage = 'Error al iniciar sesión: ';
-        if (error.code === 'auth/user-not-found') {
-          errorMessage += 'Usuario no encontrado.';
-        } else if (error.code === 'auth/wrong-password') {
-          errorMessage += 'Contraseña incorrecta.';
-        } else if (error.code === 'auth/invalid-email') {
-          errorMessage += 'Correo electrónico inválido.';
-        } else {
-          errorMessage += error.message;
-        }
-        alert(errorMessage);
-      }
-    });
-
-    // Verificar estado de autenticación al cargar la página
-    auth.onAuthStateChanged(user => {
-      if (user) {
-        console.log('Usuario ya autenticado:', user.uid);
-        window.location.href = 'menu/menu.html';
-      } else {
-        console.log('No hay usuario autenticado');
+        alert('Error al iniciar sesión: ' + error.message);
       }
     });
   </script>

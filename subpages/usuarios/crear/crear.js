@@ -496,7 +496,11 @@ function initializeApp() {
                 loadUsers();
             } catch (error) {
                 console.error('Error al crear usuario:', error);
-                alert('Error al crear usuario: ' + error.message);
+                if (error.code === 'permission-denied') {
+                    alert('No tienes permisos suficientes para crear usuarios. Contacta a un administrador.');
+                } else {
+                    alert('Error al crear usuario: ' + error.message);
+                }
             }
         });
 

@@ -51,18 +51,20 @@ body {
   flex-direction: column;
   padding: 15px 10px;
   align-items: flex-start;
-  overflow-y: hidden; 
+  overflow-y: auto; 
   position: relative;
   transition: width 0.3s ease;
 }
 
 .sidebar.collapsed {
   width: 50px;
+  align-items: center;
 }
 
 .sidebar.collapsed h2 {
   font-size: 12px;
   text-align: center;
+  margin-bottom: 10px;
 }
 
 .sidebar.collapsed .menu-text {
@@ -133,6 +135,7 @@ body {
   display: flex;
   flex-direction: column;
   background: #f0f2f5;
+  transition: margin-left 0.3s ease;
 }
 
 .content {
@@ -170,13 +173,14 @@ body {
 }
 
 .sidebar-toggle {
-  position: absolute;
+  position: sticky;
   bottom: 0;
   left: 0;
   width: 100%;
   text-align: center;
   background: #ffffff;
   border-top: 1px solid #ddd;
+  z-index: 1;
 }
 
 .sidebar-toggle a {

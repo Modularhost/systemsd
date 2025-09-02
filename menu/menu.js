@@ -117,10 +117,9 @@ function initializeMenu() {
     // Definir permisos completos sin requerir autenticación
     const permissions = {};
     Object.keys(submenus).forEach(menu => {
-        permissions[menu] = true;
+        permissions[menu] = {};
         submenus[menu].forEach(item => {
-            permissions[item.folder] = permissions[item.folder] || {};
-            permissions[item.folder][item.page] = true;
+            permissions[menu][item.page] = true;
         });
     });
 
@@ -179,10 +178,10 @@ function initializeMenu() {
             const submenuId = link.getAttribute('data-submenu');
             if (!submenuId || !submenus[submenuId] || !permissions[submenuId]) return;
 
-            const submenuItems = submenus[submenuId].filter(item => permissions[item.folder]?.[item.page]);
+            const submenuItems = submenus[submenuId].filter(item => permissions[submenuId][item.page]);
             submenuContent.innerHTML = submenuItems.map(item => `
                 <a href="#" data-folder="${item.folder}" data-page="${item.page}" data-js-files="${item.jsFiles.join(',')}">
-                    <span class="menu-text">${item.text}</span>
+                    <i class="fas fa-circle"></i> <span class="menu-text">${item.text}</span>
                 </a>
             `).join('');
 
@@ -218,11 +217,11 @@ function initializeMenu() {
         sidebar.classList.toggle('collapsed');
         const icon = toggleSidebar.querySelector('i');
         if (sidebar.classList.contains('collapsed')) {
-            icon.classList.remove('fa-chevron-left');
-            icon.classList.add('fa-chevron-right');
+            icon.classList.remove('fa-angles-left');
+            icon.classList.add('fa-angles-right');
         } else {
-            icon.classList.remove('fa-chevron-right');
-            icon.classList.add('fa-chevron-left');
+            icon.classList.remove('fa-angles-right');
+            icon.classList.add('fa-angles-left');
         }
     });
 }

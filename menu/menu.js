@@ -165,6 +165,9 @@ function initializeMenu() {
             const submenuId = link.getAttribute('data-submenu');
             if (!submenuId || !submenus[submenuId] || !permissions[submenuId]) {
                 link.style.display = 'none';
+            } else {
+                const menuText = link.querySelector('.menu-text').textContent;
+                link.setAttribute('data-tooltip', menuText);
             }
         });
 

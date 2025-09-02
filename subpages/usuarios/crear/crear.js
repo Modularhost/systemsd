@@ -467,37 +467,23 @@ function initializeApp() {
 
             if (!userData.fullName || !userData.username || !userData.rut || !userData.dob ||
                 !userData.email || !userData.password || !userData.sex || !userData.role) {
-                console.log('Campos incompletos, mostrando alerta');
                 alert('Por favor, completa todos los campos.');
                 return;
             }
 
-            if (window.AppConfig.TEST_MODE) {
-                console.log('Modo de prueba: Simulando creación de usuario', userData);
-                alert('Usuario simulado creado: ' + JSON.stringify(userData, null, 2));
-                userForm.reset();
-                selectedPermissions = {};
-                loadUsers();
-                return;
-            }
-
             try {
-                console.log('Creando usuario en Firebase Auth:', userData.email);
-                const userCredential = await auth.createUserWithEmailAndPassword(userData.email, userData.password);
-                console.log('Usuario creado en Auth:', userCredential.user.uid);
-                delete userData.password;
-                userData.uid = userCredential.user.uid;
-                console.log('Guardando usuario en Firestore:', userData);
-                await db.collection('users').doc(userData.uid).set(userData);
-                console.log('Usuario creado exitosamente en Firestore');
+                // Llama a la Cloud Function (reemplaza 'createUser' con el nombre de tu función)
+                const createUserFunction = firebase.functions().httpsCallable('createUser');
+                const result = await createUserFunction(userData);
+                console.log('Usuario creado exitosamente:', result.data.uid);
+                alert('Usuario creado con éxito.');
                 userForm.reset();
                 selectedPermissions = {};
-                console.log('Formulario reseteado, permisos limpiados');
-                loadUsers();
+                loadUsers(); // Recarga la tabla
             } catch (error) {
                 console.error('Error al crear usuario:', error);
                 if (error.code === 'permission-denied') {
-                    alert('No tienes permisos suficientes para crear usuarios. Contacta a un administrador.');
+                    alert('No tienes permisos suficientes para crear usuarios.');
                 } else {
                     alert('Error al crear usuario: ' + error.message);
                 }

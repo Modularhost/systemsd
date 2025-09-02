@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SystemSD - Iniciar Sesión</title>
   <style>
-    /* --- Reset básico --- */
     * {
       margin: 0;
       padding: 0;
@@ -25,7 +24,6 @@
       overflow: hidden;
     }
 
-    /* Círculo decorativo en el fondo */
     .circle-bg {
       position: absolute;
       width: 600px;
@@ -69,7 +67,6 @@
       position: relative;
     }
 
-    /* Logo SD */
     .logo {
       font-size: 48px;
       font-weight: bold;
@@ -180,7 +177,6 @@
   <script>
     console.log('index.js se ha cargado correctamente');
 
-    // Configuración de Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyB_LByv2DPTs2298UEHSD7cFKZN6L8gtls",
       authDomain: "systemsd-b4678.firebaseapp.com",
@@ -191,12 +187,10 @@
       measurementId: "G-C8V7X0RGH5"
     };
 
-    // Inicializar Firebase
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     console.log('Firebase inicializado');
 
-    // Manejar el evento de inicio de sesión
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       console.log('Formulario de inicio de sesión enviado');

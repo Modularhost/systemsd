@@ -182,7 +182,8 @@ function initializeMenu() {
             const submenuItems = submenus[submenuId].filter(item => permissions[submenuId][item.page]);
             submenuContent.innerHTML = submenuItems.map(item => `
                 <a href="#" data-folder="${item.folder}" data-page="${item.page}" data-js-files="${item.jsFiles.join(',')}" data-tooltip="${item.text}">
-                    ${item.text}
+                    <i class="fas fa-chevron-right"></i>
+                    <span class="submenu-text">${item.text}</span>
                 </a>
             `).join('');
 

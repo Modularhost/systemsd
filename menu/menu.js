@@ -164,12 +164,15 @@ function initializeMenu() {
     function renderMenu() {
         mainMenu.innerHTML = Object.keys(submenus)
             .filter(menu => permissions[menu])
-            .map(menu => `
-                <a href="#" data-submenu="${menu}">
+            .map(menu => {
+                const menuText = menu.charAt(0).toUpperCase() + menu.slice(1).replace('-', ' ');
+                return `
+                <a href="#" data-submenu="${menu}" title="${menuText}">
                     <i class="fas fa-chevron-right"></i>
-                    <span class="menu-text">${menu.charAt(0).toUpperCase() + menu.slice(1).replace('-', ' ')}</span>
+                    <span class="menu-text">${menuText}</span>
                 </a>
-            `).join('');
+            `;
+            }).join('');
 
         mainMenu.addEventListener('click', (e) => {
             e.preventDefault();
@@ -180,8 +183,8 @@ function initializeMenu() {
 
             const submenuItems = submenus[submenuId].filter(item => permissions[submenuId][item.page]);
             submenuContent.innerHTML = submenuItems.map(item => `
-                <a href="#" data-folder="${item.folder}" data-page="${item.page}" data-js-files="${item.jsFiles.join(',')}">
-                    <i class="fas fa-circle"></i> <span class="menu-text">${item.text}</span>
+                <a href="#" data-folder="${item.folder}" data-page="${item.page}" data-js-files="${item.jsFiles.join(',')}" title="${item.text}">
+                    ${item.text}
                 </a>
             `).join('');
 
@@ -219,9 +222,11 @@ function initializeMenu() {
         if (sidebar.classList.contains('collapsed')) {
             icon.classList.remove('fa-angles-left');
             icon.classList.add('fa-angles-right');
+            toggleSidebar.title = 'Expandir menú';
         } else {
             icon.classList.remove('fa-angles-right');
             icon.classList.add('fa-angles-left');
+            toggleSidebar.title = 'Contraer menú';
         }
     });
 }

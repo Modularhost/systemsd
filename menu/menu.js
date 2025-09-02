@@ -167,7 +167,7 @@ function initializeMenu() {
             .map(menu => {
                 const menuText = menu.charAt(0).toUpperCase() + menu.slice(1).replace('-', ' ');
                 return `
-                <a href="#" data-submenu="${menu}" title="${menuText}">
+                <a href="#" data-submenu="${menu}" data-tooltip="${menuText}">
                     <i class="fas fa-chevron-right"></i>
                     <span class="menu-text">${menuText}</span>
                 </a>
@@ -183,7 +183,7 @@ function initializeMenu() {
 
             const submenuItems = submenus[submenuId].filter(item => permissions[submenuId][item.page]);
             submenuContent.innerHTML = submenuItems.map(item => `
-                <a href="#" data-folder="${item.folder}" data-page="${item.page}" data-js-files="${item.jsFiles.join(',')}" title="${item.text}">
+                <a href="#" data-folder="${item.folder}" data-page="${item.page}" data-js-files="${item.jsFiles.join(',')}" data-tooltip="${item.text}">
                     ${item.text}
                 </a>
             `).join('');
@@ -222,11 +222,11 @@ function initializeMenu() {
         if (sidebar.classList.contains('collapsed')) {
             icon.classList.remove('fa-angles-left');
             icon.classList.add('fa-angles-right');
-            toggleSidebar.title = 'Expandir menú';
+            toggleSidebar.setAttribute('data-tooltip', 'Expandir menú');
         } else {
             icon.classList.remove('fa-angles-right');
             icon.classList.add('fa-angles-left');
-            toggleSidebar.title = 'Contraer menú';
+            toggleSidebar.setAttribute('data-tooltip', 'Contraer menú');
         }
     });
 }

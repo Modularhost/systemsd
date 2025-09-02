@@ -40,7 +40,7 @@ body {
 .layout {
   display: flex;
   flex: 1;
-  min-height: 0; /
+  min-height: 0; 
 }
 
 .sidebar {
@@ -52,6 +52,30 @@ body {
   padding: 15px 10px;
   align-items: flex-start;
   overflow-y: hidden; 
+  position: relative;
+  transition: width 0.3s ease;
+}
+
+.sidebar.collapsed {
+  width: 50px;
+}
+
+.sidebar.collapsed h2 {
+  font-size: 12px;
+  text-align: center;
+}
+
+.sidebar.collapsed .menu-text {
+  display: none;
+}
+
+.sidebar.collapsed a {
+  justify-content: center;
+  padding: 8px;
+}
+
+.sidebar.collapsed .submenu-content a {
+  padding-left: 0;
 }
 
 .sidebar h2 {
@@ -143,4 +167,28 @@ body {
 .card ul {
   list-style: disc;
   padding-left: 18px;
+}
+
+.sidebar-toggle {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  background: #ffffff;
+  border-top: 1px solid #ddd;
+}
+
+.sidebar-toggle a {
+  display: block;
+  padding: 10px;
+  color: #4cc9f0;
+}
+
+.sidebar-toggle a:hover {
+  background: #ddd;
+}
+
+.sidebar.collapsed .sidebar-toggle a {
+  padding: 10px 0;
 }

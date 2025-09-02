@@ -106,8 +106,10 @@ function initializeMenu() {
     const backLink = document.querySelector('.back-link');
     const content = document.querySelector('.content');
     const userElement = document.querySelector('.user'); 
+    const sidebar = document.querySelector('.sidebar');
+    const toggleSidebar = document.getElementById('toggle-sidebar');
 
-    if (!mainMenu || !submenu || !submenuContent || !backLink || !content || !userElement) {
+    if (!mainMenu || !submenu || !submenuContent || !backLink || !content || !userElement || !sidebar || !toggleSidebar) {
         console.error('Error: No se encontraron uno o más elementos del DOM');
         return;
     }
@@ -115,15 +117,16 @@ function initializeMenu() {
     // Definir permisos completos sin requerir autenticación
     const permissions = {};
     Object.keys(submenus).forEach(menu => {
-        permissions[menu] = {};
+        permissions[menu] = true;
         submenus[menu].forEach(item => {
-            permissions[menu][item.page] = true;
+            permissions[item.folder] = permissions[item.folder] || {};
+            permissions[item.folder][item.page] = true;
         });
     });
 
     userElement.textContent = 'Bienvenido, Usuario';
 
-    function loadSubpage(folder, page, jsFiles, permissions) {
+    function loadSubpage(folder, page, jsFiles) {
         content.innerHTML = '';
         document.querySelectorAll('link[data-subpage], script[data-subpage]').forEach(el => {
             el.remove();
@@ -150,7 +153,6 @@ function initializeMenu() {
                         script.src = scriptSrc;
                         script.dataset.subpage = page;
                         document.body.appendChild(script);
-                    } else {
                     }
                 });
             })
@@ -160,13 +162,13 @@ function initializeMenu() {
             });
     }
 
-    function renderMenu(permissions) {
+    function renderMenu() {
         mainMenu.innerHTML = Object.keys(submenus)
             .filter(menu => permissions[menu])
             .map(menu => `
                 <a href="#" data-submenu="${menu}">
                     <i class="fas fa-chevron-right"></i>
-                    ${menu.charAt(0).toUpperCase() + menu.slice(1).replace('-', ' ')}
+                    <span class="menu-text">${menu.charAt(0).toUpperCase() + menu.slice(1).replace('-', ' ')}</span>
                 </a>
             `).join('');
 
@@ -177,10 +179,10 @@ function initializeMenu() {
             const submenuId = link.getAttribute('data-submenu');
             if (!submenuId || !submenus[submenuId] || !permissions[submenuId]) return;
 
-            const submenuItems = submenus[submenuId].filter(item => permissions[submenuId][item.page]);
+            const submenuItems = submenus[submenuId].filter(item => permissions[item.folder]?.[item.page]);
             submenuContent.innerHTML = submenuItems.map(item => `
                 <a href="#" data-folder="${item.folder}" data-page="${item.page}" data-js-files="${item.jsFiles.join(',')}">
-                    ${item.text}
+                    <span class="menu-text">${item.text}</span>
                 </a>
             `).join('');
 
@@ -196,7 +198,7 @@ function initializeMenu() {
             const page = link.getAttribute('data-page');
             const jsFiles = link.getAttribute('data-js-files').split(',');
             if (folder && page && jsFiles && permissions[folder]?.[page]) {
-                loadSubpage(folder, page, jsFiles, permissions);
+                loadSubpage(folder, page, jsFiles);
             } else {
                 content.innerHTML = '<p>No tienes permiso para acceder a esta página</p>';
             }
@@ -209,5 +211,18 @@ function initializeMenu() {
         });
     }
 
-    renderMenu(permissions);
+    renderMenu();
+
+    toggleSidebar.addEventListener('click', (e) => {
+        e.preventDefault();
+        sidebar.classList.toggle('collapsed');
+        const icon = toggleSidebar.querySelector('i');
+        if (sidebar.classList.contains('collapsed')) {
+            icon.classList.remove('fa-chevron-left');
+            icon.classList.add('fa-chevron-right');
+        } else {
+            icon.classList.remove('fa-chevron-right');
+            icon.classList.add('fa-chevron-left');
+        }
+    });
 }

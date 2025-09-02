@@ -100,153 +100,114 @@ if (document.readyState === 'loading') {
 }
 
 function initializeMenu() {
-    Promise.all([
-        loadScript('https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js'),
-        loadScript('https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js'),
-        loadScript('https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js')
-    ])
-    .then(() => {
-        if (!firebase.apps.length) {
-            firebase.initializeApp({
-                apiKey: "AIzaSyB_LByv2DPTs2298UEHSD7cFKZN6L8gtls",
-                authDomain: "systemsd-b4678.firebaseapp.com",
-                projectId: "systemsd-b4678",
-                storageBucket: "systemsd-b4678.firebasestorage.app",
-                messagingSenderId: "116607414952",
-                appId: "1:116607414952:web:31a7e3f47711844b95889d",
-                measurementId: "G-C8V7X0RGH5"
-            });
-        } else {
-        }
-        const db = firebase.firestore();
-        const auth = firebase.auth();
+    const mainMenu = document.querySelector('.main-menu');
+    const submenu = document.querySelector('.submenu');
+    const submenuContent = document.querySelector('.submenu-content');
+    const backLink = document.querySelector('.back-link');
+    const content = document.querySelector('.content');
+    const userElement = document.querySelector('.user'); 
 
-        const mainMenu = document.querySelector('.main-menu');
-        const submenu = document.querySelector('.submenu');
-        const submenuContent = document.querySelector('.submenu-content');
-        const backLink = document.querySelector('.back-link');
-        const content = document.querySelector('.content');
-        const userElement = document.querySelector('.user'); 
+    if (!mainMenu || !submenu || !submenuContent || !backLink || !content || !userElement) {
+        console.error('Error: No se encontraron uno o más elementos del DOM');
+        return;
+    }
 
-        if (!mainMenu || !submenu || !submenuContent || !backLink || !content || !userElement) {
-            console.error('Error: No se encontraron uno o más elementos del DOM');
-            return;
-        }
+    // Definir permisos completos sin requerir autenticación
+    const permissions = {};
+    Object.keys(submenus).forEach(menu => {
+        permissions[menu] = {};
+        submenus[menu].forEach(item => {
+            permissions[menu][item.page] = true;
+        });
+    });
 
-        function loadSubpage(folder, page, jsFiles, permissions) {
-            content.innerHTML = '';
-            document.querySelectorAll('link[data-subpage], script[data-subpage]').forEach(el => {
-                el.remove();
-            });
+    userElement.textContent = 'Bienvenido, Usuario';
 
-            fetch(`../subpages/${folder}/${page}/${page}.html`)
-                .then(response => {
-                    if (!response.ok) throw new Error('Página no encontrada');
-                    return response.text();
-                })
-                .then(data => {
-                    content.innerHTML = data;
+    function loadSubpage(folder, page, jsFiles, permissions) {
+        content.innerHTML = '';
+        document.querySelectorAll('link[data-subpage], script[data-subpage]').forEach(el => {
+            el.remove();
+        });
 
-                    const link = document.createElement('link');
-                    link.rel = 'stylesheet';
-                    link.href = `../subpages/${folder}/${page}/${page}.css`;
-                    link.dataset.subpage = page;
-                    document.head.appendChild(link);
+        fetch(`../subpages/${folder}/${page}/${page}.html`)
+            .then(response => {
+                if (!response.ok) throw new Error('Página no encontrada');
+                return response.text();
+            })
+            .then(data => {
+                content.innerHTML = data;
 
-                    jsFiles.forEach(jsFile => {
-                        const scriptSrc = `../subpages/${folder}/${page}/${jsFile}.js`;
-                        if (!document.querySelector(`script[src="${scriptSrc}"]`)) {
-                            const script = document.createElement('script');
-                            script.src = scriptSrc;
-                            script.dataset.subpage = page;
-                            document.body.appendChild(script);
-                        } else {
-                        }
-                    });
-                })
-                .catch(error => {
-                    content.innerHTML = '<p>Error al cargar la página</p>';
-                    console.error('Error al cargar subpágina:', error);
-                });
-        }
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = `../subpages/${folder}/${page}/${page}.css`;
+                link.dataset.subpage = page;
+                document.head.appendChild(link);
 
-        function renderMenu(permissions) {
-            mainMenu.innerHTML = Object.keys(submenus)
-                .filter(menu => permissions[menu])
-                .map(menu => `
-                    <a href="#" data-submenu="${menu}">
-                        <i class="fas fa-chevron-right"></i>
-                        ${menu.charAt(0).toUpperCase() + menu.slice(1).replace('-', ' ')}
-                    </a>
-                `).join('');
-
-            mainMenu.addEventListener('click', (e) => {
-                e.preventDefault();
-                const link = e.target.closest('a');
-                if (!link) return;
-                const submenuId = link.getAttribute('data-submenu');
-                if (!submenuId || !submenus[submenuId] || !permissions[submenuId]) return;
-
-                const submenuItems = submenus[submenuId].filter(item => permissions[submenuId][item.page]);
-                submenuContent.innerHTML = submenuItems.map(item => `
-                    <a href="#" data-folder="${item.folder}" data-page="${item.page}" data-js-files="${item.jsFiles.join(',')}">
-                        ${item.text}
-                    </a>
-                `).join('');
-
-                mainMenu.style.display = 'none';
-                submenu.style.display = 'block';
-            });
-
-            submenuContent.addEventListener('click', (e) => {
-                e.preventDefault();
-                const link = e.target.closest('a');
-                if (!link) return;
-                const folder = link.getAttribute('data-folder');
-                const page = link.getAttribute('data-page');
-                const jsFiles = link.getAttribute('data-js-files').split(',');
-                if (folder && page && jsFiles && permissions[folder]?.[page]) {
-                    loadSubpage(folder, page, jsFiles, permissions);
-                } else {
-                    content.innerHTML = '<p>No tienes permiso para acceder a esta página</p>';
-                }
-            });
-
-            backLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                submenu.style.display = 'none';
-                mainMenu.style.display = 'block';
-            });
-        }
-
-        auth.onAuthStateChanged(async user => {
-            if (user) {
-                try {
-                    const doc = await db.collection('users').doc(user.uid).get();
-                    if (doc.exists) {
-                        const userData = doc.data();
-                        const permissions = userData.permissions || {};
-                        const fullName = userData.fullName || 'Usuario';
-                        userElement.textContent = `Bienvenido, ${fullName}`; 
-                        renderMenu(permissions);
+                jsFiles.forEach(jsFile => {
+                    const scriptSrc = `../subpages/${folder}/${page}/${jsFile}.js`;
+                    if (!document.querySelector(`script[src="${scriptSrc}"]`)) {
+                        const script = document.createElement('script');
+                        script.src = scriptSrc;
+                        script.dataset.subpage = page;
+                        document.body.appendChild(script);
                     } else {
-                        userElement.textContent = 'Bienvenido, Usuario';
-                        mainMenu.innerHTML = '<p>No se encontraron permisos</p>';
-                        console.warn('No se encontraron datos del usuario en Firestore');
                     }
-                } catch (error) {
-                    console.error('Error al obtener datos del usuario:', error);
-                    userElement.textContent = 'Bienvenido, Usuario';
-                    mainMenu.innerHTML = '<p>Error al cargar permisos</p>';
-                }
+                });
+            })
+            .catch(error => {
+                content.innerHTML = '<p>Error al cargar la página</p>';
+                console.error('Error al cargar subpágina:', error);
+            });
+    }
+
+    function renderMenu(permissions) {
+        mainMenu.innerHTML = Object.keys(submenus)
+            .filter(menu => permissions[menu])
+            .map(menu => `
+                <a href="#" data-submenu="${menu}">
+                    <i class="fas fa-chevron-right"></i>
+                    ${menu.charAt(0).toUpperCase() + menu.slice(1).replace('-', ' ')}
+                </a>
+            `).join('');
+
+        mainMenu.addEventListener('click', (e) => {
+            e.preventDefault();
+            const link = e.target.closest('a');
+            if (!link) return;
+            const submenuId = link.getAttribute('data-submenu');
+            if (!submenuId || !submenus[submenuId] || !permissions[submenuId]) return;
+
+            const submenuItems = submenus[submenuId].filter(item => permissions[submenuId][item.page]);
+            submenuContent.innerHTML = submenuItems.map(item => `
+                <a href="#" data-folder="${item.folder}" data-page="${item.page}" data-js-files="${item.jsFiles.join(',')}">
+                    ${item.text}
+                </a>
+            `).join('');
+
+            mainMenu.style.display = 'none';
+            submenu.style.display = 'block';
+        });
+
+        submenuContent.addEventListener('click', (e) => {
+            e.preventDefault();
+            const link = e.target.closest('a');
+            if (!link) return;
+            const folder = link.getAttribute('data-folder');
+            const page = link.getAttribute('data-page');
+            const jsFiles = link.getAttribute('data-js-files').split(',');
+            if (folder && page && jsFiles && permissions[folder]?.[page]) {
+                loadSubpage(folder, page, jsFiles, permissions);
             } else {
-                userElement.textContent = 'Bienvenido, Usuario';
-                mainMenu.innerHTML = '<p>Inicia sesión para ver el menú</p>';
+                content.innerHTML = '<p>No tienes permiso para acceder a esta página</p>';
             }
         });
-    })
-    .catch(error => {
-        console.error('Error al cargar scripts de Firebase:', error);
-        alert('No se pudieron cargar los scripts de Firebase');
-    });
+
+        backLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            submenu.style.display = 'none';
+            mainMenu.style.display = 'block';
+        });
+    }
+
+    renderMenu(permissions);
 }

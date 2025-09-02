@@ -80,15 +80,15 @@ body {
   position: relative;
 }
 
-.sidebar.collapsed .submenu-content a span {
+.sidebar.collapsed .submenu-content a span.submenu-text {
   display: none;
 }
 
-.sidebar.collapsed .submenu-content a i {
+.sidebar.collapsed .submenu-content a span.first-letter {
   display: inline-block;
-  margin-right: 0;
   font-size: 12px;
   color: #4cc9f0;
+  font-weight: bold;
 }
 
 .sidebar.collapsed .submenu-content a:hover::after {

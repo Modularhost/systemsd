@@ -17,7 +17,9 @@ const submenus = {
     consignacion: [
         { text: 'Registro', page: 'registro', folder: 'consignacion', jsFiles: ['registro'] },
         { text: 'Seguimiento', page: 'seguimiento', folder: 'consignacion', jsFiles: ['seguimiento'] },
-        { text: 'Reportes', page: 'reportes', folder: 'consignacion', jsFiles: ['reportes'] }
+        { text: 'Reportes', page: 'reportes', folder
+
+: 'consignacion', jsFiles: ['reportes'] }
     ],
     historico: [
         { text: 'Consultas', page: 'consultas', folder: 'historico', jsFiles: ['consultas'] },
@@ -182,7 +184,7 @@ function initializeMenu() {
             const submenuItems = submenus[submenuId].filter(item => permissions[submenuId][item.page]);
             submenuContent.innerHTML = submenuItems.map(item => `
                 <a href="#" data-folder="${item.folder}" data-page="${item.page}" data-js-files="${item.jsFiles.join(',')}" data-tooltip="${item.text}">
-                    <i class="fas fa-chevron-right"></i>
+                    <span class="first-letter">${item.text.charAt(0)}</span>
                     <span class="submenu-text">${item.text}</span>
                 </a>
             `).join('');

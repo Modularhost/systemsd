@@ -108,8 +108,9 @@ function initializeMenu() {
     const userElement = document.querySelector('.user');
     const sidebar = document.querySelector('.sidebar');
     const toggleSidebar = document.getElementById('toggle-sidebar');
+    const sidebarTitle = document.querySelector('.sidebar h2');
 
-    if (!mainMenu || !submenu || !submenuContent || !backLink || !content || !userElement || !sidebar || !toggleSidebar) {
+    if (!mainMenu || !submenu || !submenuContent || !backLink || !content || !userElement || !sidebar || !toggleSidebar || !sidebarTitle) {
         console.error('Error: No se encontraron uno o más elementos del DOM');
         return;
     }
@@ -220,10 +221,12 @@ function initializeMenu() {
             icon.classList.remove('fa-angles-left');
             icon.classList.add('fa-angles-right');
             toggleSidebar.setAttribute('data-tooltip', 'Expandir menú');
+            sidebarTitle.textContent = 'SSD';
         } else {
             icon.classList.remove('fa-angles-right');
             icon.classList.add('fa-angles-left');
             toggleSidebar.setAttribute('data-tooltip', 'Contraer menú');
+            sidebarTitle.textContent = 'SystemSD';
         }
     });
 }
